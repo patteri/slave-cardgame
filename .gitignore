@@ -1,3 +1,21 @@
-cra-server-ex.graffle
+# General
 node_modules
-npm-debug.log
+
+# Logs
+*.log
+
+# IntelliJ Idea files
+.idea
+*.iml
+*.ipr
+*.ids
+*.iws
+*.eml
+
+# Eclipse files
+.classpath
+.project
+.settings/**
+
+# Netbeans files
+*/catalog.xml
