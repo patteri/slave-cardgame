@@ -3,6 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
+    "babel-cli": "^6.23.0",
+    "babel-core": "^6.23.1",
     "body-parser": "~1.16.1",
     "debug": "^2.6.1",
     "express": "4.13.3",
@@ -13,7 +15,7 @@
     "server": "node server.js",
     "client": "node start-client.js",
     "lint": "eslint .",
-    "test": "mocha tests"
+    "test": "mocha --recursive tests"
   },
   "devDependencies": {
     "chai": "^3.5.0",
