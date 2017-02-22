@@ -1,6 +1,6 @@
 const chai = require('chai');
 const _ = require('lodash');
-const Deck = require('../../helpers/deck');
+const Deck = require('../../models/deck');
 
 const expect = chai.expect;
 

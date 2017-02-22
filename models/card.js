@@ -1,4 +1,4 @@
-const Suits = ["SPADES", "HEARTS", "CLUBS", "DIAMONDS"];
+const Suits = {SPADES: "Spades", HEARTS: "Hearts", CLUBS: "Clubs", DIAMONDS: "Diamonds"};
 
 class Card {
 
@@ -6,7 +6,7 @@ class Card {
   // suit: value of Card.Suits
   // value: value between 1 to 13
   constructor(suit, value) {
-    if (Suits.indexOf(suit) === -1) {
+    if (suit == null || !Suits.hasOwnProperty(suit.toUpperCase())) {
       throw new Error("Invalid suit");
     }
     if (!Number.isInteger(value) || value < 1 || value > 13) {
@@ -27,6 +27,13 @@ class Card {
 
   static get Suits() {
     return Suits;
+  }
+
+  toJSON() {
+    return {
+      suit: this._suit,
+      value: this._value
+    };
   }
 }
 

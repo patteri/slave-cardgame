@@ -16,9 +16,9 @@ class Deck {
   initialize() {
     this._deck = [];
 
-    Card.Suits.forEach((suit) => {
+    Object.keys(Card.Suits).forEach((suitKey) => {
       for (let i = 1; i < 14; ++i) {
-        this._deck.push(new Card(suit, i));
+        this._deck.push(new Card(Card.Suits[suitKey], i));
       }
     });
   }
