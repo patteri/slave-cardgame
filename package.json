@@ -8,6 +8,7 @@
     "body-parser": "~1.16.1",
     "debug": "^2.6.1",
     "express": "4.13.3",
+    "lodash": "^4.17.4",
     "morgan": "^1.8.1"
   },
   "scripts": {
@@ -18,6 +19,7 @@
     "test": "mocha --recursive tests"
   },
   "devDependencies": {
+    "babel-eslint": "^7.1.1",
     "chai": "^3.5.0",
     "chai-http": "^3.0.0",
     "concurrently": "3.1.0",

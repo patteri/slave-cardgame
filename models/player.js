@@ -1,6 +1,6 @@
 const tokenGenerator = require('../helpers/tokenGenerator');
 
-const PlayerTypes = {HUMAN: "Human", CPU: "Cpu"};
+const PlayerTypes = { HUMAN: 'Human', CPU: 'Cpu' };
 
 class Player {
 
@@ -9,7 +9,7 @@ class Player {
   // name: the name of the player
   constructor(type, name) {
     if (type == null || !PlayerTypes.hasOwnProperty(type.toUpperCase())) {
-      throw new Error("Invalid player type");
+      throw new Error('Invalid player type');
     }
 
     this._id = tokenGenerator.generateToken();

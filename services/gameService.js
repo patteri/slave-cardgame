@@ -14,16 +14,16 @@ class GameService {
   createGame() {
     // Create game, players and deal cards
     let game = new Game(PlayerCount);
-    let human = game.addPlayer(Player.PlayerTypes.HUMAN, "You");
-    game.addPlayer(Player.PlayerTypes.CPU, "CPU 1");
-    game.addPlayer(Player.PlayerTypes.CPU, "CPU 2");
-    game.addPlayer(Player.PlayerTypes.CPU, "CPU 3");
+    let human = game.addPlayer(Player.PlayerTypes.HUMAN, 'You');
+    game.addPlayer(Player.PlayerTypes.CPU, 'CPU 1');
+    game.addPlayer(Player.PlayerTypes.CPU, 'CPU 2');
+    game.addPlayer(Player.PlayerTypes.CPU, 'CPU 3');
     game.dealCards();
     game.turn = human;
 
     // Generate token for the game and store it
     this._games.set(game.id, game);
-    return {game: game, player: human};
+    return { game: game, player: human };
   }
 
   // Gets a game with the specified id

@@ -1,5 +1,4 @@
 const chai = require('chai');
-const _ = require('lodash');
 const gameService = require('../../services/gameService');
 const Game = require('../../models/game');
 
@@ -8,7 +7,7 @@ const expect = chai.expect;
 describe('GameService', () => {
   it('Get a game with an invalid id', () => {
     let game = gameService.getGame('doesn\'t exist');
-    expect(game).to.be.null;
+    expect(game).to.be.null; // eslint-disable-line no-unused-expressions
   });
 
   it('Creating a game doesn\'t crash', () => {

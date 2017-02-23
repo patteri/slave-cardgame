@@ -11,9 +11,9 @@ describe('routes', () => {
     chai.request(app)
       .post('/api/game')
       .end((err, res) => {
-        expect(err).to.be.null;
+        expect(err).to.be.null; // eslint-disable-line no-unused-expressions
         expect(res).to.have.status(200);
-        expect(res).to.be.json;
+        expect(res).to.be.json; // eslint-disable-line no-unused-expressions
         expect(res.body).to.have.property('player');
         expect(res.body.player).to.have.property('id');
         expect(res.body.player).to.have.property('cards');

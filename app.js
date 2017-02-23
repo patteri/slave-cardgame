@@ -1,10 +1,10 @@
-var express = require('express');
-var logger = require('morgan');
-var bodyParser = require('body-parser');
-var routes = require('./routes');
+const express = require('express');
+const logger = require('morgan');
+const bodyParser = require('body-parser');
+const routes = require('./routes');
 
 // Create and configure Express app
-var app = express();
+const app = express();
 
 app.use(logger('dev'));
 app.use(bodyParser.json());

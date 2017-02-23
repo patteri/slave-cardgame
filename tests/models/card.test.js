@@ -5,7 +5,7 @@ const expect = chai.expect;
 
 describe('Card', () => {
   it('Invalid suit', () => {
-    expect(() => new Card("invalid", 1)).to.throw('Invalid suit');
+    expect(() => new Card('invalid', 1)).to.throw('Invalid suit');
   });
 
   it('Invalid value (not a number)', () => {

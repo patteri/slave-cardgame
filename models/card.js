@@ -1,4 +1,4 @@
-const Suits = {SPADES: "Spades", HEARTS: "Hearts", CLUBS: "Clubs", DIAMONDS: "Diamonds"};
+const Suits = { SPADES: 'Spades', HEARTS: 'Hearts', CLUBS: 'Clubs', DIAMONDS: 'Diamonds' };
 
 class Card {
 
@@ -7,10 +7,10 @@ class Card {
   // value: value between 1 to 13
   constructor(suit, value) {
     if (suit == null || !Suits.hasOwnProperty(suit.toUpperCase())) {
-      throw new Error("Invalid suit");
+      throw new Error('Invalid suit');
     }
     if (!Number.isInteger(value) || value < 1 || value > 13) {
-      throw new Error("Invalid value");
+      throw new Error('Invalid value');
     }
 
     this._suit = suit;

@@ -1,9 +1,8 @@
 const Player = require('./player');
 const Deck = require('./deck');
-const Card = require('./card');
 const tokenGenerator = require('../helpers/tokenGenerator');
 
-const PlayingDirection = {CLOCKWISE: "Clockwise", COUTERCLOCKWISE: "Counterclockwise"};
+const PlayingDirection = { CLOCKWISE: 'Clockwise', COUTERCLOCKWISE: 'Counterclockwise' };
 
 class Game {
 
@@ -11,7 +10,7 @@ class Game {
   // playerCount: the number of players in the game
   constructor(playerCount) {
     if (!Number.isInteger(playerCount) || playerCount < 1) {
-      throw new Error("Invalid player count");
+      throw new Error('Invalid player count');
     }
 
     this._id = tokenGenerator.generateToken();
@@ -36,7 +35,7 @@ class Game {
   }
 
   get playingDirection() {
-    return this._playingDirection
+    return this._playingDirection;
   }
 
   set playingDirection(direction) {
@@ -44,11 +43,11 @@ class Game {
   }
 
   addPlayer(type, name) {
-    if (this._players.length == this._playerCount) {
-      throw new Error("The player number was exceeded");
+    if (this._players.length === this._playerCount) {
+      throw new Error('The player number was exceeded');
     }
     if (type == null || !Player.PlayerTypes.hasOwnProperty(type.toUpperCase())) {
-      throw new Error("Invalid player type");
+      throw new Error('Invalid player type');
     }
 
     let player = new Player(type, name);
@@ -68,13 +67,11 @@ class Game {
       table: this._table,
       turn: this._players.indexOf(this._turn),
       direction: this._playingDirection,
-      players: this._players.map((player) => {
-        return {
-          name: player.name,
-          type: player.type,
-          cardCount: player.hand.length
-        };
-      })
+      players: this._players.map(player => ({
+        name: player.name,
+        type: player.type,
+        cardCount: player.hand.length
+      }))
     };
   }
 
