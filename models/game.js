@@ -1,6 +1,7 @@
 const Player = require('./player');
 const Deck = require('./deck');
 const tokenGenerator = require('../helpers/tokenGenerator');
+const socketService = require('../services/socketService');
 
 const PlayingDirection = { CLOCKWISE: 'Clockwise', COUTERCLOCKWISE: 'Counterclockwise' };
 
@@ -101,7 +102,18 @@ class Game {
     index = this._playingDirection === PlayingDirection.CLOCKWISE ? index + 1 : index - 1;
     this._turn = this._players[index % this._players.length];
 
+    this.notifyPlayers();
+
+    // Don't play CPU turns automatically when testing
+    if (process.env.NODE_ENV !== 'test') {
+      this._turn.playTurn(this);
+    }
+
     return remainingHand;
+  }
+
+  notifyPlayers() {
+    socketService.emit(this.id, 'turn', { game: this.toJSON() });
   }
 
   toJSON() {

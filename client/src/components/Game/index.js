@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import { Grid, Button } from 'react-bootstrap';
+import io from 'socket.io-client';
 import _ from 'lodash';
 import api from '../../api/api';
 import Card from '../../../../models/card';
 import './style.css';
+
+const socket = io('', { path: '/api/game/socket' });
 
 class Game extends Component {
 
@@ -20,16 +23,27 @@ class Game extends Component {
     this.loadInitialGame();
 
     this.hitCard = this.hitCard.bind(this);
+    this.turnChanged = this.turnChanged.bind(this);
   }
 
   loadInitialGame() {
-    this.state = api.startGame().then((response) => {
+    api.startGame().then((response) => {
       this.setState({
         player: response.data.player,
         cards: response.data.player.cards.sort(Card.compare),
         game: response.data.game,
         table: _.last(response.data.game.table)
       });
+
+      socket.emit('joinGame', response.data.game.id);
+      socket.on('turn', this.turnChanged);
+    });
+  }
+
+  turnChanged(data) {
+    this.setState({
+      game: data.game,
+      table: _.last(data.game.table)
     });
   }
 
@@ -55,9 +69,7 @@ class Game extends Component {
             </ul>
             <p>* Player in turn</p>
             <div className="Game-table">
-              <span className="Game-card">
-                {table}
-              </span>
+              {table && <Button className="Game-card">{table.suit} {table.value}</Button>}
             </div>
           </div>
         }

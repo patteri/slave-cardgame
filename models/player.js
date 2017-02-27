@@ -1,6 +1,7 @@
 const tokenGenerator = require('../helpers/tokenGenerator');
 
 const PlayerTypes = { HUMAN: 'Human', CPU: 'Cpu' };
+const AIInterval = 2000;
 
 class Player {
 
@@ -16,6 +17,14 @@ class Player {
     this._type = type;
     this._name = name;
     this._hand = [];
+  }
+
+  playTurn(game) {
+    if (this.type === PlayerTypes.CPU) {
+      setTimeout((game) => {
+        game.playTurn([ this.hand[0] ]);
+      }, AIInterval, game);
+    }
   }
 
   get id() {
