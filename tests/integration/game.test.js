@@ -1,13 +1,13 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const app = require('../app');
+const app = require('../../app');
 
 const expect = chai.expect;
 
 chai.use(chaiHttp);
 
-describe('routes', () => {
-  it('POST /api/game', (done) => {
+describe('/api/game', () => {
+  it('create game', (done) => {
     chai.request(app)
       .post('/api/game')
       .end((err, res) => {
@@ -22,15 +22,6 @@ describe('routes', () => {
         expect(res.body.game).to.have.property('id');
         expect(res.body.game).to.have.property('players');
         expect(res.body.game.players.length).to.equal(4);
-        done();
-      });
-  });
-
-  it('GET undefined URL', (done) => {
-    chai.request(app)
-      .get('/api/url-does-not-exist')
-      .end((err, res) => {
-        expect(res).to.have.status(404);
         done();
       });
   });

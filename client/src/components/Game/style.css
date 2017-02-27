@@ -1,0 +1,17 @@
+.Game {
+  text-align: center;
+}
+
+.Game-card {
+  height: 120px;
+  width: 80px;
+  white-space: normal;
+  margin-left: 5px;
+  border: solid black 1px;
+  display: inline-block;
+}
+
+.Game-table {
+  height: 150px;
+  padding-top: 15px;
+}

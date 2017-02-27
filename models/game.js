@@ -61,6 +61,49 @@ class Game {
     });
   }
 
+  // Validates the player and the hit
+  validateHit(clientId, cards) {
+    // Validate player id
+    if (this._turn.id !== clientId) {
+      return false;
+    }
+
+    // Validate that at least one card is given and the player has the given cards
+    if (!Array.isArray(cards) || cards.length === 0) {
+      return false;
+    }
+    for (let i = 0; i < cards.length; ++i) {
+      let card = cards[i];
+      if (this._turn.hand.find(item => item.suit === card.suit && item.value === card.value) === undefined) {
+        return false;
+      }
+    }
+
+    // TODO: validate against game rules
+    return true;
+  }
+
+  // Plays the specified cards of the current player in turn.
+  // Note that this method does not validate the hit.
+  // Validate the hit by calling validateHit().
+  playTurn(cards) {
+    // Move cards from player's hand to the table
+    cards.forEach((card) => {
+      let index = this._turn.hand.findIndex(item => item.suit === card.suit && item.value === card.value);
+      let handCard = this._turn.hand[index];
+      this._turn.hand.splice(index, 1);
+      this._table.push(handCard);
+    });
+    let remainingHand = this._turn.hand;
+
+    // Switch turn
+    let index = this._players.indexOf(this._turn);
+    index = this._playingDirection === PlayingDirection.CLOCKWISE ? index + 1 : index - 1;
+    this._turn = this._players[index % this._players.length];
+
+    return remainingHand;
+  }
+
   toJSON() {
     return {
       id: this._id,
