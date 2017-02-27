@@ -1,6 +1,7 @@
 const chai = require('chai');
 const Game = require('../../models/game');
-const Player = require('../../models/player');
+const HumanPlayer = require('../../models/humanPlayer');
+const CpuPlayer = require('../../models/cpuPlayer');
 const gameService = require('../../services/gameService');
 
 const expect = chai.expect;
@@ -12,15 +13,15 @@ describe('Game', () => {
 
   it('Player count exceeds', () => {
     let game = new Game(2);
-    game.addPlayer(Player.PlayerTypes.CPU, 'cpu');
-    game.addPlayer(Player.PlayerTypes.CPU, 'cpu2');
-    expect(() => game.addPlayer(Player.PlayerTypes.CPU, 'cpu3')).to.throw('The player number was exceeded');
+    game.addPlayer(new CpuPlayer('cpu'));
+    game.addPlayer(new CpuPlayer('cpu2'));
+    expect(() => game.addPlayer(new CpuPlayer('cpu3'))).to.throw('The player number was exceeded');
   });
 
   it('Create game and add players: doesn\'t crash', () => {
     let game = new Game(2);
-    game.addPlayer(Player.PlayerTypes.HUMAN, 'human');
-    game.addPlayer(Player.PlayerTypes.CPU, 'cpu2');
+    game.addPlayer(new HumanPlayer('human'));
+    game.addPlayer(new CpuPlayer('cpu'));
   });
 
   it('Validation unsuccessful: no cards given', () => {

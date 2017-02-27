@@ -1,38 +1,21 @@
 const tokenGenerator = require('../helpers/tokenGenerator');
 
-const PlayerTypes = { HUMAN: 'Human', CPU: 'Cpu' };
-const AIInterval = 2000;
-
 class Player {
 
   // Parameters:
-  // type: the type of the player
   // name: the name of the player
-  constructor(type, name) {
-    if (type == null || !PlayerTypes.hasOwnProperty(type.toUpperCase())) {
-      throw new Error('Invalid player type');
-    }
-
+  constructor(name) {
     this._id = tokenGenerator.generateToken();
-    this._type = type;
     this._name = name;
     this._hand = [];
   }
 
-  playTurn(game) {
-    if (this.type === PlayerTypes.CPU) {
-      setTimeout((game) => {
-        game.playTurn([ this.hand[0] ]);
-      }, AIInterval, game);
-    }
+  playTurn(game) { // eslint-disable-line class-methods-use-this, no-unused-vars
+    // Overwrite this method in subclass for specialized logic
   }
 
   get id() {
     return this._id;
-  }
-
-  get type() {
-    return this._type;
   }
 
   get name() {
@@ -45,10 +28,6 @@ class Player {
 
   set hand(cards) {
     this._hand = cards;
-  }
-
-  static get PlayerTypes() {
-    return PlayerTypes;
   }
 
   toJSON() {

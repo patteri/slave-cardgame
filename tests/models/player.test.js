@@ -1,17 +1,19 @@
 const chai = require('chai');
-const Player = require('../../models/player');
+const HumanPlayer = require('../../models/humanPlayer');
+const CpuPlayer = require('../../models/cpuPlayer');
 
 const expect = chai.expect;
 
 describe('Player', () => {
-  it('Invalid type', () => {
-    expect(() => new Player('invalid', 'name')).to.throw('Invalid player type');
+  it('Valid human player', () => {
+    const name = 'human';
+    let player = new HumanPlayer(name);
+    expect(player.name).to.equal(name);
   });
 
-  it('Valid player', () => {
-    const name = 'name';
-    let player = new Player(Player.PlayerTypes.HUMAN, name);
+  it('Valid cpu player', () => {
+    const name = 'cpu';
+    let player = new CpuPlayer(name);
     expect(player.name).to.equal(name);
-    expect(player.type).to.equal(Player.PlayerTypes.HUMAN);
   });
 });

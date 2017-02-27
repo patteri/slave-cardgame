@@ -1,5 +1,6 @@
 const Game = require('../models/game');
-const Player = require('../models/player');
+const HumanPlayer = require('../models/humanPlayer');
+const CpuPlayer = require('../models/cpuPlayer');
 
 const PlayerCount = 4;
 
@@ -14,10 +15,11 @@ class GameService {
   createGame() {
     // Create game, players and deal cards
     let game = new Game(PlayerCount);
-    let human = game.addPlayer(Player.PlayerTypes.HUMAN, 'You');
-    game.addPlayer(Player.PlayerTypes.CPU, 'CPU 1');
-    game.addPlayer(Player.PlayerTypes.CPU, 'CPU 2');
-    game.addPlayer(Player.PlayerTypes.CPU, 'CPU 3');
+    let human = new HumanPlayer('You');
+    game.addPlayer(human);
+    game.addPlayer(new CpuPlayer('CPU 1'));
+    game.addPlayer(new CpuPlayer('CPU 2'));
+    game.addPlayer(new CpuPlayer('CPU 3'));
     game.dealCards();
     game.turn = human;
 

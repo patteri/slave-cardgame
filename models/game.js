@@ -1,4 +1,3 @@
-const Player = require('./player');
 const Deck = require('./deck');
 const tokenGenerator = require('../helpers/tokenGenerator');
 const socketService = require('../services/socketService');
@@ -43,17 +42,12 @@ class Game {
     this._playingDirection = direction;
   }
 
-  addPlayer(type, name) {
+  addPlayer(player) {
     if (this._players.length === this._playerCount) {
       throw new Error('The player number was exceeded');
     }
-    if (type == null || !Player.PlayerTypes.hasOwnProperty(type.toUpperCase())) {
-      throw new Error('Invalid player type');
-    }
 
-    let player = new Player(type, name);
     this._players.push(player);
-    return player;
   }
 
   dealCards() {
