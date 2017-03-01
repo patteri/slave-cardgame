@@ -32,7 +32,7 @@ describe('/api/game/:id/hit', () => {
   });
 
   it('successfull hit', (done) => {
-    const game = gameService.createGame();
+    const game = gameService.createGame(false, 1);
 
     chai.request(app)
       .post('/api/game/' + game.game.id + '/hit')

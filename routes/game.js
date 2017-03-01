@@ -8,6 +8,7 @@ router.post('/', (req, res) => {
   const game = gameService.createGame();
   res.json({
     player: game.player,
+    playerIndex: game.game._players.indexOf(game.player),
     game: game.game
   });
 });

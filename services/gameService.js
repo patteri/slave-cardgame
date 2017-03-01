@@ -12,18 +12,27 @@ class GameService {
 
   // Creates a new game with one human player
   // Returns the game and the player
-  createGame() {
+  createGame(shuffleDeck = true, humanIndex = 0) {
     // Create game, players and deal cards
-    let game = new Game(PlayerCount);
+    let game = new Game(PlayerCount, shuffleDeck);
     let human = new HumanPlayer('You');
-    game.addPlayer(human);
-    game.addPlayer(new CpuPlayer('CPU 1'));
-    game.addPlayer(new CpuPlayer('CPU 2'));
-    game.addPlayer(new CpuPlayer('CPU 3'));
+    for (let i = 0; i < PlayerCount; ++i) {
+      if (i === humanIndex) {
+        game.addPlayer(human);
+      }
+      else {
+        game.addPlayer(new CpuPlayer('CPU ' + (i < humanIndex ? i + 1 : i)));
+      }
+    }
     game.dealCards();
-    game.turn = human;
 
-    // Generate token for the game and store it
+    // If the first player in turn is CPU, start CPU game
+    if (game.turn instanceof CpuPlayer) {
+      setTimeout((game) => {
+        game.startCpuGame();
+      }, 1000, game);
+    }
+
     this._games.set(game.id, game);
     return { game: game, player: human };
   }

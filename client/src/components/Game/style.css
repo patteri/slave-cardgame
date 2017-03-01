@@ -1,5 +1,8 @@
 .Game {
+  background-color: green;
   text-align: center;
+  color: white;
+  height: 100%;
 }
 
 .Game-card {
@@ -7,11 +10,20 @@
   width: 80px;
   white-space: normal;
   margin-left: 5px;
+  margin-top: 30px;
   border: solid black 1px;
   display: inline-block;
 }
 
+.Game-card.selected {
+  margin-top: 0px;
+}
+
 .Game-table {
   height: 150px;
-  padding-top: 15px;
+}
+
+.Game-hit-button {
+  padding: 10px 20px;
+  margin-bottom: 10px;
 }
