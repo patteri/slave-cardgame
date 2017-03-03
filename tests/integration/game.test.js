@@ -31,6 +31,7 @@ describe('/api/game', () => {
         expect(res.body.game.players[0]).to.have.property('isCpu');
         expect(res.body.game.players[0]).to.have.property('cardCount');
         expect(res.body.game.players[0]).to.have.property('turn');
+        expect(res.body.game.players[0]).to.have.property('status');
         done();
       });
   });

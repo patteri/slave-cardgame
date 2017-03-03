@@ -4,6 +4,7 @@ import io from 'socket.io-client';
 import classNames from 'classnames';
 import api from '../../api/api';
 import Card from '../../../../models/card';
+import CardHelper from '../../../../helpers/cardHelper';
 import './style.css';
 
 const socket = io('', { path: '/api/game/socket' });
@@ -14,14 +15,14 @@ class Game extends Component {
     super(props);
 
     this.game = null;
-    this.playerIndex = null;
     this.state = {
       player: null,
+      playerIndex: null,
       cards: null,
-      ownTurn: null,
       selectedCards: [],
+      canHit: false,
       table: null,
-      otherPlayers: null
+      players: null
     };
 
     this.loadInitialGame();
@@ -30,22 +31,26 @@ class Game extends Component {
     this.selectCard = this.selectCard.bind(this);
     this.hitCards = this.hitCards.bind(this);
     this.getIndexOfSelected = this.getIndexOfSelected.bind(this);
+    this.canHit = this.canHit.bind(this);
   }
 
   getIndexOfSelected(card) {
     return this.state.selectedCards.indexOf(card);
   }
 
+  getStatus(status) {
+    return <p className={'Game-status ' + status}>{status}</p>;
+  }
+
   loadInitialGame() {
     api.startGame().then((response) => {
       this.game = response.data.game;
-      this.playerIndex = response.data.playerIndex;
       this.setState({
         player: response.data.player,
+        playerIndex: response.data.playerIndex,
         cards: response.data.player.cards.sort(Card.compare),
-        ownTurn: response.data.game.players[this.playerIndex].turn,
         table: response.data.game.previousHit,
-        otherPlayers: response.data.game.players.filter((player, index) => index !== this.playerIndex)
+        players: response.data.game.players
       });
 
       socket.emit('joinGame', response.data.game.id);
@@ -56,9 +61,9 @@ class Game extends Component {
   turnChanged(data) {
     this.game = data.game;
     this.setState({
-      ownTurn: data.game.players[this.playerIndex].turn,
+      canHit: this.canHit(data.game.players, this.state.selectedCards, data.game.previousHit),
       table: data.game.previousHit,
-      otherPlayers: data.game.players.filter((player, index) => index !== this.playerIndex)
+      players: data.game.players
     });
   }
 
@@ -74,7 +79,10 @@ class Game extends Component {
     else {
       selectedCards.splice(index, 1);
     }
-    this.setState({ selectedCards: selectedCards });
+    this.setState({
+      canHit: this.canHit(this.state.players, selectedCards, this.state.table),
+      selectedCards: selectedCards
+    });
   }
 
   hitCards() {
@@ -89,22 +97,31 @@ class Game extends Component {
     });
   }
 
+  canHit(players, selectedCards, table) {
+    // Must be player's turn and valid cards selected
+    let hasTurn = players[this.state.playerIndex].turn;
+    let isValid = CardHelper.validateHit(selectedCards, table, this.game.isFirstTurn);
+    return hasTurn && isValid;
+  }
+
   render() {
-    const { player, cards, ownTurn, selectedCards, table, otherPlayers } = this.state;
+    const { player, playerIndex, cards, canHit, selectedCards, table, players } = this.state;
 
     return (
       <Grid className="Game" fluid>
-        {otherPlayers &&
+        {players &&
           <div>
             <Row>
-              {otherPlayers.map((item, index) => (
+              {players.filter((player, index) => index !== playerIndex).map((item, index) => (
                 <Col xs={4} key={index}>
-                  <h2>{item.turn && '*'} {item.name} {item.isCpu && '(CPU)'}</h2>
+                  <h2 className={classNames('Game-player-name', { turn: item.turn })}>
+                    {item.name} {item.isCpu && '(CPU)'}
+                  </h2>
                   <p>Cards: {item.cardCount}</p>
+                  {this.getStatus(item.status)}
                 </Col>
               ))}
             </Row>
-            <p>* Player in turn</p>
             <div className="Game-table">
               {table &&
                 <div>
@@ -118,8 +135,11 @@ class Game extends Component {
         }
         {player &&
           <div>
-            <h2>{ownTurn && '*'} {player.name}</h2>
-            <Button className="Game-hit-button" onClick={() => this.hitCards()}>
+            <h2 className={classNames('Game-player-name', { turn: players[playerIndex].turn })}>
+              {player.name}
+            </h2>
+            {this.getStatus(players[playerIndex].status)}
+            <Button className="Game-hit-button" onClick={() => this.hitCards()} disabled={!canHit}>
               {selectedCards.length > 0 ? 'Hit' : 'Pass'}
             </Button>
             <div>

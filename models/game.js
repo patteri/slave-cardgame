@@ -1,10 +1,11 @@
 const Deck = require('./deck');
-const Card = require('./card');
 const CpuPlayer = require('./cpuPlayer');
 const tokenGenerator = require('../helpers/tokenGenerator');
 const socketService = require('../services/socketService');
+const CardHelper = require('../helpers/cardHelper');
 
 const PlayingDirection = { CLOCKWISE: 'Clockwise', COUTERCLOCKWISE: 'Counterclockwise' };
+const PlayingStatus = { HIT: 'Hit', PASS: 'Pass', WAITING: 'Waiting' };
 
 class Game {
 
@@ -69,7 +70,7 @@ class Game {
 
     // The player with the two of clubs gets the starting turn
     this._turn = this._players.find(player =>
-      Game.findTwoOfClubs(player.hand) !== undefined
+       CardHelper.findTwoOfClubs(player.hand) !== undefined
     );
   }
 
@@ -80,7 +81,7 @@ class Game {
       return false;
     }
 
-    // Validate that the player has the given cards and they are of the same value
+    // Validate that the player has the given cards
     if (!Array.isArray(cards)) {
       return false;
     }
@@ -91,37 +92,7 @@ class Game {
       }
     }
 
-    // First hit of the game must contain the two of clubs
-    if (this._table.length === 0) {
-      if (Game.findTwoOfClubs(cards) === undefined) {
-        return false;
-      }
-    }
-
-    // No cards is a valid hit if it wasn't the first hit of the game
-    if (cards.length === 0) {
-      return true;
-    }
-
-    // If multiple cards was hit, they must be the same value
-    const firstValue = cards[0].value;
-    for (let i = 1; i < cards.length; ++i) {
-      if (cards[i].value !== firstValue) {
-        return false;
-      }
-    }
-
-    // The value must be greater and the card count at least as high as in the previous hit
-    if (this._previousHit.cards.length > 0) {
-      let previousValue = this._previousHit.cards[0].value;
-      if (previousValue === 1 ||
-        (previousValue >= firstValue && firstValue !== 1) ||
-        (cards.length < this._previousHit.cards.length)) {
-        return false;
-      }
-    }
-
-    return true;
+    return CardHelper.validateHit(cards, this._previousHit.cards, this._table.length === 0);
   }
 
   startCpuGame() {
@@ -170,22 +141,39 @@ class Game {
     socketService.emit(this.id, 'turn', { game: this.toJSON() });
   }
 
+  getPlayingStatus(player) {
+    if (this._previousHit.player != null) {
+      let prevHitIdx = this._players.indexOf(this._previousHit.player);
+      let playerIdx = this._players.indexOf(player);
+      let turnIdx = this._players.indexOf(this._turn);
+      let turnNumber = turnIdx > prevHitIdx ? turnIdx - prevHitIdx : (this._players.length - prevHitIdx) + turnIdx;
+      let playerNumber = playerIdx > prevHitIdx ?
+      playerIdx - prevHitIdx : (this._players.length - prevHitIdx) + playerIdx;
+
+      if (player === this._previousHit.player && player !== this._turn) {
+        return PlayingStatus.HIT;
+      }
+      else if (playerNumber < turnNumber) {
+        return PlayingStatus.PASS;
+      }
+    }
+    return PlayingStatus.WAITING;
+  }
+
   toJSON() {
     return {
       id: this._id,
+      isFirstTurn: this._table.length === 0,
       previousHit: this._previousHit.cards,
       direction: this._playingDirection,
       players: this._players.map(player => ({
         name: player.name,
         isCpu: player instanceof CpuPlayer,
         cardCount: player.hand.length,
-        turn: player === this._turn
+        turn: player === this._turn,
+        status: this.getPlayingStatus(player)
       }))
     };
-  }
-
-  static findTwoOfClubs(cards) {
-    return cards.find(item => item.suit === Card.Suits.CLUBS && item.value === 2);
   }
 
 }
