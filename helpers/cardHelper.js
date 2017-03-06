@@ -9,7 +9,7 @@ class CardHelper {
   }
 
   // Validates the hit against game rules
-  static validateHit(cards, previousHit, isFirstTurn) {
+  static validateHit(cards, previousHit, isFirstTurn, isRevolution) {
     // First hit of the game must contain the two of clubs
     if (isFirstTurn) {
       if (CardHelper.findTwoOfClubs(cards) === undefined) {
@@ -33,13 +33,18 @@ class CardHelper {
     // The value must be greater and the card count at least as high as in the previous hit
     if (previousHit.length > 0) {
       let previousValue = previousHit[0].value;
-      if (previousValue === 1 || (previousValue >= firstValue && firstValue !== 1) ||
+      if (previousValue === 1 ||
+        (CardHelper.compareGreatness(previousValue, firstValue, isRevolution) && firstValue !== 1) ||
         (cards.length < previousHit.length)) {
         return false;
       }
     }
 
     return true;
+  }
+
+  static compareGreatness(value1, value2, isRevolution) {
+    return isRevolution ? value1 <= value2 : value1 >= value2;
   }
 
 }

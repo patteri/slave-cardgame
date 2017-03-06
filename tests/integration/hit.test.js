@@ -32,11 +32,11 @@ describe('/api/game/:id/hit', () => {
   });
 
   it('successfull hit', (done) => {
-    const game = gameService.createGame(false, 1);
+    const game = gameService.createGame(false).game;
 
     chai.request(app)
-      .post('/api/game/' + game.game.id + '/hit')
-      .send({ clientId: game.player.id, cards: [ game.player.hand[0] ] })
+      .post('/api/game/' + game.id + '/hit')
+      .send({ clientId: game._players[1].id, cards: [ game._players[1].hand[0] ] })
       .end((err, res) => {
         expect(err).to.be.null; // eslint-disable-line no-unused-expressions
         expect(res).to.have.status(200);

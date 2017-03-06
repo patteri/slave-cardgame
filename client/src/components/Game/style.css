@@ -28,6 +28,10 @@
   height: 150px;
 }
 
+.Game-revolution {
+  color: orange;
+}
+
 .Game-hit-button {
   padding: 10px 20px;
   margin-bottom: 10px;

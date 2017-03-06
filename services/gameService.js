@@ -12,17 +12,13 @@ class GameService {
 
   // Creates a new game with one human player
   // Returns the game and the player
-  createGame(shuffleDeck = true, humanIndex = 0) {
+  createGame(shuffleDeck = true) {
     // Create game, players and deal cards
     let game = new Game(PlayerCount, shuffleDeck);
     let human = new HumanPlayer('You');
-    for (let i = 0; i < PlayerCount; ++i) {
-      if (i === humanIndex) {
-        game.addPlayer(human);
-      }
-      else {
-        game.addPlayer(new CpuPlayer('CPU ' + (i < humanIndex ? i + 1 : i)));
-      }
+    game.addPlayer(human);
+    for (let i = 0; i < PlayerCount - 1; ++i) {
+      game.addPlayer(new CpuPlayer('CPU ' + (i + 1)));
     }
     game.dealCards();
 

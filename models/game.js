@@ -46,12 +46,8 @@ class Game {
     return this._previousHit;
   }
 
-  get playingDirection() {
-    return this._playingDirection;
-  }
-
-  set playingDirection(direction) {
-    this._playingDirection = direction;
+  isRevolution() {
+    return this._playingDirection === PlayingDirection.COUTERCLOCKWISE;
   }
 
   addPlayer(player) {
@@ -92,7 +88,7 @@ class Game {
       }
     }
 
-    return CardHelper.validateHit(cards, this._previousHit.cards, this._table.length === 0);
+    return CardHelper.validateHit(cards, this._previousHit.cards, this._table.length === 0, this.isRevolution());
   }
 
   startCpuGame() {
@@ -121,9 +117,17 @@ class Game {
     });
     let remainingHand = this._turn.hand;
 
+    // Check revolution rule
+    if (cards.length === 4) {
+      this._playingDirection = this.isRevolution() ? PlayingDirection.CLOCKWISE : PlayingDirection.COUTERCLOCKWISE;
+    }
+
     // Switch turn
     let index = this._players.indexOf(this._turn);
-    index = this._playingDirection === PlayingDirection.CLOCKWISE ? index + 1 : index - 1;
+    index = this.isRevolution() ? index - 1 : index + 1;
+    if (index === -1) {
+      index = this._players.length - 1;
+    }
     this._turn = this._players[index % this._players.length];
 
     // If full round without hits, clear the table
@@ -146,9 +150,17 @@ class Game {
       let prevHitIdx = this._players.indexOf(this._previousHit.player);
       let playerIdx = this._players.indexOf(player);
       let turnIdx = this._players.indexOf(this._turn);
+
       let turnNumber = turnIdx > prevHitIdx ? turnIdx - prevHitIdx : (this._players.length - prevHitIdx) + turnIdx;
       let playerNumber = playerIdx > prevHitIdx ?
       playerIdx - prevHitIdx : (this._players.length - prevHitIdx) + playerIdx;
+      // Invert index when revolution
+      if (this.isRevolution() && turnNumber !== this._players.length) {
+        turnNumber = this._players.length - turnNumber;
+      }
+      if (this.isRevolution() && playerNumber !== this._players.length) {
+        playerNumber = this._players.length - playerNumber;
+      }
 
       if (player === this._previousHit.player && player !== this._turn) {
         return PlayingStatus.HIT;
@@ -164,8 +176,8 @@ class Game {
     return {
       id: this._id,
       isFirstTurn: this._table.length === 0,
+      isRevolution: this.isRevolution(),
       previousHit: this._previousHit.cards,
-      direction: this._playingDirection,
       players: this._players.map(player => ({
         name: player.name,
         isCpu: player instanceof CpuPlayer,

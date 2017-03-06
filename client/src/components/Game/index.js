@@ -22,7 +22,8 @@ class Game extends Component {
       selectedCards: [],
       canHit: false,
       table: null,
-      players: null
+      players: null,
+      isRevolution: false
     };
 
     this.loadInitialGame();
@@ -50,7 +51,8 @@ class Game extends Component {
         playerIndex: response.data.playerIndex,
         cards: response.data.player.cards.sort(Card.compare),
         table: response.data.game.previousHit,
-        players: response.data.game.players
+        players: response.data.game.players,
+        isRevolution: response.data.game.isRevolution
       });
 
       socket.emit('joinGame', response.data.game.id);
@@ -63,7 +65,8 @@ class Game extends Component {
     this.setState({
       canHit: this.canHit(data.game.players, this.state.selectedCards, data.game.previousHit),
       table: data.game.previousHit,
-      players: data.game.players
+      players: data.game.players,
+      isRevolution: data.game.isRevolution
     });
   }
 
@@ -100,12 +103,12 @@ class Game extends Component {
   canHit(players, selectedCards, table) {
     // Must be player's turn and valid cards selected
     let hasTurn = players[this.state.playerIndex].turn;
-    let isValid = CardHelper.validateHit(selectedCards, table, this.game.isFirstTurn);
+    let isValid = CardHelper.validateHit(selectedCards, table, this.game.isFirstTurn, this.game.isRevolution);
     return hasTurn && isValid;
   }
 
   render() {
-    const { player, playerIndex, cards, canHit, selectedCards, table, players } = this.state;
+    const { player, playerIndex, cards, canHit, selectedCards, table, players, isRevolution } = this.state;
 
     return (
       <Grid className="Game" fluid>
@@ -133,6 +136,7 @@ class Game extends Component {
             </div>
           </div>
         }
+        {isRevolution && <p className="Game-revolution">REVOLUTION</p>}
         {player &&
           <div>
             <h2 className={classNames('Game-player-name', { turn: players[playerIndex].turn })}>

@@ -1,5 +1,6 @@
 const chai = require('chai');
 const Game = require('../../models/game');
+const Card = require('../../models/card');
 const HumanPlayer = require('../../models/humanPlayer');
 const CpuPlayer = require('../../models/cpuPlayer');
 const gameService = require('../../services/gameService');
@@ -24,61 +25,12 @@ describe('Game', () => {
     game.addPlayer(new CpuPlayer('cpu'));
   });
 
-  it('Validation successful for the first hit', () => {
-    let game = gameService.createGame(false).game;
-    let valid = game.validateHit(game._players[1].id, [ game._players[1].hand[0] ]);
-    expect(valid).to.equal(true);
-  });
-
-  it('Validation successful: ace greater than two', () => {
-    let game = gameService.createGame(false).game;
-    let cardsToPlay = [ game._players[1].hand[0] ];
-    game.validateHit(game._players[1].id, cardsToPlay);
-    game.playTurn(cardsToPlay);
-    let valid = game.validateHit(game._players[2].id, [ game._players[2].hand[6] ]);
-    expect(valid).to.equal(true);
-  });
-
-  it('Validation unsuccessful: no cards given in the first hit', () => {
-    let gameData = gameService.createGame();
-    let valid = gameData.game.validateHit(gameData.player.id, []);
-    expect(valid).to.equal(false);
-  });
-
   it('Validation unsuccessful: hitting card that a player doesn\'t have', () => {
     let game = gameService.createGame(false).game;
     // Remove two of clubs from the hand
     let card = game._players[1].hand[0];
     game._players[1].hand.splice(0, 1);
     let valid = game.validateHit(game._players[1].id, [ card ]);
-    expect(valid).to.equal(false);
-  });
-
-  it('Validation unsuccessful: equal value was hit', () => {
-    let game = gameService.createGame(false).game;
-    // Hit two of clubs
-    let cardsToHit = [ game._players[1].hand[0] ];
-    game.validateHit(game._players[1].id, cardsToHit);
-    game.playTurn(cardsToHit);
-    // Hit another two
-    let valid = game.validateHit(game._players[2].id, [ game._players[2].hand[3] ]);
-    expect(valid).to.equal(false);
-  });
-
-  it('Validation unsuccessful: less cards was hit', () => {
-    let game = gameService.createGame(false).game;
-    // Give another two for player 2
-    let two = game._players[2].hand[3];
-    game._players[2].hand.splice(3, 1);
-    game._players[1].hand.push(two);
-
-    // Hit 2 twos
-    let cardsToHit = [ game._players[1].hand[0], game._players[1].hand[13] ];
-    let valid = game.validateHit(game._players[1].id, cardsToHit);
-    expect(valid).to.equal(true);
-    game.playTurn(cardsToHit);
-    // Hit only one ace
-    valid = game.validateHit(game._players[2].id, [ game._players[2].hand[5] ]);
     expect(valid).to.equal(false);
   });
 
@@ -103,5 +55,18 @@ describe('Game', () => {
     expect(game._turn).to.equal(game._players[3]);
     game.playTurn([ game._players[3].hand[0] ]);
     expect(game._turn).to.equal(game._players[0]);
+  });
+
+  it('Hitting four cards with same value leads to the revolution', () => {
+    let game = gameService.createGame(false).game;
+    let player = game._players[1]; // Player at index 1 has the two of clubs and is in turn
+    let card2 = new Card(Card.Suits.SPADES, 2);
+    player.hand.push(card2);
+    let card3 = new Card(Card.Suits.HEARTS, 2);
+    player.hand.push(card3);
+    let card4 = new Card(Card.Suits.DIAMONDS, 2);
+    player.hand.push(card4);
+    game.playTurn([ game._players[1].hand[0], card2, card3, card4 ]);
+    expect(game.isRevolution()).to.equal(true);
   });
 });
