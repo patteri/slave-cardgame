@@ -116,6 +116,10 @@ class Game {
       this._previousHit.cards.push(card);
     });
     let remainingHand = this._turn.hand;
+    // If finished playing, assign position
+    if (remainingHand.length === 0) {
+      this._turn.position = this.getNextPosition();
+    }
 
     // Check revolution rule
     if (cards.length === 4) {
@@ -124,25 +128,48 @@ class Game {
 
     // Switch turn
     let index = this._players.indexOf(this._turn);
-    index = this.isRevolution() ? index - 1 : index + 1;
-    if (index === -1) {
-      index = this._players.length - 1;
-    }
-    this._turn = this._players[index % this._players.length];
+    do {
+      index = this.isRevolution() ? index - 1 : index + 1;
+      if (index === -1) {
+        index = this._players.length - 1;
+      }
+      this._turn = this._players[index % this._players.length];
 
-    // If full round without hits, clear the table
-    if (this._turn === this._previousHit.player) {
-      this._previousHit.cards = [];
+      // If full round without hits, clear the table
+      if (this._turn === this._previousHit.player) {
+        this._previousHit.cards = [];
+      }
     }
+    while (this._turn.hand.length === 0);
 
-    this.notifyPlayers();
-    this.startCpuGame();
+    // Check if the game ended
+    if (this._players.filter(item => item.hand.length > 0).length === 1) {
+      this._turn.position = this.getNextPosition();
+      this.notifyForGameEnd();
+    }
+    else {
+      this.notifyForHit();
+      this.startCpuGame();
+    }
 
     return remainingHand;
   }
 
-  notifyPlayers() {
-    socketService.emit(this.id, 'turn', { game: this.toJSON() });
+  getNextPosition() {
+    return Math.max(...this._players.map(item => item.position)) + 1;
+  }
+
+  notifyForHit() {
+    socketService.emit(this.id, 'turnChanged', { game: this.toJSON() });
+  }
+
+  notifyForGameEnd() {
+    let results = this._players.map(player => ({
+      name: player.name,
+      isCpu: player instanceof CpuPlayer,
+      position: player.position
+    })).sort((first, second) => first.position - second.position);
+    socketService.emit(this.id, 'gameEnded', { game: this.toJSON(), results: results });
   }
 
   getPlayingStatus(player) {
@@ -165,7 +192,7 @@ class Game {
       if (player === this._previousHit.player && player !== this._turn) {
         return PlayingStatus.HIT;
       }
-      else if (playerNumber < turnNumber) {
+      else if ((playerNumber < turnNumber) && player.hand.length > 0) {
         return PlayingStatus.PASS;
       }
     }

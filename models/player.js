@@ -8,6 +8,7 @@ class Player {
     this._id = tokenGenerator.generateToken();
     this._name = name;
     this._hand = [];
+    this._position = 0;
   }
 
   playTurn(game) { // eslint-disable-line class-methods-use-this, no-unused-vars
@@ -28,6 +29,14 @@ class Player {
 
   set hand(cards) {
     this._hand = cards;
+  }
+
+  get position() {
+    return this._position;
+  }
+
+  set position(position) {
+    this._position = position;
   }
 
   toJSON() {

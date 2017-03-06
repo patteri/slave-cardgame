@@ -29,6 +29,7 @@ class Game extends Component {
     this.loadInitialGame();
 
     this.turnChanged = this.turnChanged.bind(this);
+    this.gameEnded = this.gameEnded.bind(this);
     this.selectCard = this.selectCard.bind(this);
     this.hitCards = this.hitCards.bind(this);
     this.getIndexOfSelected = this.getIndexOfSelected.bind(this);
@@ -56,7 +57,8 @@ class Game extends Component {
       });
 
       socket.emit('joinGame', response.data.game.id);
-      socket.on('turn', this.turnChanged);
+      socket.on('turnChanged', this.turnChanged);
+      socket.on('gameEnded', this.gameEnded);
     });
   }
 
@@ -68,6 +70,12 @@ class Game extends Component {
       players: data.game.players,
       isRevolution: data.game.isRevolution
     });
+  }
+
+  gameEnded(data) {
+    this.turnChanged(data);
+    // For the moment, just print out the results
+    console.log(data.results); // eslint-disable-line no-console
   }
 
   selectCard(card) {
