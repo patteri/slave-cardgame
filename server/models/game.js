@@ -2,7 +2,7 @@ const Deck = require('./deck');
 const CpuPlayer = require('./cpuPlayer');
 const tokenGenerator = require('../helpers/tokenGenerator');
 const socketService = require('../services/socketService');
-const CardHelper = require('../helpers/cardHelper');
+const CardHelper = require('../../common/cardHelper');
 
 const PlayingDirection = { CLOCKWISE: 'Clockwise', COUTERCLOCKWISE: 'Counterclockwise' };
 const PlayingStatus = { HIT: 'Hit', PASS: 'Pass', WAITING: 'Waiting' };

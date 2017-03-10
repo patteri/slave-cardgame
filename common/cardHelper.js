@@ -1,4 +1,4 @@
-const Card = require('../models/card');
+const Card = require('./card');
 
 class CardHelper {
 
@@ -43,8 +43,26 @@ class CardHelper {
     return true;
   }
 
+  // Compares cards' greatness
+  // Takes into account the revolution rule
   static compareGreatness(value1, value2, isRevolution) {
     return isRevolution ? value1 <= value2 : value1 >= value2;
+  }
+
+  // Compares cards' absolute values.
+  // The function assumes that Ace (value == 1) is the greatest card.
+  // The function can be used for sorting the deck
+  static compareCards(first, second) {
+    if (first.value === second.value) {
+      return first.suit.localeCompare(second.suit);
+    }
+    if (first.value === 1) {
+      return 1;
+    }
+    else if (second.value === 1) {
+      return -1;
+    }
+    return first.value - second.value;
   }
 
 }

@@ -3,8 +3,7 @@ import { Grid, Button, Row, Col } from 'react-bootstrap';
 import io from 'socket.io-client';
 import classNames from 'classnames';
 import api from '../../api/api';
-import Card from '../../../../models/card';
-import CardHelper from '../../../../helpers/cardHelper';
+import CardHelper from '../../../../common/cardHelper';
 import './style.css';
 
 const socket = io('', { path: '/api/game/socket' });
@@ -54,7 +53,7 @@ class Game extends Component {
       this.setState({
         player: response.data.player,
         playerIndex: response.data.playerIndex,
-        cards: response.data.player.cards.sort(Card.compare),
+        cards: response.data.player.cards.sort(CardHelper.compareCards),
         table: response.data.game.previousHit,
         players: response.data.game.players,
         isRevolution: response.data.game.isRevolution
@@ -106,7 +105,7 @@ class Game extends Component {
       cards: this.state.selectedCards
     }).then((response) => {
       this.setState({
-        cards: response.data.cards.sort(Card.compare),
+        cards: response.data.cards.sort(CardHelper.compareCards),
         selectedCards: []
       });
     });

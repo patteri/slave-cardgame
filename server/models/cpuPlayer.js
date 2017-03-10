@@ -1,6 +1,5 @@
 const Player = require('./player');
-const Card = require('./card');
-const CardHelper = require('../helpers/cardHelper');
+const CardHelper = require('../../common/cardHelper');
 const _ = require('lodash');
 
 const AIInterval = 1500;
@@ -17,7 +16,7 @@ class CpuPlayer extends Player {
     let cardsToPlay = [];
 
     if (previousHit.length === 0 || previousHit[0].value !== 1) {
-      let cards = this.hand.slice().sort(Card.compare);
+      let cards = this.hand.slice().sort(CardHelper.compareCards);
       // Group cards by value in alphabetical order (values < 10 are presented in a form '0x')
       let cardGroups = _.groupBy(cards, (card) => {
         if (card.value === 1 && !isRevolution) {

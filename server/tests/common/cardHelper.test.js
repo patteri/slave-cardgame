@@ -1,6 +1,6 @@
 const chai = require('chai');
-const CardHelper = require('../../helpers/cardHelper');
-const Card = require('../../models/card');
+const CardHelper = require('../../../common/cardHelper');
+const Card = require('../../../common/card');
 
 const expect = chai.expect;
 

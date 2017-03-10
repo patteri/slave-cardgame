@@ -29,21 +29,6 @@ class Card {
     return Suits;
   }
 
-  // The function can be used for sorting the deck
-  // The function assumes that Ace (value = 1) is the greatest card.
-  static compare(first, second) {
-    if (first.value === second.value) {
-      return first.suit.localeCompare(second.suit);
-    }
-    if (first.value === 1) {
-      return 1;
-    }
-    else if (second.value === 1) {
-      return -1;
-    }
-    return first.value - second.value;
-  }
-
   toJSON() {
     return {
       suit: this._suit,

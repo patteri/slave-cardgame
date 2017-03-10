@@ -1,5 +1,5 @@
 const chai = require('chai');
-const Card = require('../../models/card');
+const Card = require('../../../common/card');
 
 const expect = chai.expect;
 

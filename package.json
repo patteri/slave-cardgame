@@ -14,10 +14,10 @@
   },
   "scripts": {
     "start": "concurrently \"npm run server\" \"npm run client\"",
-    "server": "node server.js",
+    "server": "node server/server.js",
     "client": "node start-client.js",
     "lint": "eslint .",
-    "test": "set NODE_ENV=test&& mocha --recursive tests"
+    "test": "set NODE_ENV=test&& mocha --recursive server/tests"
   },
   "devDependencies": {
     "babel-eslint": "^7.1.1",

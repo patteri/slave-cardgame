@@ -1,6 +1,6 @@
 const chai = require('chai');
 const Game = require('../../models/game');
-const Card = require('../../models/card');
+const Card = require('../../../common/card');
 const HumanPlayer = require('../../models/humanPlayer');
 const CpuPlayer = require('../../models/cpuPlayer');
 const gameService = require('../../services/gameService');
