@@ -6,15 +6,11 @@ class SocketService {
     this._socket = null;
   }
 
-  // Initializes the websocket connection and events
+  // Initializes the websocket connection
+  // Returns the created socket
   initialize(server) {
     this._socket = new Socket(server, { path: '/api/game/socket' });
-
-    this._socket.on('connection', (socket) => {
-      socket.on('joinGame', (gameId) => {
-        socket.join(gameId);
-      });
-    });
+    return this._socket;
   }
 
   emit(gameId, eventName, data) {

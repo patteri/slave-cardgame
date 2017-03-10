@@ -36,6 +36,10 @@ class Game extends Component {
     this.canHit = this.canHit.bind(this);
   }
 
+  componentWillUnmount() {
+    socket.close();
+  }
+
   getIndexOfSelected(card) {
     return this.state.selectedCards.indexOf(card);
   }
@@ -56,7 +60,7 @@ class Game extends Component {
         isRevolution: response.data.game.isRevolution
       });
 
-      socket.emit('joinGame', response.data.game.id);
+      socket.emit('joinGame', response.data.game.id, response.data.player.id);
       socket.on('turnChanged', this.turnChanged);
       socket.on('gameEnded', this.gameEnded);
     });

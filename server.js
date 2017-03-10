@@ -2,6 +2,7 @@ const app = require('./app');
 const debug = require('debug')('server');
 const http = require('http');
 const socketService = require('./services/socketService');
+const gameService = require('./services/gameService');
 
 // Get port from environment and store in Express.
 const port = normalizePort(process.env.PORT || '3001');
@@ -11,7 +12,8 @@ app.set('port', port);
 const server = http.createServer(app);
 
 // Initialize websockets
-socketService.initialize(server);
+const socket = socketService.initialize(server);
+gameService.initializeSocket(socket);
 
 // Listen on provided port, on all network interfaces.
 server.listen(port);

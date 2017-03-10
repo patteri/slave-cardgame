@@ -9,6 +9,7 @@ class Player {
     this._name = name;
     this._hand = [];
     this._position = 0;
+    this._socket = null;
   }
 
   playTurn(game) { // eslint-disable-line class-methods-use-this, no-unused-vars
@@ -37,6 +38,10 @@ class Player {
 
   set position(position) {
     this._position = position;
+  }
+
+  set socket(socket) {
+    this._socket = socket;
   }
 
   toJSON() {

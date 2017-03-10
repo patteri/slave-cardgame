@@ -46,6 +46,17 @@ class Game {
     return this._previousHit;
   }
 
+  // Registers a socket for the specified client
+  // Returns true if succeeded, otherwise false
+  registerSocket(clientId, socket) {
+    let player = this._players.find(item => item.id === clientId);
+    if (player) {
+      player.socket = socket;
+      return true;
+    }
+    return false;
+  }
+
   isRevolution() {
     return this._playingDirection === PlayingDirection.COUTERCLOCKWISE;
   }

@@ -10,6 +10,20 @@ class GameService {
     this._games = new Map();
   }
 
+  initializeSocket(socket) {
+    socket.on('connection', (socket) => {
+      socket.on('joinGame', (gameId, clientId) => {
+        let game = this.getGame(gameId);
+        if (game && game.registerSocket(clientId, socket)) {
+          socket.join(gameId);
+        }
+        else {
+          socket.close();
+        }
+      });
+    });
+  }
+
   // Creates a new game with one human player
   // Returns the game and the player
   createGame(shuffleDeck = true) {
