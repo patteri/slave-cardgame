@@ -13,6 +13,8 @@
     "jsx-a11y/no-static-element-interactions": 0,
     "linebreak-style": ["off"],
     "max-len": ["error", { "code": 120, "ignoreTrailingComments": true }],
+    "no-mixed-operators": ["error", {"allowSamePrecedence": true}],
+    "no-param-reassign": ["error", { "props": false }],
     "no-use-before-define": [2, "nofunc"],
     "no-shadow": 0,
     "no-underscore-dangle": 0,

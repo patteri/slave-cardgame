@@ -13,9 +13,15 @@ class SocketService {
     return this._socket;
   }
 
-  emit(gameId, eventName, data) {
+  emitToGame(gameId, eventName, data) {
     if (this._socket) {
       this._socket.sockets.in(gameId).emit(eventName, data);
+    }
+  }
+
+  emitToClient(socket, eventName, data) { // eslint-disable-line class-methods-use-this
+    if (socket) {
+      socket.emit(eventName, data);
     }
   }
 }

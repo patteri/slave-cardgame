@@ -1,8 +1,11 @@
+const _ = require('lodash');
 const Deck = require('./deck');
+const Card = require('../../common/card');
 const CpuPlayer = require('./cpuPlayer');
 const tokenGenerator = require('../helpers/tokenGenerator');
 const socketService = require('../services/socketService');
 const CardHelper = require('../../common/cardHelper');
+const { GameState, CardExchangeType } = require('../../common/constants');
 
 const PlayingDirection = { CLOCKWISE: 'Clockwise', COUTERCLOCKWISE: 'Counterclockwise' };
 const PlayingStatus = { HIT: 'Hit', PASS: 'Pass', WAITING: 'Waiting' };
@@ -20,14 +23,7 @@ class Game {
     this._id = tokenGenerator.generateToken();
     this._playerCount = playerCount;
     this._players = [];
-    this._deck = new Deck(shuffleDeck);
-    this._table = [];
-    this._previousHit = {
-      player: null,
-      cards: []
-    };
-    this._turn = null;
-    this._playingDirection = PlayingDirection.CLOCKWISE;
+    this.initializeNewGame(shuffleDeck);
   }
 
   get id() {
@@ -46,6 +42,10 @@ class Game {
     return this._previousHit;
   }
 
+  get state() {
+    return this._state;
+  }
+
   // Registers a socket for the specified client
   // Returns true if succeeded, otherwise false
   registerSocket(clientId, socket) {
@@ -55,6 +55,21 @@ class Game {
       return true;
     }
     return false;
+  }
+
+  initializeNewGame(shuffleDeck = true, state = GameState.NOT_STARTED) {
+    this._deck = new Deck(shuffleDeck);
+    this._players.forEach((player) => {
+      player.hand = [];
+    });
+    this._table = [];
+    this._previousHit = {
+      player: null,
+      cards: []
+    };
+    this._turn = null;
+    this._state = state;
+    this._playingDirection = PlayingDirection.CLOCKWISE;
   }
 
   isRevolution() {
@@ -89,17 +104,23 @@ class Game {
     }
 
     // Validate that the player has the given cards
-    if (!Array.isArray(cards)) {
+    if (!this._turn.hasCardsInHand(cards)) {
       return false;
-    }
-    for (let i = 0; i < cards.length; ++i) {
-      let card = cards[i];
-      if (this._turn.hand.find(item => item.suit === card.suit && item.value === card.value) === undefined) {
-        return false;
-      }
     }
 
     return CardHelper.validateHit(cards, this._previousHit.cards, this._table.length === 0, this.isRevolution());
+  }
+
+  startGame() {
+    this.dealCards();
+    this._state = GameState.PLAYING;
+
+    // If the first player in turn is CPU, start CPU game
+    if (this._turn instanceof CpuPlayer) {
+      setTimeout(() => {
+        this.startCpuGame();
+      }, 1000);
+    }
   }
 
   startCpuGame() {
@@ -120,9 +141,8 @@ class Game {
 
     // Move cards from player's hand to the table
     cards.forEach((card) => {
-      let index = this._turn.hand.findIndex(item => item.suit === card.suit && item.value === card.value);
-      let handCard = this._turn.hand[index];
-      this._turn.hand.splice(index, 1);
+      let handCard = this._turn.hand.find(item => Card.isEqual(item, card));
+      this._turn.removeCardsFromHand([ handCard ]);
       this._table.push(handCard);
       this._previousHit.cards.push(card);
     });
@@ -157,6 +177,7 @@ class Game {
     if (this._players.filter(item => item.hand.length > 0).length === 1) {
       this._turn.position = this.getNextPosition();
       this.notifyForGameEnd();
+      this.gameEnded();
     }
     else {
       this.notifyForHit();
@@ -171,7 +192,7 @@ class Game {
   }
 
   notifyForHit() {
-    socketService.emit(this.id, 'turnChanged', { game: this.toJSON() });
+    socketService.emitToGame(this.id, 'turnChanged', { game: this.toJSON() });
   }
 
   notifyForGameEnd() {
@@ -180,7 +201,42 @@ class Game {
       isCpu: player instanceof CpuPlayer,
       position: player.position
     })).sort((first, second) => first.position - second.position);
-    socketService.emit(this.id, 'gameEnded', { game: this.toJSON(), results: results });
+    socketService.emitToGame(this.id, 'gameEnded', { game: this.toJSON(), results: results });
+  }
+
+  gameEnded() {
+    this.initializeNewGame(true, GameState.CARD_EXCHANGE);
+    this.dealCards();
+    this._players.forEach((player) => {
+      // Set exchange rule for all players
+      let count = 0;
+      if (player.position === 1 || player.position === this._players.length) {
+        count = 2;
+      }
+      else if (player.position === 2 || player.position === this._players.length - 1) {
+        count = 1;
+      }
+      let type = CardExchangeType.NONE;
+      if (count > 0) {
+        type = player.position <= (this._players.length / 2) ? CardExchangeType.FREE : CardExchangeType.BEST;
+      }
+      let toPlayer = this._players.find(item => item.position === this._players.length - player.position + 1);
+      if (toPlayer === player) {
+        toPlayer = null;
+      }
+
+      player.cardExchangeRule = {
+        exchangeCount: count,
+        exchangeType: type,
+        toPlayer: toPlayer
+      };
+
+      // Select cards for exchange
+      if (player instanceof CpuPlayer) {
+        let cards = player.selectCardsForExchange();
+        this.setCardsForExchange(player.id, cards);
+      }
+    });
   }
 
   getPlayingStatus(player) {
@@ -210,9 +266,86 @@ class Game {
     return PlayingStatus.WAITING;
   }
 
+  getCardsForExchange(clientId) {
+    // Validate player
+    let player = this._players.find(item => item.id === clientId);
+    if (player === undefined) {
+      return null;
+    }
+
+    return {
+      cards: player.hand,
+      exchangeRule: {
+        exchangeCount: player.cardExchangeRule.exchangeCount,
+        exchangeType: player.cardExchangeRule.exchangeType,
+        toPlayer: player.cardExchangeRule.toPlayer.toShortJSON()
+      }
+    };
+  }
+
+  setCardsForExchange(clientId, cards) {
+    // Validate player
+    let player = this._players.find(item => item.id === clientId);
+    if (player === undefined) {
+      return false;
+    }
+
+    // Validate that the player has the given cards
+    if (!player.hasCardsInHand(cards)) {
+      return false;
+    }
+
+    // Validate that cards are not already given
+    if (player.cardsForExchange != null) {
+      return false;
+    }
+
+    // Validate cards against exchange rule
+    if (player.cardExchangeRule.exchangeCount !== cards.length) {
+      return false;
+    }
+    switch (player.cardExchangeRule.exchangeType) {
+      case CardExchangeType.FREE:
+        break;
+      case CardExchangeType.BEST: {
+        let bestCards = _.takeRight(player.hand.sort(CardHelper.compareCards), player.cardExchangeRule.exchangeCount);
+        if (_.intersectionWith(bestCards, cards, Card.isEqual).length !== bestCards.length) {
+          return false;
+        }
+        break;
+      }
+      case CardExchangeType.NONE:
+      default:
+        return false;
+    }
+
+    player.cardsForExchange = cards;
+
+    // Check if everybody has selected cards for exchange
+    let inCardExchange = this._players.filter(player => player.cardExchangeRule &&
+      player.cardExchangeRule.exchangeType !== CardExchangeType.NONE);
+    let hasChanged = inCardExchange.filter(player => player.cardsForExchange != null);
+    if (inCardExchange.length === hasChanged.length) {
+      this.exchangeCards(hasChanged);
+    }
+
+    return true;
+  }
+
+  exchangeCards(players) {
+    players.forEach((player) => {
+      player.removeCardsFromHand(player.cardsForExchange);
+      player.cardExchangeRule.toPlayer.hand.push(...player.cardsForExchange);
+      player.cardExchangeRule.toPlayer.notifyForCardExchange(player.cardsForExchange, player);
+    });
+
+    // TODO: start new game and notify
+  }
+
   toJSON() {
     return {
       id: this._id,
+      state: this._state,
       isFirstTurn: this._table.length === 0,
       isRevolution: this.isRevolution(),
       previousHit: this._previousHit.cards,

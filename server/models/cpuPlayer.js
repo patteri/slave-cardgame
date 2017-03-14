@@ -1,5 +1,6 @@
 const Player = require('./player');
 const CardHelper = require('../../common/cardHelper');
+const { CardExchangeType } = require('../../common/constants');
 const _ = require('lodash');
 
 const AIInterval = 1500;
@@ -46,6 +47,29 @@ class CpuPlayer extends Player {
     }
 
     return cardsToPlay;
+  }
+
+  selectCardsForExchange() {
+    let cards = [];
+    switch (this.cardExchangeRule.exchangeType) {
+      case CardExchangeType.FREE:
+        cards = _.take(this.hand.sort(CardHelper.compareCards), this.cardExchangeRule.exchangeCount);
+        break;
+      case CardExchangeType.BEST:
+        cards = _.takeRight(this.hand.sort(CardHelper.compareCards), this.cardExchangeRule.exchangeCount);
+        break;
+      case CardExchangeType.NONE:
+      default:
+        break;
+    }
+    return cards;
+  }
+
+  toShortJSON() {
+    return {
+      name: this._name,
+      isCpu: true
+    };
   }
 
 }

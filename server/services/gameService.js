@@ -34,14 +34,7 @@ class GameService {
     for (let i = 0; i < PlayerCount - 1; ++i) {
       game.addPlayer(new CpuPlayer('CPU ' + (i + 1)));
     }
-    game.dealCards();
-
-    // If the first player in turn is CPU, start CPU game
-    if (game.turn instanceof CpuPlayer) {
-      setTimeout((game) => {
-        game.startCpuGame();
-      }, 1000, game);
-    }
+    game.startGame();
 
     this._games.set(game.id, game);
     return { game: game, player: human };

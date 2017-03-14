@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
 import classNames from 'classnames';
 import PlayerStatus from './PlayerStatus';
+import { CardExchangeType } from '../../../../common/constants';
 import './style.css';
 
 class Player extends Component {
@@ -10,6 +11,7 @@ class Player extends Component {
     super(props);
 
     this.getIndexOfSelected = this.getIndexOfSelected.bind(this);
+    this.getButtonText = this.getButtonText.bind(this);
     this.selectCard = this.selectCard.bind(this);
     this.hitCards = this.hitCards.bind(this);
   }
@@ -18,19 +20,31 @@ class Player extends Component {
     return this.props.selectedCards.indexOf(card);
   }
 
+  getButtonText() {
+    if (this.props.exchangeRule == null) {
+      return this.props.selectedCards.length > 0 ? 'Hit' : 'Pass';
+    }
+    else if (this.props.exchangeRule.exchangeType === CardExchangeType.NONE) {
+      return 'Waiting for other players';
+    }
+    return 'Give cards';
+  }
+
   selectCard(card) {
-    let selectedCards = this.props.selectedCards.slice();
-    let index = this.getIndexOfSelected(card);
-    if (index === -1) {
-      if (selectedCards.length > 0 && selectedCards[0].value !== card.value) {
-        selectedCards = [];
+    if (this.props.exchangeRule == null || this.props.exchangeRule.exchangeType === CardExchangeType.FREE) {
+      let selectedCards = this.props.selectedCards.slice();
+      let index = this.getIndexOfSelected(card);
+      if (index === -1) {
+        if (this.props.exchangeRule == null && selectedCards.length > 0 && selectedCards[0].value !== card.value) {
+          selectedCards = [];
+        }
+        selectedCards.push(card);
       }
-      selectedCards.push(card);
+      else {
+        selectedCards.splice(index, 1);
+      }
+      this.props.onCardsChange(selectedCards);
     }
-    else {
-      selectedCards.splice(index, 1);
-    }
-    this.props.onCardsChange(selectedCards);
   }
 
   hitCards() {
@@ -38,7 +52,7 @@ class Player extends Component {
   }
 
   render() {
-    const { player, selectedCards, cards, canHit } = this.props;
+    const { player, cards, canHit } = this.props;
 
     return (
       <div>
@@ -47,7 +61,7 @@ class Player extends Component {
         </h2>
         <PlayerStatus status={player.status} />
         <Button className="Game-hit-button" onClick={() => this.hitCards()} disabled={!canHit}>
-          {selectedCards.length > 0 ? 'Hit' : 'Pass'}
+          {this.getButtonText()}
         </Button>
         <div>
           {cards.map((item, index) => (

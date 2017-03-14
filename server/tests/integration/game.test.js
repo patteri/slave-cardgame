@@ -21,6 +21,7 @@ describe('/api/game', () => {
         expect(res.body.player.cards.length).to.equal(13);
         expect(res.body).to.have.property('game');
         expect(res.body.game).to.have.property('id');
+        expect(res.body.game).to.have.property('state');
         expect(res.body.game).to.have.property('isFirstTurn');
         expect(res.body.game).to.have.property('isRevolution');
         expect(res.body.game).to.have.property('previousHit');

@@ -25,6 +25,10 @@ class Card {
     return this._value;
   }
 
+  static isEqual(first, second) {
+    return first.suit === second.suit && first.value === second.value;
+  }
+
   static get Suits() {
     return Suits;
   }
