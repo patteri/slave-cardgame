@@ -7,3 +7,4 @@ export const selectedCardsChanged = createAction('SELECTED_CARDS_CHANGED');
 export const cardsHit = createAction('CARDS_HIT');
 export const cardExchangeRequested = createAction('CARD_EXCHANGE_REQUESTED');
 export const cardsExchanged = createAction('CARDS_EXCHANGED');
+export const newRoundStarted = createAction('NEW_ROUND_STARTED');

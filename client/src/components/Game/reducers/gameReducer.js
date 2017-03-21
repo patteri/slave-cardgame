@@ -7,7 +7,8 @@ import {
   selectedCardsChanged,
   cardsHit,
   cardExchangeRequested,
-  cardsExchanged } from '../actions';
+  cardsExchanged,
+  newRoundStarted } from '../actions';
 import { CardExchangeType } from '../../../../../common/constants';
 
 const initialState = {
@@ -101,7 +102,16 @@ const gameReducer = handleActions({
   [cardsExchanged]: (state, action) => Object.assign({}, state, {
     player: playerReducer(state, action),
     helpText: getHelpTextAfterExchange(action.payload.exchangedCards)
-  })
+  }),
+  [newRoundStarted]: (state, action) => {
+    let gameParameters = getGameParameters(action.payload.game);
+    return Object.assign({}, state, {
+      player: playerReducer(state, action),
+      otherPlayers: getOtherPlayers(action.payload.game.players, state.playerIndex),
+      helpText: null,
+      ...gameParameters
+    });
+  }
 }, initialState);
 
 export default gameReducer;

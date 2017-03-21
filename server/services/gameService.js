@@ -34,7 +34,7 @@ class GameService {
     for (let i = 0; i < PlayerCount - 1; ++i) {
       game.addPlayer(new CpuPlayer('CPU ' + (i + 1)));
     }
-    game.startGame();
+    game.startNewGame();
 
     this._games.set(game.id, game);
     return { game: game, player: human };

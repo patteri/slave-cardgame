@@ -72,6 +72,12 @@ class Player {
     // Overwrite this method in subclass for specialized logic
   }
 
+  initializeRoundData() {
+    this._position = 0;
+    this._cardExchangeRule = null;
+    this._cardsForExchange = null;
+  }
+
   // Validates two things:
   // 1. The player has the given cards
   // 2. Each card is given once

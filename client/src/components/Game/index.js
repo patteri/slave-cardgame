@@ -7,7 +7,8 @@ import {
   selectedCardsChanged,
   cardsHit,
   cardExchangeRequested,
-  cardsExchanged } from './actions';
+  cardsExchanged,
+  newRoundStarted } from './actions';
 import api from '../../api/api';
 import { GameState } from '../../../../common/constants';
 import './style.css';
@@ -62,6 +63,9 @@ const mapDispatchToProps = dispatch => ({
   },
   onCardsExchanged(data) {
     dispatch(cardsExchanged(data));
+  },
+  onNewRoundStarted(data) {
+    dispatch(newRoundStarted(data));
   }
 });
 

@@ -34,6 +34,7 @@ class Game extends Component {
       socket.on('turnChanged', this.props.onTurnChange);
       socket.on('gameEnded', this.gameEnded);
       socket.on('cardsExchanged', this.props.onCardsExchanged);
+      socket.on('newRoundStarted', this.props.onNewRoundStarted);
     }
   }
 

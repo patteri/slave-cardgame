@@ -7,6 +7,9 @@ const socketService = require('../services/socketService');
 const CardHelper = require('../../common/cardHelper');
 const { GameState, CardExchangeType } = require('../../common/constants');
 
+const StartCpuGameInterval = 1000;
+const StartNewRoundInterval = 5000;
+
 const PlayingDirection = { CLOCKWISE: 'Clockwise', COUTERCLOCKWISE: 'Counterclockwise' };
 const PlayingStatus = { HIT: 'Hit', PASS: 'Pass', WAITING: 'Waiting' };
 
@@ -84,15 +87,16 @@ class Game {
     this._players.push(player);
   }
 
-  // Deals the cards and sets the starting turn
   dealCards() {
     this._deck.deck.forEach((card, index) => {
       this._players[index % this._players.length].hand.push(card);
     });
+  }
 
+  setStartingTurn() {
     // The player with the two of clubs gets the starting turn
     this._turn = this._players.find(player =>
-       CardHelper.findTwoOfClubs(player.hand) !== undefined
+      CardHelper.findTwoOfClubs(player.hand) !== undefined
     );
   }
 
@@ -111,16 +115,21 @@ class Game {
     return CardHelper.validateHit(cards, this._previousHit.cards, this._table.length === 0, this.isRevolution());
   }
 
-  startGame() {
+  startNewGame() {
     this.dealCards();
-    this._state = GameState.PLAYING;
+    this.startNewRound();
 
     // If the first player in turn is CPU, start CPU game
     if (this._turn instanceof CpuPlayer) {
       setTimeout(() => {
         this.startCpuGame();
-      }, 1000);
+      }, StartCpuGameInterval);
     }
+  }
+
+  startNewRound() {
+    this.setStartingTurn();
+    this._state = GameState.PLAYING;
   }
 
   startCpuGame() {
@@ -295,8 +304,8 @@ class Game {
       return false;
     }
 
-    // Validate that cards are not already given
-    if (player.cardsForExchange != null) {
+    // Validate that has rule and cards are not already given
+    if (player.cardExchangeRule == null || player.cardsForExchange != null) {
       return false;
     }
 
@@ -337,9 +346,18 @@ class Game {
       player.removeCardsFromHand(player.cardsForExchange);
       player.cardExchangeRule.toPlayer.hand.push(...player.cardsForExchange);
       player.cardExchangeRule.toPlayer.notifyForCardExchange(player.cardsForExchange, player);
+      player.initializeRoundData();
     });
 
-    // TODO: start new game and notify
+    this.startNewRound();
+    setTimeout(() => {
+      socketService.emitToGame(this.id, 'newRoundStarted', { game: this.toJSON() });
+      if (this._turn instanceof CpuPlayer) {
+        setTimeout(() => {
+          this.startCpuGame();
+        }, StartCpuGameInterval);
+      }
+    }, StartNewRoundInterval);
   }
 
   toJSON() {

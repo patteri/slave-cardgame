@@ -6,7 +6,7 @@ const HumanPlayer = require('../../models/humanPlayer');
 const CpuPlayer = require('../../models/cpuPlayer');
 const gameService = require('../../services/gameService');
 const CardHelper = require('../../../common/cardHelper');
-const { CardExchangeType } = require('../../../common/constants');
+const { CardExchangeType, GameState } = require('../../../common/constants');
 
 const expect = chai.expect;
 
@@ -88,6 +88,11 @@ describe('Game', () => {
     player.hand.push(card4);
     game.playTurn([ game._players[1].hand[0], card2, card3, card4 ]);
     expect(game.isRevolution()).to.equal(true);
+  });
+
+  it('Game changes to card exchange state when the game ends', () => {
+    let game = createEndedGame();
+    expect(game.state).to.equal(GameState.CARD_EXCHANGE);
   });
 
   it('Card exchange rule works correctly', () => {
@@ -184,5 +189,15 @@ describe('Game', () => {
     let success = game.setCardsForExchange(game._players[0].id,
       _.takeRight(game._players[0].hand.sort(CardHelper.compareCards), 2));
     expect(success).to.equal(true);
+  });
+
+  it('A new game is started after cards are exchanged', () => {
+    let game = createEndedGame();
+
+    game.setCardsForExchange(game._players[0].id, [ game._players[0].hand[0], game._players[0].hand[1] ]);
+    expect(game.state).to.equal(GameState.PLAYING);
+    expect(game._table.length).to.equal(0);
+    expect(game._players[0]._cardExchangeRule).to.be.null; // eslint-disable-line no-unused-expressions
+    expect(game._players[0]._cardsForExchange).to.be.null; // eslint-disable-line no-unused-expressions
   });
 });
