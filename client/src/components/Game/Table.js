@@ -1,13 +1,17 @@
-import React from 'react';
-import { Button } from 'react-bootstrap';
+import React, { PropTypes } from 'react';
+import Card from './Card';
 import './style.css';
 
-const Table = props => (
-  <div className="Game-table">
-    {props.table.map((item, index) => (
-      <Button className="Game-card" key={index}>{item.suit} {item.value}</Button>
+const Table = ({ table }) => (
+  <div className="Game-table-cards">
+    {table.map((item, index) => (
+      <Card key={index} card={item} />
     ))}
   </div>
 );
+
+Table.PropTypes = {
+  table: PropTypes.array.isRequired
+};
 
 export default Table;

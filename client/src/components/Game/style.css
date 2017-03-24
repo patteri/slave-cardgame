@@ -5,31 +5,78 @@
   height: 100%;
 }
 
+.Game-player-name {
+  font-size: 1.8em;
+}
+
+.Game-player-name-cpu {
+  font-size: 0.6em;
+}
+
 .Game-player-name.turn {
   color: #aaaaaa;
   text-decoration: underline;
 }
 
-.Game-card {
-  height: 120px;
-  width: 80px;
-  white-space: normal;
-  margin-left: 5px;
+.Game-player-cards {
   margin-top: 30px;
-  border: solid black 1px;
-  display: inline-block;
+}
+
+.Game-player-card-count {
+  font-size: 1.4em;
+}
+
+.Game-card {
+  vertical-align: top;
+  height: 129px;
+  width: 90px;
+}
+
+@media(max-width:767px) {
+  .Game-card:not(:first-child) {
+    margin-left: -55px;
+  }
+}
+
+@media(min-width:768px) {
+  .Game-card:not(:first-child) {
+    margin-left: -40px;
+  }
+}
+
+@media(min-width:992px) {
+  .Game-card:not(:first-child) {
+    margin-left: -30px;
+  }
+}
+
+@media(min-width:1200px) {
+  .Game-card:not(:first-child) {
+    margin-left: -30px;
+  }
 }
 
 .Game-card.selected {
-  margin-top: 0px;
+  margin-top: -30px;
 }
 
 .Game-table {
-  height: 150px;
+  margin: 15px 0;
+  height: 130px;
 }
 
-.Game-revolution {
-  color: orange;
+.Game-direction {
+  display: inline;
+  margin-right: 50px;
+  margin-left: -150px;
+}
+
+.Game-direction img {
+  padding-top: 20px;
+}
+
+.Game-table-cards {
+  display: inline;
 }
 
 .Game-hit-button {
@@ -43,10 +90,12 @@
 
 .Game-status.Hit {
   color: #cccccc;
+  font-weight: bold;
 }
 
 .Game-status.Pass {
   color: orange;
+  font-weight: bold;
 }
 
 .Game-status.Waiting {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
 const ResultsModal = ({ show, onHide, results }) => (
@@ -8,7 +8,7 @@ const ResultsModal = ({ show, onHide, results }) => (
     </Modal.Header>
     <Modal.Body>
       {results.map((item, index) =>
-        <p key={index}>{item.position}. {item.name}</p>
+        <p key={index}>{item.position}. {item.name} {item.isCpu && '(CPU)'}</p>
       )}
     </Modal.Body>
     <Modal.Footer>
@@ -16,5 +16,11 @@ const ResultsModal = ({ show, onHide, results }) => (
     </Modal.Footer>
   </Modal>
 );
+
+ResultsModal.PropTypes = {
+  show: PropTypes.bool.isRequired,
+  onHide: PropTypes.func.isRequired,
+  results: PropTypes.array
+};
 
 export default ResultsModal;

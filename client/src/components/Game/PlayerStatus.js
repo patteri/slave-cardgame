@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import './style.css';
 
-const PlayerStatus = props => (
-  <p className={'Game-status ' + props.status}>{props.status}</p>
+const PlayerStatus = ({ status }) => (
+  <p className={'Game-status ' + status}>{status}</p>
 );
+
+PlayerStatus.PropTypes = {
+  status: PropTypes.string.isRequired
+};
 
 export default PlayerStatus;

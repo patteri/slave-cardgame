@@ -32,7 +32,7 @@ class GameService {
     let human = new HumanPlayer('You');
     game.addPlayer(human);
     for (let i = 0; i < PlayerCount - 1; ++i) {
-      game.addPlayer(new CpuPlayer('CPU ' + (i + 1)));
+      game.addPlayer(new CpuPlayer('Computer ' + (i + 1)));
     }
     game.startNewGame();
 

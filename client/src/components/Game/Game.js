@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Grid } from 'react-bootstrap';
 import io from 'socket.io-client';
 import OtherPlayers from './OtherPlayers';
@@ -70,8 +70,13 @@ class Game extends Component {
       <Grid className="Game" fluid>
         <ResultsModal results={results} show={this.state.showModal} onHide={this.hideModal} />
         <OtherPlayers players={otherPlayers} />
-        <Table table={table} />
-        {isRevolution && <p className="Game-revolution">REVOLUTION</p>}
+        <div className="Game-table">
+          <div className="Game-direction">
+            {!isRevolution && <img src="/images/clockwise.png" alt="Clockwise" />}
+            {isRevolution && <img src="/images/counterclockwise.png" alt="Revolution" />}
+          </div>
+          <Table table={table} />
+        </div>
         {helpText && <p>{helpText}</p>}
         {player.player &&
           <Player {...player} onHit={this.props.onCardsHit} onCardsChange={this.props.onCardSelectionChange} />
@@ -80,5 +85,14 @@ class Game extends Component {
     );
   }
 }
+
+Game.propTypes = {
+  otherPlayers: PropTypes.array,
+  table: PropTypes.array,
+  isRevolution: PropTypes.bool,
+  player: PropTypes.object,
+  results: PropTypes.array,
+  helpText: PropTypes.string
+};
 
 export default Game;

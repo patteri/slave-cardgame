@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Button } from 'react-bootstrap';
 import classNames from 'classnames';
 import PlayerStatus from './PlayerStatus';
+import Card from './Card';
 import { CardExchangeType } from '../../../../common/constants';
 import './style.css';
 
@@ -45,26 +46,31 @@ class Player extends Component {
 
     return (
       <div>
-        <h2 className={classNames('Game-player-name', { turn: player.turn })}>
+        <span className={classNames('Game-player-name', { turn: player.turn })}>
           {player.name}
-        </h2>
+        </span>
         <PlayerStatus status={player.status} />
         <Button className="Game-hit-button" onClick={() => this.hitCards()} disabled={!canHit}>
           {buttonText}
         </Button>
-        <div>
+        <div className="Game-player-cards">
           {cards.map((item, index) => (
-            <Button
-              className={classNames('Game-card', { selected: this.getIndexOfSelected(item) !== -1 })}
-              key={index} onClick={() => this.selectCard(item)}
-            >
-              {item.suit} {item.value}
-            </Button>
+            <Card
+              key={index} card={item} selected={this.getIndexOfSelected(item) !== -1}
+              onClick={() => this.selectCard(item)}
+            />
           ))}
         </div>
       </div>
     );
   }
 }
+
+Player.PropTypes = {
+  player: PropTypes.object.isRequired,
+  cards: PropTypes.array.isRequired,
+  buttonText: PropTypes.string.isRequired,
+  canHit: PropTypes.bool.isRequired
+};
 
 export default Player;
