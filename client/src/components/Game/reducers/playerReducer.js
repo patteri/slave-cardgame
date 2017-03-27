@@ -117,5 +117,4 @@ const playerReducer = handleActions({
   })
 }, initialState);
 
-exports.initialState = initialState;
 export default playerReducer;

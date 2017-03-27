@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions';
-import playerReducer, { initialState as playerInitialState } from './playerReducer';
+import playerReducer from './playerReducer';
 import {
   gameRequested,
   turnChanged,
@@ -15,7 +15,7 @@ const initialState = {
   gameId: null,
   playerId: null,
   playerIndex: null,
-  player: playerInitialState,
+  player: playerReducer(undefined, { type: '' }),
   gameState: null,
   otherPlayers: [],
   table: [],
