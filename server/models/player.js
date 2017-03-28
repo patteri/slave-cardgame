@@ -60,15 +60,15 @@ class Player {
     this._socket = socket;
   }
 
-  playTurn(game) { // eslint-disable-line class-methods-use-this, no-unused-vars
+  playTurn(game) { // eslint-disable-line no-unused-vars
     // Overwrite this method in subclass for specialized logic
   }
 
-  selectCardsForExchange() { // eslint-disable-line class-methods-use-this, no-unused-vars
+  selectCardsForExchange() { // eslint-disable-line no-unused-vars
     // Overwrite this method in subclass for specialized logic
   }
 
-  notifyForCardExchange(cards, fromPlayer) { // eslint-disable-line class-methods-use-this, no-unused-vars
+  notifyForCardExchange(cards, fromPlayer) { // eslint-disable-line no-unused-vars
     // Overwrite this method in subclass for specialized logic
   }
 

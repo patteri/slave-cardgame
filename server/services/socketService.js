@@ -19,7 +19,7 @@ class SocketService {
     }
   }
 
-  emitToClient(socket, eventName, data) { // eslint-disable-line class-methods-use-this
+  emitToClient(socket, eventName, data) {
     if (socket) {
       socket.emit(eventName, data);
     }

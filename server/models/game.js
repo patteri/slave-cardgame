@@ -26,11 +26,19 @@ class Game {
     this._id = tokenGenerator.generateToken();
     this._playerCount = playerCount;
     this._players = [];
+    this._configuration = {
+      startCpuGameInterval: StartCpuGameInterval,
+      startNewRoundInterval: StartNewRoundInterval
+    };
     this.initializeNewGame(shuffleDeck);
   }
 
   get id() {
     return this._id;
+  }
+
+  get table() {
+    return this._table;
   }
 
   get turn() {
@@ -79,6 +87,10 @@ class Game {
     return this._playingDirection === PlayingDirection.COUTERCLOCKWISE;
   }
 
+  getPlayersInGame() {
+    return this._players.filter(item => item.hand.length > 0);
+  }
+
   addPlayer(player) {
     if (this._players.length === this._playerCount) {
       throw new Error('The player number was exceeded');
@@ -123,7 +135,7 @@ class Game {
     if (this._turn instanceof CpuPlayer) {
       setTimeout(() => {
         this.startCpuGame();
-      }, StartCpuGameInterval);
+      }, this._configuration.startCpuGameInterval);
     }
   }
 
@@ -183,7 +195,7 @@ class Game {
     while (this._turn.hand.length === 0);
 
     // Check if the game ended
-    if (this._players.filter(item => item.hand.length > 0).length === 1) {
+    if (this.getPlayersInGame().length === 1) {
       this._turn.position = this.getNextPosition();
       this.notifyForGameEnd();
       this.gameEnded();
@@ -216,8 +228,9 @@ class Game {
   gameEnded() {
     this.initializeNewGame(true, GameState.CARD_EXCHANGE);
     this.dealCards();
+
+    // Set exchange rule for all players
     this._players.forEach((player) => {
-      // Set exchange rule for all players
       let count = 0;
       if (player.position === 1 || player.position === this._players.length) {
         count = 2;
@@ -239,8 +252,10 @@ class Game {
         exchangeType: type,
         toPlayer: toPlayer
       };
+    });
 
-      // Select cards for exchange
+    // CPU players select cards for exchange
+    this._players.forEach((player) => {
       if (player instanceof CpuPlayer) {
         let cards = player.selectCardsForExchange();
         this.setCardsForExchange(player.id, cards);
@@ -355,9 +370,9 @@ class Game {
       if (this._turn instanceof CpuPlayer) {
         setTimeout(() => {
           this.startCpuGame();
-        }, StartCpuGameInterval);
+        }, this._configuration.startCpuGameInterval);
       }
-    }, StartNewRoundInterval);
+    }, this._configuration.startNewRoundInterval);
   }
 
   toJSON() {

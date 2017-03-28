@@ -65,6 +65,13 @@ class CardHelper {
     return first.value - second.value;
   }
 
+  static getRealValue(card, isRevolution) {
+    if (!isRevolution && card.value === 1) {
+      return 14;
+    }
+    return card.value;
+  }
+
 }
 
 module.exports = CardHelper;
