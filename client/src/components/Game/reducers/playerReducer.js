@@ -109,6 +109,7 @@ const playerReducer = handleActions({
     });
   },
   [newRoundStarted]: (state, action) => Object.assign({}, state.player, {
+    player: action.payload.game.players[state.playerIndex],
     selectedCards: [],
     buttonText: getButtonText(action.payload.game.state, [], state.player.exchangeRule),
     canHit: canHit(action.payload.game.state, action.payload.game.players[state.playerIndex].turn, [],

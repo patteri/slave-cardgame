@@ -185,7 +185,11 @@ describe('Player reducer', () => {
 
     const exchangeData = getCardExchangeData(CardExchangeType.BEST);
     reducer = gameReducer(reducer, cardExchangeRequested(exchangeData));
-    reducer = gameReducer(reducer, newRoundStarted(getGameData()));
+    const newGameData = getGameData();
+    newGameData.game.players[0].turn = false;
+    newGameData.game.players[1].turn = true;
+    reducer = gameReducer(reducer, newRoundStarted(newGameData));
+    expect(reducer.player.player.turn).to.equal(false);
     expect(reducer.player.selectedCards.length).to.equal(0);
     expect(reducer.player.buttonText).to.equal('Pass');
     expect(reducer.player.canHit).to.equal(false);
