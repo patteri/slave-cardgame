@@ -1,34 +1,26 @@
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
-import Home from './Home';
-import {
-  playerCountChanged,
-  cpuPlayerCountChanged,
-  playerNameChanged
-} from './actions';
+import Join from './Join';
+import { gameIdChanged } from './actions';
+import { playerNameChanged } from '../Home/actions';
 import { gameStarted } from '../Game/actions';
 import api from '../../api/api';
 import './style.css';
 
-const mapStateToProps = state => state.get('home');
+const mapStateToProps = state => state.get('join');
 
 const mapDispatchToProps = dispatch => ({
-  onPlayerCountChanged(count) {
-    dispatch(playerCountChanged(count));
-  },
-  onCpuPlayerCountChanged(count) {
-    dispatch(cpuPlayerCountChanged(count));
+  onGameIdChanged(id) {
+    dispatch(gameIdChanged(id));
   },
   onPlayerNameChanged(name) {
     dispatch(playerNameChanged(name));
   },
-  onCreateGame() {
+  onJoinGame() {
     dispatch((dispatch, getState) => {
-      let state = getState().get('home');
-      api.createGame({
-        playerName: state.playerName,
-        playerCount: state.playerCount,
-        cpuPlayerCount: state.cpuPlayerCount
+      let state = getState().get('join');
+      api.joinGame(state.gameId, {
+        playerName: state.playerName
       }).then((response) => {
         dispatch(gameStarted(response.data));
         browserHistory.push('game');
@@ -40,4 +32,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Home);
+)(Join);

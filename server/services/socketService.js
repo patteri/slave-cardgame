@@ -1,4 +1,5 @@
 const Socket = require('socket.io');
+const { GameSocketUrl } = require('../../common/constants');
 
 class SocketService {
 
@@ -9,7 +10,7 @@ class SocketService {
   // Initializes the websocket connection
   // Returns the created socket
   initialize(server) {
-    this._socket = new Socket(server, { path: '/api/game/socket' });
+    this._socket = new Socket(server, { path: GameSocketUrl });
     return this._socket;
   }
 

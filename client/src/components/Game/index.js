@@ -1,12 +1,13 @@
 import { connect } from 'react-redux';
 import Game from './Game';
 import {
-  gameRequested,
+  gameStarted,
   turnChanged,
   gameEnded,
   selectedCardsChanged,
   cardsHit,
   cardExchangeRequested,
+  cardsGiven,
   cardsExchanged,
   newRoundStarted } from './actions';
 import api from '../../api/api';
@@ -16,12 +17,8 @@ import './style.css';
 const mapStateToProps = state => state.get('game');
 
 const mapDispatchToProps = dispatch => ({
-  requestGame() {
-    dispatch((dispatch) => {
-      api.startGame().then((response) => {
-        dispatch(gameRequested(response.data));
-      });
-    });
+  onGameStarted(data) {
+    dispatch(gameStarted(data));
   },
   onTurnChange(data) {
     dispatch(turnChanged(data));
@@ -49,6 +46,8 @@ const mapDispatchToProps = dispatch => ({
         api.cardsForExchange(state.gameId, {
           clientId: state.playerId,
           cards: cards
+        }).then(() => {
+          dispatch(cardsGiven());
         });
       }
     });

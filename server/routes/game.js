@@ -16,14 +16,32 @@ const getAndValidateGame = (req, res, gameState = null) => {
   return game;
 };
 
+const handleGameQueryResult = (res, result) => {
+  if (result == null) {
+    res.status(400).json({ error: 'The request is invalid' });
+  }
+  else {
+    res.json({
+      player: result.player,
+      playerIndex: result.game._players.indexOf(result.player),
+      game: result.game
+    });
+  }
+};
+
 // Initializes a new game
 router.post('/', (req, res) => {
-  const game = gameService.createGame();
-  res.json({
-    player: game.player,
-    playerIndex: game.game._players.indexOf(game.player),
-    game: game.game
-  });
+  const result = gameService.createGame(req.body.playerName, req.body.playerCount, req.body.cpuPlayerCount);
+  handleGameQueryResult(res, result);
+});
+
+// Joins to an existing game
+router.post('/:id/join', (req, res) => {
+  const game = getAndValidateGame(req, res, GameState.NOT_STARTED);
+  if (game != null) {
+    const result = gameService.joinGame(game, req.body.playerName);
+    handleGameQueryResult(res, result);
+  }
 });
 
 // Player makes a hit for the specified game

@@ -37,6 +37,10 @@ class Game {
     return this._id;
   }
 
+  get players() {
+    return this._players;
+  }
+
   get table() {
     return this._table;
   }
@@ -66,6 +70,10 @@ class Game {
       return true;
     }
     return false;
+  }
+
+  isFull() {
+    return this._players.length === this._playerCount;
   }
 
   initializeNewGame(shuffleDeck = true, state = GameState.NOT_STARTED) {
@@ -360,6 +368,9 @@ class Game {
     players.forEach((player) => {
       player.removeCardsFromHand(player.cardsForExchange);
       player.cardExchangeRule.toPlayer.hand.push(...player.cardsForExchange);
+    });
+
+    players.forEach((player) => {
       player.cardExchangeRule.toPlayer.notifyForCardExchange(player.cardsForExchange, player);
       player.initializeRoundData();
     });

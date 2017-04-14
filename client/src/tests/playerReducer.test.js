@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import gameReducer from '../components/Game/reducers/gameReducer';
 import {
-  gameRequested,
+  gameStarted,
   gameEnded,
   selectedCardsChanged,
   cardsHit,
@@ -56,14 +56,14 @@ const getCardExchangeData = (exchangeType) => {
 const getReducerAfterGameRequested = () => {
   const initialState = gameReducer(undefined, { type: '' });
   const data = getGameData();
-  return gameReducer(initialState, gameRequested(data));
+  return gameReducer(initialState, gameStarted(data));
 };
 
 describe('Player reducer', () => {
-  it('gameRequested', () => {
+  it('gameStarted', () => {
     const initialState = gameReducer(undefined, { type: '' });
     const data = getGameData();
-    const reducer = gameReducer(initialState, gameRequested(data));
+    const reducer = gameReducer(initialState, gameStarted(data));
     expect(reducer.player.player).to.equal(data.game.players[data.playerIndex]);
     expect(reducer.player.cards.length).to.equal(1);
     expect(reducer.player.buttonText).to.equal('Pass');

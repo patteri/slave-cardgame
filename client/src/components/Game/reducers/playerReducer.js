@@ -1,12 +1,13 @@
 import _ from 'lodash';
 import { handleActions } from 'redux-actions';
 import {
-  gameRequested,
+  gameStarted,
   turnChanged,
   gameEnded,
   selectedCardsChanged,
   cardsHit,
   cardExchangeRequested,
+  cardsGiven,
   cardsExchanged,
   newRoundStarted } from '../actions';
 import CardHelper from '../../../../../common/cardHelper';
@@ -29,6 +30,7 @@ const getButtonText = (gameState, selectedCards, exchangeRule) => {
     case GameState.CARD_EXCHANGE:
       return exchangeRule.exchangeType === CardExchangeType.NONE ? 'Waiting...' : 'Give cards';
     case GameState.NOT_STARTED:
+      return 'Waiting...';
     case GameState.ENDED:
     default:
       return null;
@@ -58,11 +60,14 @@ const getSelectedCardsAfterExchange = (cards, cardsToSelect) =>
   _.intersectionWith(cards, cardsToSelect, Card.isEqual);
 
 const playerReducer = handleActions({
-  [gameRequested]: (state, action) => Object.assign({}, state.player, {
-    player: action.payload.game.players[action.payload.playerIndex],
-    cards: action.payload.player.cards.sort(CardHelper.compareCards),
-    buttonText: getButtonText(action.payload.game.state, state.player.selectedCards, state.player.exchangeRule)
-  }),
+  [gameStarted]: (state, action) => {
+    let playerIndex = action.payload.playerIndex !== undefined ? action.payload.playerIndex : state.playerIndex;
+    return Object.assign({}, state.player, {
+      player: action.payload.game.players[playerIndex],
+      cards: action.payload.player.cards.sort(CardHelper.compareCards),
+      buttonText: getButtonText(action.payload.game.state, state.player.selectedCards, state.player.exchangeRule)
+    });
+  },
   [turnChanged]: (state, action) => Object.assign({}, state.player, {
     player: action.payload.game.players[state.playerIndex],
     buttonText: getButtonText(action.payload.game.state, state.player.selectedCards, state.player.exchangeRule),
@@ -98,6 +103,10 @@ const playerReducer = handleActions({
       exchangeRule: action.payload.exchangeRule
     });
   },
+  [cardsGiven]: state => Object.assign({}, state.player, {
+    buttonText: 'Waiting...',
+    canHit: false
+  }),
   [cardsExchanged]: (state, action) => {
     let cards = action.payload.cards.sort(CardHelper.compareCards);
     let selectedCards = getSelectedCardsAfterExchange(cards, action.payload.exchangedCards.cards);

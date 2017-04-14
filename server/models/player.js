@@ -56,6 +56,10 @@ class Player {
     this._cardsForExchange = cards;
   }
 
+  get socket() {
+    return this._socket;
+  }
+
   set socket(socket) {
     this._socket = socket;
   }

@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import gameReducer from '../components/Game/reducers/gameReducer';
 import {
-  gameRequested,
+  gameStarted,
   turnChanged,
   gameEnded,
   newRoundStarted } from '../components/Game/actions';
@@ -27,11 +27,11 @@ const getGameData = () => ({
 });
 
 describe('Game reducer', () => {
-  it('gameRequested', () => {
+  it('gameStarted', () => {
     const initialState = gameReducer(undefined, { type: '' });
     const data = getGameData();
 
-    const reducer = gameReducer(initialState, gameRequested(data));
+    const reducer = gameReducer(initialState, gameStarted(data));
     expect(reducer.gameId).to.equal(1);
     expect(reducer.playerId).to.equal(1);
     expect(reducer.playerIndex).to.equal(0);
@@ -47,7 +47,7 @@ describe('Game reducer', () => {
     let turnData = Object.assign({}, data);
     turnData.game.isRevolution = true;
 
-    let reducer = gameReducer(initialState, gameRequested(data));
+    let reducer = gameReducer(initialState, gameStarted(data));
     reducer = gameReducer(reducer, turnChanged(turnData));
     expect(reducer.isRevolution).to.equal(true);
   });
@@ -69,7 +69,7 @@ describe('Game reducer', () => {
     const initialState = gameReducer(undefined, { type: '' });
     const data = getGameData();
 
-    let reducer = gameReducer(initialState, gameRequested(data));
+    let reducer = gameReducer(initialState, gameStarted(data));
     reducer.helpText = 'Help text';
     reducer = gameReducer(reducer, newRoundStarted(data));
     expect(reducer.helpText).to.be.null; // eslint-disable-line no-unused-expressions

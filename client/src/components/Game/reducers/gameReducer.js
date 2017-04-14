@@ -1,12 +1,13 @@
 import { handleActions } from 'redux-actions';
 import playerReducer from './playerReducer';
 import {
-  gameRequested,
+  gameStarted,
   turnChanged,
   gameEnded,
   selectedCardsChanged,
   cardsHit,
   cardExchangeRequested,
+  cardsGiven,
   cardsExchanged,
   newRoundStarted } from '../actions';
 import { CardExchangeType } from '../../../../../common/constants';
@@ -61,14 +62,15 @@ const getHelpTextAfterExchange = (exchangedCards) => {
 };
 
 const gameReducer = handleActions({
-  [gameRequested]: (state, action) => {
+  [gameStarted]: (state, action) => {
     let gameParameters = getGameParameters(action.payload.game);
+    let playerIndex = action.payload.playerIndex !== undefined ? action.payload.playerIndex : state.playerIndex;
     return Object.assign({}, state, {
       gameId: action.payload.game.id,
       playerId: action.payload.player.id,
-      playerIndex: action.payload.playerIndex,
+      playerIndex: playerIndex,
       player: playerReducer(state, action),
-      otherPlayers: getOtherPlayers(action.payload.game.players, action.payload.playerIndex),
+      otherPlayers: getOtherPlayers(action.payload.game.players, playerIndex),
       ...gameParameters
     });
   },
@@ -99,6 +101,9 @@ const gameReducer = handleActions({
       ...gameParameters
     });
   },
+  [cardsGiven]: (state, action) => Object.assign({}, state, {
+    player: playerReducer(state, action)
+  }),
   [cardsExchanged]: (state, action) => Object.assign({}, state, {
     player: playerReducer(state, action),
     helpText: getHelpTextAfterExchange(action.payload.exchangedCards)

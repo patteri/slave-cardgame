@@ -1,8 +1,8 @@
 const Game = require('../models/game');
 const HumanPlayer = require('../models/humanPlayer');
 const CpuPlayer = require('../models/cpuPlayer');
-
-const PlayerCount = 4;
+const socketService = require('../services/socketService');
+const { GameValidation } = require('../../common/constants');
 
 class GameService {
 
@@ -21,23 +21,18 @@ class GameService {
           socket.close();
         }
       });
+      socket.on('disconnect', (socket) => { // eslint-disable-line no-unused-vars
+        // TODO: handle disconnection
+      });
     });
   }
 
-  // Creates a new game with one human player
-  // Returns the game and the player
-  createGame(shuffleDeck = true) {
-    // Create game, players and deal cards
-    let game = new Game(PlayerCount, shuffleDeck);
-    let human = new HumanPlayer('You');
-    game.addPlayer(human);
-    for (let i = 0; i < PlayerCount - 1; ++i) {
-      game.addPlayer(new CpuPlayer('Computer ' + (i + 1)));
+  validatePlayer(playerName) {
+    if (!(typeof (playerName) === 'string') || playerName.length < GameValidation.minPlayerNameLength ||
+      playerName.length > GameValidation.maxPlayerNameLength) {
+      return false;
     }
-    game.startNewGame();
-
-    this._games.set(game.id, game);
-    return { game: game, player: human };
+    return true;
   }
 
   // Gets a game with the specified id
@@ -48,6 +43,61 @@ class GameService {
     }
     return this._games.get(id);
   }
+
+  // Creates a new game with one human player and specified CPU player count
+  // Returns the game and the player
+  // If player count is fulfilled, starts the game immediately
+  createGame(playerName, playerCount, cpuPlayerCount, shuffleDeck = true) {
+    if (!this.validatePlayer(playerName)) {
+      return null;
+    }
+    if (playerCount < GameValidation.minPlayerCount || playerCount > GameValidation.maxPlayerCount ||
+      cpuPlayerCount < 0 || cpuPlayerCount > playerCount - 1) {
+      return null;
+    }
+
+    // Create game, players and deal cards
+    let game = new Game(playerCount, shuffleDeck);
+    let human = new HumanPlayer(playerName);
+    game.addPlayer(human);
+
+    for (let i = 0; i < cpuPlayerCount; ++i) {
+      game.addPlayer(new CpuPlayer('Computer ' + (i + 1)));
+    }
+
+    if (game.isFull()) {
+      game.startNewGame();
+    }
+
+    this._games.set(game.id, game);
+    return { game: game, player: human };
+  }
+
+  // Joins a player into the game
+  // Returns the game and the player
+  // If player count is fulfilled, starts the game immediately
+  joinGame(game, playerName) {
+    if (!this.validatePlayer(playerName)) {
+      return null;
+    }
+    if (game.isFull()) {
+      return null;
+    }
+
+    let human = new HumanPlayer(playerName);
+    game.addPlayer(human);
+    if (game.isFull()) {
+      game.startNewGame();
+
+      // Notify other players
+      game.players.filter(player => player !== human).forEach((player) => {
+        socketService.emitToClient(player.socket, 'gameStarted', { game: game, player: player });
+      });
+    }
+
+    return { game: game, player: human };
+  }
+
 }
 
 const gameService = new GameService();
