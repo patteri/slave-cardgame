@@ -6,11 +6,11 @@ import {
   selectedCardsChanged,
   cardsHit,
   cardExchangeRequested,
+  cardsGiven,
   cardsExchanged,
   newRoundStarted } from '../components/Game/actions';
 import Card from '../../../common/card';
 import { GameState, CardExchangeType } from '../../../common/constants';
-
 
 const getGameData = () => ({
   game: {
@@ -155,6 +155,14 @@ describe('Player reducer', () => {
     expect(reducer.player.canHit).to.equal(false);
   });
 
+  it('cardsGiven', () => {
+    let reducer = getReducerAfterGameRequested();
+
+    reducer = gameReducer(reducer, cardsGiven());
+    expect(reducer.player.canHit).to.equal(false);
+    expect(reducer.player.cardsGiven).to.equal(true);
+  });
+
   it('cardsExchanged', () => {
     let reducer = getReducerAfterGameRequested();
 
@@ -178,6 +186,7 @@ describe('Player reducer', () => {
     expect(reducer.player.selectedCards.findIndex(item => item.suit === Card.Suits.CLUBS && item.value === 1))
       .to.not.equal(-1);
     expect(reducer.player.canHit).to.equal(false);
+    expect(reducer.player.cardsGiven).to.equal(true);
   });
 
   it('newRoundStarted', () => {
@@ -194,5 +203,6 @@ describe('Player reducer', () => {
     expect(reducer.player.buttonText).to.equal('Pass');
     expect(reducer.player.canHit).to.equal(false);
     expect(reducer.player.exchangeRule).to.be.null; // eslint-disable-line no-unused-expressions
+    expect(reducer.player.cardsGiven).to.equal(false);
   });
 });

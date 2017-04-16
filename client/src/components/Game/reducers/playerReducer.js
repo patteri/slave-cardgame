@@ -20,7 +20,8 @@ const initialState = {
   selectedCards: [],
   buttonText: null,
   canHit: false,
-  exchangeRule: null
+  exchangeRule: null,
+  cardsGiven: false
 };
 
 const getButtonText = (gameState, selectedCards, exchangeRule) => {
@@ -78,13 +79,19 @@ const playerReducer = handleActions({
   [gameEnded]: state => Object.assign({}, state.player, {
     canHit: false
   }),
-  [selectedCardsChanged]: (state, action) => Object.assign({}, state.player, {
-    selectedCards: action.payload,
-    buttonText: getButtonText(state.gameState, action.payload, state.player.exchangeRule),
-    canHit: canHit(state.gameState, state.player.player.turn, action.payload, state.table, state.isFirstTurn,
-      state.isRevolution, state.player.exchangeRule)
-
-  }),
+  [selectedCardsChanged]: (state, action) => {
+    if (!state.player.cardsGiven && (state.gameState === GameState.PLAYING ||
+      (state.gameState === GameState.CARD_EXCHANGE &&
+      state.player.exchangeRule.exchangeType === CardExchangeType.FREE))) {
+      return Object.assign({}, state.player, {
+        selectedCards: action.payload,
+        buttonText: getButtonText(state.gameState, action.payload, state.player.exchangeRule),
+        canHit: canHit(state.gameState, state.player.player.turn, action.payload, state.table, state.isFirstTurn,
+          state.isRevolution, state.player.exchangeRule)
+      });
+    }
+    return state.player;
+  },
   [cardsHit]: (state, action) => Object.assign({}, state.player, {
     cards: action.payload.cards.sort(CardHelper.compareCards),
     selectedCards: [],
@@ -105,7 +112,8 @@ const playerReducer = handleActions({
   },
   [cardsGiven]: state => Object.assign({}, state.player, {
     buttonText: 'Waiting...',
-    canHit: false
+    canHit: false,
+    cardsGiven: true
   }),
   [cardsExchanged]: (state, action) => {
     let cards = action.payload.cards.sort(CardHelper.compareCards);
@@ -114,7 +122,8 @@ const playerReducer = handleActions({
       cards: cards,
       selectedCards: selectedCards,
       buttonText: 'Waiting...',
-      canHit: false
+      canHit: false,
+      cardsGiven: true
     });
   },
   [newRoundStarted]: (state, action) => Object.assign({}, state.player, {
@@ -123,7 +132,8 @@ const playerReducer = handleActions({
     buttonText: getButtonText(action.payload.game.state, [], state.player.exchangeRule),
     canHit: canHit(action.payload.game.state, action.payload.game.players[state.playerIndex].turn, [],
       action.payload.game.previousHit, action.payload.game.isFirstTurn, action.payload.game.isRevolution, null),
-    exchangeRule: null
+    exchangeRule: null,
+    cardsGiven: false
   })
 }, initialState);
 
