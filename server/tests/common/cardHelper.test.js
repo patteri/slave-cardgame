@@ -20,6 +20,11 @@ describe('CardHelper', () => {
     expect(valid).to.equal(false);
   });
 
+  it('Validation unsuccessful: no cards given on an empty table', () => {
+    let valid = CardHelper.validateHit([], [], false, false);
+    expect(valid).to.equal(false);
+  });
+
   it('Validation successful: no cards given', () => {
     let valid = CardHelper.validateHit([], [ new Card(Card.Suits.CLUBS, 2) ], false, false);
     expect(valid).to.equal(true);

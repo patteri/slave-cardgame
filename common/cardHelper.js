@@ -17,8 +17,12 @@ class CardHelper {
       }
     }
 
-    // No cards is a valid hit if it wasn't the first hit of the game
-    if (cards.length === 0) {
+    // No cards is invalid hit if empty table...
+    if (cards.length === 0 && previousHit.length === 0) {
+      return false;
+    }
+    // but otherwise a valid hit if it wasn't the first hit of the game
+    else if (cards.length === 0) {
       return true;
     }
 
