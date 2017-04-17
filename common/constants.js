@@ -1,4 +1,5 @@
 const GameState = { NOT_STARTED: 'NotStarted', PLAYING: 'Playing', CARD_EXCHANGE: 'CardExchange', ENDED: 'Ended' };
+const PlayerState = { HIT: 'Hit', PASS: 'Pass', WAITING: 'Waiting', OUT_OF_GAME: 'OutOfGame' };
 const CardExchangeType = { NONE: 'None', FREE: 'Free', BEST: 'Best' };
 
 const GameSocketUrl = '/api/game/socket';
@@ -11,6 +12,7 @@ const GameValidation = {
 };
 
 exports.GameState = GameState;
+exports.PlayerState = PlayerState;
 exports.CardExchangeType = CardExchangeType;
 exports.GameSocketUrl = GameSocketUrl;
 exports.GameValidation = GameValidation;

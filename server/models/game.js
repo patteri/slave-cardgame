@@ -5,13 +5,12 @@ const CpuPlayer = require('./cpuPlayer');
 const tokenGenerator = require('../helpers/tokenGenerator');
 const socketService = require('../services/socketService');
 const CardHelper = require('../../common/cardHelper');
-const { GameState, CardExchangeType } = require('../../common/constants');
+const { GameState, PlayerState, CardExchangeType } = require('../../common/constants');
 
 const StartCpuGameInterval = 1000;
 const StartNewRoundInterval = 5000;
 
 const PlayingDirection = { CLOCKWISE: 'Clockwise', COUTERCLOCKWISE: 'Counterclockwise' };
-const PlayingStatus = { HIT: 'Hit', PASS: 'Pass', WAITING: 'Waiting' };
 
 class Game {
 
@@ -271,7 +270,10 @@ class Game {
     });
   }
 
-  getPlayingStatus(player) {
+  getPlayerState(player) {
+    if (player.hand.length === 0) {
+      return PlayerState.OUT_OF_GAME;
+    }
     if (this._previousHit.player != null) {
       let prevHitIdx = this._players.indexOf(this._previousHit.player);
       let playerIdx = this._players.indexOf(player);
@@ -289,13 +291,13 @@ class Game {
       }
 
       if (player === this._previousHit.player && player !== this._turn) {
-        return PlayingStatus.HIT;
+        return PlayerState.HIT;
       }
       else if ((playerNumber < turnNumber) && player.hand.length > 0) {
-        return PlayingStatus.PASS;
+        return PlayerState.PASS;
       }
     }
-    return PlayingStatus.WAITING;
+    return PlayerState.WAITING;
   }
 
   getCardsForExchange(clientId) {
@@ -398,7 +400,7 @@ class Game {
         isCpu: player instanceof CpuPlayer,
         cardCount: player.hand.length,
         turn: player === this._turn,
-        status: this.getPlayingStatus(player)
+        status: this.getPlayerState(player)
       }))
     };
   }

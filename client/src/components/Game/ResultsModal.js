@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
 const ResultsModal = ({ show, onHide, results }) => (
-  <Modal show={show} onHide={onHide}>
+  <Modal className="Results-modal" show={show} onHide={onHide}>
     <Modal.Header closeButton>
       <Modal.Title>Results</Modal.Title>
     </Modal.Header>

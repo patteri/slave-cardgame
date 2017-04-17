@@ -23,7 +23,7 @@ const mapDispatchToProps = dispatch => ({
         playerName: state.playerName
       }).then((response) => {
         dispatch(gameStarted(response.data));
-        browserHistory.push('game');
+        browserHistory.push('/game');
       });
     });
   }

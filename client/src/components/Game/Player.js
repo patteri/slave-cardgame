@@ -3,7 +3,7 @@ import { Button } from 'react-bootstrap';
 import classNames from 'classnames';
 import PlayerStatus from './PlayerStatus';
 import Card from './Card';
-import { CardExchangeType } from '../../../../common/constants';
+import { PlayerState, CardExchangeType } from '../../../../common/constants';
 import './style.css';
 
 class Player extends Component {
@@ -46,7 +46,10 @@ class Player extends Component {
 
     return (
       <div>
-        <span className={classNames('Game-player-name', { turn: player.turn })}>
+        <span
+          className={classNames('Game-player-name',
+            { turn: player.turn, OutOfGame: player.status === PlayerState.OUT_OF_GAME })}
+        >
           {player.name}
         </span>
         <PlayerStatus status={player.status} />

@@ -31,7 +31,7 @@ const mapDispatchToProps = dispatch => ({
         cpuPlayerCount: state.cpuPlayerCount
       }).then((response) => {
         dispatch(gameStarted(response.data));
-        browserHistory.push('game');
+        browserHistory.push('/game');
       });
     });
   }

@@ -1,8 +1,11 @@
 html {
-  height: 100%;
+  background-color: green;
+  min-height: 100%;
 }
 
 body {
+  background-color: green;
+  color: white;
   font-family: sans-serif;
   height: 100%;
 }

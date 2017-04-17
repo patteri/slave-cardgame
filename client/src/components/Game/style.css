@@ -1,8 +1,5 @@
 .Game {
-  background-color: green;
   text-align: center;
-  color: white;
-  height: 100%;
 }
 
 .Game-player-name {
@@ -14,8 +11,12 @@
 }
 
 .Game-player-name.turn {
+  font-weight: bold;
+  border: 2px solid white;
+}
+
+.OutOfGame {
   color: #aaaaaa;
-  text-decoration: underline;
 }
 
 .Game-player-cards {
@@ -23,6 +24,10 @@
 }
 
 .Game-player-card-count {
+  font-size: 1em;
+}
+
+.Game-player-card-count-number {
   font-size: 1.4em;
 }
 
@@ -30,30 +35,6 @@
   vertical-align: top;
   height: 129px;
   width: 90px;
-}
-
-@media(max-width:767px) {
-  .Game-card:not(:first-child) {
-    margin-left: -55px;
-  }
-}
-
-@media(min-width:768px) {
-  .Game-card:not(:first-child) {
-    margin-left: -40px;
-  }
-}
-
-@media(min-width:992px) {
-  .Game-card:not(:first-child) {
-    margin-left: -30px;
-  }
-}
-
-@media(min-width:1200px) {
-  .Game-card:not(:first-child) {
-    margin-left: -30px;
-  }
 }
 
 .Game-card.selected {
@@ -82,22 +63,116 @@
 .Game-hit-button {
   padding: 10px 20px;
   margin-bottom: 10px;
+  min-width: 120px;
 }
 
-.Game-status {
+.Player-status {
   text-transform: uppercase;
 }
 
-.Game-status.Hit {
-  color: #cccccc;
+.Player-status.Hit {
   font-weight: bold;
 }
 
-.Game-status.Pass {
+.Player-status.Pass {
   color: orange;
   font-weight: bold;
 }
 
-.Game-status.Waiting {
+.Player-status.Waiting, .Player-status.OutOfGame {
   visibility: hidden;
+}
+
+.Results-modal {
+  color: #333;
+}
+
+@media(min-width:1200px) {
+  .Game-card:not(:first-child) {
+    margin-left: -30px;
+  }
+}
+
+@media(min-width:992px) {
+  .Game-card:not(:first-child) {
+    margin-left: -30px;
+  }
+}
+
+@media(min-width:768px) {
+  .Game-card:not(:first-child) {
+    margin-left: -40px;
+  }
+}
+
+@media(max-width:767px) {
+  .Game-player-name {
+    font-size: 0.9em;
+  }
+
+  .Game-player-cards {
+    margin-top: 15px;
+  }
+
+  .Game-player-card-count {
+    font-size: 0.8em;
+    margin: 0;
+  }
+
+  .Game-player-card-count-number {
+    font-size: 0.9em;
+  }
+
+  .Game-table {
+    margin: 5px 0;
+    height: 77px;
+  }
+
+  .Game-direction {
+    margin-left: -64px;
+    margin-right: 25px;
+  }
+
+  .Game-direction img {
+    height: 55px;
+    padding-top: 15px;
+  }
+
+  .Game-card {
+    height: 78px;
+    width: 54px;
+  }
+
+  .Game-card.selected {
+    margin-top: -15px;
+  }
+
+  .Game-card:not(:first-child) {
+    margin-left: -30px;
+  }
+
+  .Game-status {
+    font-size: 0.8em;
+    margin: 0;
+  }
+}
+
+@media(max-width:379px) {
+  .Game-direction {
+    margin-left: -70px;
+  }
+
+  .Game-card:not(:first-child) {
+    margin-left: -32px;
+  }
+}
+
+@media(max-width:349px) {
+  .Game-direction {
+    margin-left: -75px;
+  }
+
+  .Game-card:not(:first-child) {
+    margin-left: -35px;
+  }
 }

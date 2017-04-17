@@ -43,7 +43,7 @@ class Game extends Component {
       });
     }
     else {
-      browserHistory.push('home');
+      browserHistory.push('/home');
     }
   }
 
