@@ -18,18 +18,18 @@ class GameTracker extends Game {
     };
   }
 
-  exchangeCards(players) {
-    players.forEach((player) => {
-      let currentPoints = players.length - player.position;
+  initializeNewRound() {
+    this._players.forEach((player) => {
+      let currentPoints = this._players.length - player.position;
       let existingPoints = this._playerPoints.get(player.id);
       let points = existingPoints === undefined ? currentPoints : existingPoints + currentPoints;
       this._playerPoints.set(player.id, points);
     });
 
     if (this._roundDoneCallback) {
-      this._roundDoneCallback(players.map(player => ({
+      this._roundDoneCallback(this._players.map(player => ({
         playerName: player.name,
-        points: players.length - player.position
+        points: this._players.length - player.position
       })));
     }
 
@@ -43,7 +43,7 @@ class GameTracker extends Game {
       }
     }
     else {
-      super.exchangeCards(players);
+      super.initializeNewRound();
     }
   }
 

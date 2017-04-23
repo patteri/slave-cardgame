@@ -1,0 +1,28 @@
+/*
+Bootstrap style column definitions for the player row
+The number specifies the total count of players
+*/
+
+.player-col-4, .player-col-5, .player-col-6, .player-col-7, .player-col-8 {
+  float: left;
+}
+
+.player-col-4 {
+  width: 33.33333333%;
+}
+
+.player-col-5 {
+  width: 25%;
+}
+
+.player-col-6 {
+  width: 20%;
+}
+
+.player-col-7 {
+  width: 16.66666667%;
+}
+
+.player-col-8 {
+  width: 14.28571429%;
+}

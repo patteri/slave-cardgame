@@ -3,7 +3,7 @@ import joinReducer from '../components/Join/reducer';
 import { gameIdChanged } from '../components/Join/actions';
 import { playerNameChanged } from '../components/Home/actions';
 
-describe('Home reducer', () => {
+describe('Join reducer', () => {
   it('Successful gameIdChanged', () => {
     const initialState = joinReducer(undefined, { type: '' });
     const reducer = joinReducer(initialState, gameIdChanged('a'));

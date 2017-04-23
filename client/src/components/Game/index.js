@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import Game from './Game';
 import {
+  playerJoined,
   gameStarted,
   turnChanged,
   gameEnded,
@@ -11,12 +12,25 @@ import {
   cardsExchanged,
   newRoundStarted } from './actions';
 import api from '../../api/api';
-import { GameState } from '../../../../common/constants';
+import { GameState, CardExchangeType } from '../../../../common/constants';
 import './style.css';
+import './playerColumns.css';
 
 const mapStateToProps = state => state.get('game');
 
+const setCardsForExchange = (state, dispatch, cards) => {
+  api.cardsForExchange(state.gameId, {
+    clientId: state.playerId,
+    cards: cards
+  }).then(() => {
+    dispatch(cardsGiven());
+  });
+};
+
 const mapDispatchToProps = dispatch => ({
+  onPlayerJoined(data) {
+    dispatch(playerJoined(data));
+  },
   onGameStarted(data) {
     dispatch(gameStarted(data));
   },
@@ -43,12 +57,7 @@ const mapDispatchToProps = dispatch => ({
         });
       }
       else if (gameState === GameState.CARD_EXCHANGE) {
-        api.cardsForExchange(state.gameId, {
-          clientId: state.playerId,
-          cards: cards
-        }).then(() => {
-          dispatch(cardsGiven());
-        });
+        setCardsForExchange(state, dispatch, cards);
       }
     });
   },
@@ -57,6 +66,9 @@ const mapDispatchToProps = dispatch => ({
       let state = getState().get('game');
       api.getCardExchange(state.gameId, state.playerId).then((response) => {
         dispatch(cardExchangeRequested(response.data));
+        if (response.data.exchangeRule.exchangeType === CardExchangeType.NONE) {
+          setCardsForExchange(state, dispatch, []);
+        }
       });
     });
   },

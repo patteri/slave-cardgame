@@ -155,6 +155,10 @@
     font-size: 0.8em;
     margin: 0;
   }
+
+  .Player-status {
+    font-size: 0.8em;
+  }
 }
 
 @media(max-width:379px) {

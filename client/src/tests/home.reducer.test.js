@@ -37,7 +37,7 @@ describe('Home reducer', () => {
   it('cpuPlayerCountChanged: cpu count is less than player count', () => {
     const initialState = homeReducer(undefined, { type: '' });
     const reducer = homeReducer(initialState, cpuPlayerCountChanged(4));
-    expect(reducer.cpuPlayerCount).to.equal(3);
+    expect(reducer.cpuPlayerCount).to.equal(0);
   });
 
   it('Successful playerNameChanged', () => {

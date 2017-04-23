@@ -1,6 +1,7 @@
 import { handleActions } from 'redux-actions';
 import playerReducer from './playerReducer';
 import {
+  playerJoined,
   gameStarted,
   turnChanged,
   gameEnded,
@@ -14,6 +15,7 @@ import { CardExchangeType } from '../../../../../common/constants';
 
 const initialState = {
   gameId: null,
+  playerCount: 0,
   playerId: null,
   playerIndex: null,
   player: playerReducer(undefined, { type: '' }),
@@ -33,20 +35,25 @@ const getGameParameters = game => ({
   isRevolution: game.isRevolution
 });
 
-const getOtherPlayers = (players, playerIndex) =>
-  players.filter((player, index) => index !== playerIndex);
+const getOtherPlayers = (players, playerIndex) => {
+  let results = [];
+  for (let i = 1; i < players.length; ++i) {
+    results.push(players[(playerIndex + i) % players.length]);
+  }
+  return results;
+};
 
 const getHelpTextForExchange = (exchangeRule) => {
   switch (exchangeRule.exchangeType) {
     case CardExchangeType.FREE:
-      return 'You give ' + exchangeRule.exchangeCount + ' freely chosen cards to player \'' +
+      return 'Give ' + exchangeRule.exchangeCount + ' freely chosen cards to player \'' +
         exchangeRule.toPlayer.name + '\'';
     case CardExchangeType.BEST:
-      return 'You give ' + exchangeRule.exchangeCount + ' best card(s) to player \'' +
+      return 'Give ' + exchangeRule.exchangeCount + ' best card(s) to player \'' +
         exchangeRule.toPlayer.name + '\'';
     case CardExchangeType.NONE:
     default:
-      return 'You don\'t change cards at this round';
+      return 'You don\'t change cards in this round';
   }
 };
 
@@ -62,11 +69,15 @@ const getHelpTextAfterExchange = (exchangedCards) => {
 };
 
 const gameReducer = handleActions({
+  [playerJoined]: (state, action) => Object.assign({}, state, {
+    otherPlayers: getOtherPlayers(action.payload.game.players, state.playerIndex)
+  }),
   [gameStarted]: (state, action) => {
     let gameParameters = getGameParameters(action.payload.game);
     let playerIndex = action.payload.playerIndex !== undefined ? action.payload.playerIndex : state.playerIndex;
-    return Object.assign({}, state, {
+    return Object.assign({}, initialState, {
       gameId: action.payload.game.id,
+      playerCount: action.payload.game.playerCount,
       playerId: action.payload.player.id,
       playerIndex: playerIndex,
       player: playerReducer(state, action),

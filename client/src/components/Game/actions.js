@@ -1,5 +1,6 @@
 import { createAction } from 'redux-actions';
 
+export const playerJoined = createAction('PLAYER_JOINED');
 export const gameStarted = createAction('GAME_STARTED');
 export const turnChanged = createAction('TURN_CHANGED');
 export const gameEnded = createAction('GAME_ENDED');

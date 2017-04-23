@@ -10,12 +10,11 @@ const { CardExchangeType, GameState } = require('../../../common/constants');
 
 const expect = chai.expect;
 
-const createEndedGame = () => {
-  let game = gameService.createGame('Human', 4, 3).game;
-  game._players[0].position = 1;
-  game._players[1].position = 2;
-  game._players[2].position = 3;
-  game._players[3].position = 4;
+const createEndedGame = (playerCount = 4) => {
+  let game = gameService.createGame('Human', playerCount, playerCount - 1).game;
+  game._players.forEach((player, index) => {
+    player.position = index + 1;
+  });
   game.gameEnded();
   return game;
 };
@@ -103,7 +102,7 @@ describe('Game', () => {
     expect(game.state).to.equal(GameState.CARD_EXCHANGE);
   });
 
-  it('Card exchange rule works correctly', () => {
+  it('Card exchange rule works correctly (4 players)', () => {
     let game = createEndedGame();
     expect(game._players[0].cardExchangeRule.exchangeCount).to.equal(2);
     expect(game._players[1].cardExchangeRule.exchangeCount).to.equal(1);
@@ -119,7 +118,7 @@ describe('Game', () => {
     expect(game._players[3].cardExchangeRule.toPlayer.id).to.equal(game._players[0].id);
   });
 
-  it('Card exchange rule works correctly 2', () => {
+  it('Card exchange rule works correctly 2 (4 players)', () => {
     let game = gameService.createGame('Human', 4, 3).game;
     game._players[0].position = 2;
     game._players[1].position = 4;
@@ -138,6 +137,40 @@ describe('Game', () => {
     expect(game._players[1].cardExchangeRule.toPlayer.id).to.equal(game._players[2].id);
     expect(game._players[2].cardExchangeRule.toPlayer.id).to.equal(game._players[1].id);
     expect(game._players[3].cardExchangeRule.toPlayer.id).to.equal(game._players[0].id);
+  });
+
+  it('Card exchange rule works correctly (5 players)', () => {
+    let game = createEndedGame(5);
+    expect(game._players[0].cardExchangeRule.exchangeCount).to.equal(2);
+    expect(game._players[1].cardExchangeRule.exchangeCount).to.equal(1);
+    expect(game._players[3].cardExchangeRule.exchangeCount).to.equal(1);
+    expect(game._players[4].cardExchangeRule.exchangeCount).to.equal(2);
+    expect(game._players[0].cardExchangeRule.exchangeType).to.equal(CardExchangeType.FREE);
+    expect(game._players[1].cardExchangeRule.exchangeType).to.equal(CardExchangeType.FREE);
+    expect(game._players[2].cardExchangeRule.exchangeType).to.equal(CardExchangeType.NONE);
+    expect(game._players[3].cardExchangeRule.exchangeType).to.equal(CardExchangeType.BEST);
+    expect(game._players[4].cardExchangeRule.exchangeType).to.equal(CardExchangeType.BEST);
+    expect(game._players[0].cardExchangeRule.toPlayer.id).to.equal(game._players[4].id);
+    expect(game._players[1].cardExchangeRule.toPlayer.id).to.equal(game._players[3].id);
+    expect(game._players[3].cardExchangeRule.toPlayer.id).to.equal(game._players[1].id);
+    expect(game._players[4].cardExchangeRule.toPlayer.id).to.equal(game._players[0].id);
+  });
+
+  it('Card exchange rule works correctly (5 players)', () => {
+    let game = createEndedGame(5);
+    expect(game._players[0].cardExchangeRule.exchangeCount).to.equal(2);
+    expect(game._players[1].cardExchangeRule.exchangeCount).to.equal(1);
+    expect(game._players[3].cardExchangeRule.exchangeCount).to.equal(1);
+    expect(game._players[4].cardExchangeRule.exchangeCount).to.equal(2);
+    expect(game._players[0].cardExchangeRule.exchangeType).to.equal(CardExchangeType.FREE);
+    expect(game._players[1].cardExchangeRule.exchangeType).to.equal(CardExchangeType.FREE);
+    expect(game._players[2].cardExchangeRule.exchangeType).to.equal(CardExchangeType.NONE);
+    expect(game._players[3].cardExchangeRule.exchangeType).to.equal(CardExchangeType.BEST);
+    expect(game._players[4].cardExchangeRule.exchangeType).to.equal(CardExchangeType.BEST);
+    expect(game._players[0].cardExchangeRule.toPlayer.id).to.equal(game._players[4].id);
+    expect(game._players[1].cardExchangeRule.toPlayer.id).to.equal(game._players[3].id);
+    expect(game._players[3].cardExchangeRule.toPlayer.id).to.equal(game._players[1].id);
+    expect(game._players[4].cardExchangeRule.toPlayer.id).to.equal(game._players[0].id);
   });
 
   it('Set cards for exchange unsuccessful: try to exchange twice', () => {
@@ -199,10 +232,20 @@ describe('Game', () => {
     expect(success).to.equal(true);
   });
 
-  it('A new game is started after cards are exchanged', () => {
+  it('A new game is started after cards are exchanged (4 players)', () => {
     let game = createEndedGame();
 
-    game.setCardsForExchange(game._players[0].id, [ game._players[0].hand[0], game._players[0].hand[1] ]);
+    game.setCardsForExchange(game._players[0].id, _.take(game._players[0].hand, 2));
+    expect(game.state).to.equal(GameState.PLAYING);
+    expect(game._table.length).to.equal(0);
+    expect(game._players[0]._cardExchangeRule).to.be.null; // eslint-disable-line no-unused-expressions
+    expect(game._players[0]._cardsForExchange).to.be.null; // eslint-disable-line no-unused-expressions
+  });
+
+  it('A new game is started after cards are exchanged (5 players)', () => {
+    let game = createEndedGame(5);
+
+    game.setCardsForExchange(game._players[0].id, _.take(game._players[0].hand, 2));
     expect(game.state).to.equal(GameState.PLAYING);
     expect(game._table.length).to.equal(0);
     expect(game._players[0]._cardExchangeRule).to.be.null; // eslint-disable-line no-unused-expressions

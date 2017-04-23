@@ -31,6 +31,7 @@ class Game extends Component {
       // Configure websocket
       this.socket = io('', { path: GameSocketUrl });
       this.socket.emit('joinGame', this.props.gameId, this.props.playerId);
+      this.socket.on('playerJoined', this.props.onPlayerJoined);
       this.socket.on('gameStarted', this.props.onGameStarted);
       this.socket.on('turnChanged', this.props.onTurnChange);
       this.socket.on('gameEnded', this.gameEnded);
@@ -79,12 +80,12 @@ class Game extends Component {
   }
 
   render() {
-    const { gameState, otherPlayers, table, isRevolution, player, results, helpText } = this.props;
+    const { playerCount, gameState, otherPlayers, table, isRevolution, player, results, helpText } = this.props;
 
     return (
       <Grid className="Game" fluid>
         <ResultsModal results={results} show={this.state.showModal} onHide={this.hideModal} />
-        <OtherPlayers players={otherPlayers} />
+        <OtherPlayers playerCount={playerCount} players={otherPlayers} />
         <div className="Game-table">
           {gameState === GameState.NOT_STARTED &&
             <div>
@@ -116,6 +117,7 @@ class Game extends Component {
 }
 
 Game.propTypes = {
+  playerCount: PropTypes.number,
   otherPlayers: PropTypes.array,
   table: PropTypes.array,
   isRevolution: PropTypes.bool,

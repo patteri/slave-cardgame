@@ -94,6 +94,12 @@ class GameService {
         socketService.emitToClient(player.socket, 'gameStarted', { game: game, player: player });
       });
     }
+    else {
+      // Notify other players
+      game.players.filter(player => player !== human).forEach((player) => {
+        socketService.emitToClient(player.socket, 'playerJoined', { game: game });
+      });
+    }
 
     return { game: game, player: human };
   }

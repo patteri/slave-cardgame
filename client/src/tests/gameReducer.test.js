@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import gameReducer from '../components/Game/reducers/gameReducer';
 import {
+  playerJoined,
   gameStarted,
   turnChanged,
   gameEnded,
@@ -10,6 +11,7 @@ import { GameState } from '../../../common/constants';
 const getGameData = () => ({
   game: {
     id: 1,
+    playerCount: 4,
     players: [
       { name: 'Player1' },
       { name: 'Player2' },
@@ -33,12 +35,34 @@ describe('Game reducer', () => {
 
     const reducer = gameReducer(initialState, gameStarted(data));
     expect(reducer.gameId).to.equal(1);
+    expect(reducer.playerCount).to.equal(4);
     expect(reducer.playerId).to.equal(1);
     expect(reducer.playerIndex).to.equal(0);
     expect(reducer.gameState).to.equal(GameState.PLAYING);
     expect(reducer.otherPlayers.length).to.equal(3);
     expect(reducer.otherPlayers.find(player => player.name === 'Player1')).to.equal(undefined);
     expect(reducer.isRevolution).to.equal(false);
+  });
+
+  it('playerJoined', () => {
+    const initialState = gameReducer(undefined, { type: '' });
+    const data = getGameData();
+    data.game.players.splice(2, 2);
+    data.playerIndex = 1;
+
+    let reducer = gameReducer(initialState, gameStarted(data));
+    expect(reducer.otherPlayers.length).to.equal(1);
+    data.game.players.push({ name: 'Player3' });
+    reducer = gameReducer(reducer, playerJoined(data));
+    expect(reducer.otherPlayers.length).to.equal(2);
+    expect(reducer.otherPlayers[0].name).to.equal('Player3');
+    expect(reducer.otherPlayers[1].name).to.equal('Player1');
+    data.game.players.push({ name: 'Player4' });
+    reducer = gameReducer(reducer, playerJoined(data));
+    expect(reducer.otherPlayers.length).to.equal(3);
+    expect(reducer.otherPlayers[0].name).to.equal('Player3');
+    expect(reducer.otherPlayers[1].name).to.equal('Player4');
+    expect(reducer.otherPlayers[2].name).to.equal('Player1');
   });
 
   it('turnChanged', () => {

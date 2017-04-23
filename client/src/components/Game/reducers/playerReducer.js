@@ -63,7 +63,7 @@ const getSelectedCardsAfterExchange = (cards, cardsToSelect) =>
 const playerReducer = handleActions({
   [gameStarted]: (state, action) => {
     let playerIndex = action.payload.playerIndex !== undefined ? action.payload.playerIndex : state.playerIndex;
-    return Object.assign({}, state.player, {
+    return Object.assign({}, initialState, {
       player: action.payload.game.players[playerIndex],
       cards: action.payload.player.cards.sort(CardHelper.compareCards),
       buttonText: getButtonText(action.payload.game.state, state.player.selectedCards, state.player.exchangeRule)
@@ -101,13 +101,16 @@ const playerReducer = handleActions({
   [cardExchangeRequested]: (state, action) => {
     let cards = action.payload.cards.sort(CardHelper.compareCards);
     let selectedCards = getSelectedCardsForExchange(cards, action.payload.exchangeRule);
+    let cardsGiven = action.payload.exchangeRule.exchangeType === CardExchangeType.NONE;
     return Object.assign({}, state.player, {
+      player: action.payload.game.players[state.playerIndex],
       cards: cards,
       selectedCards: selectedCards,
       buttonText: getButtonText(action.payload.game.state, selectedCards, action.payload.exchangeRule),
       canHit: canHit(action.payload.game.state, state.player.player.turn, selectedCards, state.table,
         state.isFirstTurn, state.isRevolution, action.payload.exchangeRule),
-      exchangeRule: action.payload.exchangeRule
+      exchangeRule: action.payload.exchangeRule,
+      cardsGiven: cardsGiven
     });
   },
   [cardsGiven]: state => Object.assign({}, state.player, {

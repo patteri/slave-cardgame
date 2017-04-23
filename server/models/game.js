@@ -25,6 +25,7 @@ class Game {
     this._id = tokenGenerator.generateToken();
     this._playerCount = playerCount;
     this._players = [];
+    this._dealStartIndex = 0;
     this._configuration = {
       startCpuGameInterval: StartCpuGameInterval,
       startNewRoundInterval: StartNewRoundInterval
@@ -108,7 +109,7 @@ class Game {
 
   dealCards() {
     this._deck.deck.forEach((card, index) => {
-      this._players[index % this._players.length].hand.push(card);
+      this._players[(index + this._dealStartIndex) % this._players.length].hand.push(card);
     });
   }
 
@@ -144,6 +145,22 @@ class Game {
         this.startCpuGame();
       }, this._configuration.startCpuGameInterval);
     }
+  }
+
+  initializeNewRound() {
+    this._players.forEach((player) => {
+      player.initializeRoundData();
+    });
+
+    this.startNewRound();
+    setTimeout(() => {
+      socketService.emitToGame(this.id, 'newRoundStarted', { game: this.toJSON() });
+      if (this._turn instanceof CpuPlayer) {
+        setTimeout(() => {
+          this.startCpuGame();
+        }, this._configuration.startCpuGameInterval);
+      }
+    }, this._configuration.startNewRoundInterval);
   }
 
   startNewRound() {
@@ -204,6 +221,8 @@ class Game {
     // Check if the game ended
     if (this.getPlayersInGame().length === 1) {
       this._turn.position = this.getNextPosition();
+      // Dealing starts from the next of the player who lost
+      this._dealStartIndex = (this._players.indexOf(this._turn) + 1) % this._players.length;
       this.notifyForGameEnd();
       this.gameEnded();
     }
@@ -250,7 +269,7 @@ class Game {
         type = player.position <= (this._players.length / 2) ? CardExchangeType.FREE : CardExchangeType.BEST;
       }
       let toPlayer = this._players.find(item => item.position === this._players.length - player.position + 1);
-      if (toPlayer === player) {
+      if (type === CardExchangeType.NONE) {
         toPlayer = null;
       }
 
@@ -312,7 +331,7 @@ class Game {
       exchangeRule: {
         exchangeCount: player.cardExchangeRule.exchangeCount,
         exchangeType: player.cardExchangeRule.exchangeType,
-        toPlayer: player.cardExchangeRule.toPlayer.toShortJSON()
+        toPlayer: player.cardExchangeRule.toPlayer ? player.cardExchangeRule.toPlayer.toShortJSON() : null
       }
     };
   }
@@ -349,6 +368,7 @@ class Game {
         break;
       }
       case CardExchangeType.NONE:
+        break;
       default:
         return false;
     }
@@ -356,11 +376,10 @@ class Game {
     player.cardsForExchange = cards;
 
     // Check if everybody has selected cards for exchange
-    let inCardExchange = this._players.filter(player => player.cardExchangeRule &&
-      player.cardExchangeRule.exchangeType !== CardExchangeType.NONE);
-    let hasChanged = inCardExchange.filter(player => player.cardsForExchange != null);
-    if (inCardExchange.length === hasChanged.length) {
-      this.exchangeCards(hasChanged);
+    if (this._players.filter(player => player.cardsForExchange != null).length === this._players.length) {
+      this.exchangeCards(this._players.filter(player => player.cardExchangeRule.exchangeType !==
+      CardExchangeType.NONE));
+      this.initializeNewRound();
     }
 
     return true;
@@ -374,23 +393,13 @@ class Game {
 
     players.forEach((player) => {
       player.cardExchangeRule.toPlayer.notifyForCardExchange(player.cardsForExchange, player);
-      player.initializeRoundData();
     });
-
-    this.startNewRound();
-    setTimeout(() => {
-      socketService.emitToGame(this.id, 'newRoundStarted', { game: this.toJSON() });
-      if (this._turn instanceof CpuPlayer) {
-        setTimeout(() => {
-          this.startCpuGame();
-        }, this._configuration.startCpuGameInterval);
-      }
-    }, this._configuration.startNewRoundInterval);
   }
 
   toJSON() {
     return {
       id: this._id,
+      playerCount: this._playerCount,
       state: this._state,
       isFirstTurn: this._table.length === 0,
       isRevolution: this.isRevolution(),

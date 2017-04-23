@@ -37,6 +37,7 @@ describe('/api/game', () => {
         expect(res.body.playerIndex).to.equal(0);
         expect(res.body).to.have.property('game');
         expect(res.body.game).to.have.property('id');
+        expect(res.body.game).to.have.property('playerCount');
         expect(res.body.game).to.have.property('state');
         expect(res.body.game).to.have.property('isFirstTurn');
         expect(res.body.game).to.have.property('isRevolution');
