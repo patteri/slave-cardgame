@@ -33,7 +33,7 @@ class Game extends Component {
       this.socket.emit('joinGame', this.props.gameId, this.props.playerId);
       this.socket.on('playerJoined', this.props.onPlayerJoined);
       this.socket.on('gameStarted', this.props.onGameStarted);
-      this.socket.on('turnChanged', this.props.onTurnChange);
+      this.socket.on('gameUpdated', this.props.onGameUpdated);
       this.socket.on('gameEnded', this.gameEnded);
       this.socket.on('cardsExchanged', this.props.onCardsExchanged);
       this.socket.on('newRoundStarted', this.props.onNewRoundStarted);

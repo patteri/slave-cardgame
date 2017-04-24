@@ -3,7 +3,7 @@ import Game from './Game';
 import {
   playerJoined,
   gameStarted,
-  turnChanged,
+  gameUpdated,
   gameEnded,
   selectedCardsChanged,
   cardsHit,
@@ -34,11 +34,11 @@ const mapDispatchToProps = dispatch => ({
   onGameStarted(data) {
     dispatch(gameStarted(data));
   },
-  onTurnChange(data) {
-    dispatch(turnChanged(data));
+  onGameUpdated(data) {
+    dispatch(gameUpdated(data));
   },
   onGameEnd(data) {
-    dispatch(turnChanged(data));
+    dispatch(gameUpdated(data));
     dispatch(gameEnded(data));
   },
   onCardSelectionChange(cards) {

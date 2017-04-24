@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { handleActions } from 'redux-actions';
 import {
   gameStarted,
-  turnChanged,
+  gameUpdated,
   gameEnded,
   selectedCardsChanged,
   cardsHit,
@@ -69,7 +69,7 @@ const playerReducer = handleActions({
       buttonText: getButtonText(action.payload.game.state, state.player.selectedCards, state.player.exchangeRule)
     });
   },
-  [turnChanged]: (state, action) => Object.assign({}, state.player, {
+  [gameUpdated]: (state, action) => Object.assign({}, state.player, {
     player: action.payload.game.players[state.playerIndex],
     buttonText: getButtonText(action.payload.game.state, state.player.selectedCards, state.player.exchangeRule),
     canHit: canHit(action.payload.game.state, action.payload.game.players[state.playerIndex].turn,

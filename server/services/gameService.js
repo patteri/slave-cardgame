@@ -16,6 +16,9 @@ class GameService {
         let game = this.getGame(gameId);
         if (game && game.registerSocket(clientId, socket)) {
           socket.join(gameId);
+          // Send the latest game state to the joined client to avoid timing issues
+          // between call to join API and registering the socket
+          socketService.emitToClient(socket, 'gameUpdated', { game: game.toJSON() });
         }
         else {
           socket.close();

@@ -3,7 +3,7 @@ import playerReducer from './playerReducer';
 import {
   playerJoined,
   gameStarted,
-  turnChanged,
+  gameUpdated,
   gameEnded,
   selectedCardsChanged,
   cardsHit,
@@ -85,7 +85,7 @@ const gameReducer = handleActions({
       ...gameParameters
     });
   },
-  [turnChanged]: (state, action) => {
+  [gameUpdated]: (state, action) => {
     let gameParameters = getGameParameters(action.payload.game);
     return Object.assign({}, state, {
       player: playerReducer(state, action),

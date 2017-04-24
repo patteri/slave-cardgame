@@ -239,7 +239,7 @@ class Game {
   }
 
   notifyForHit() {
-    socketService.emitToGame(this.id, 'turnChanged', { game: this.toJSON() });
+    socketService.emitToGame(this.id, 'gameUpdated', { game: this.toJSON() });
   }
 
   notifyForGameEnd() {

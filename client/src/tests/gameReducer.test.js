@@ -3,7 +3,7 @@ import gameReducer from '../components/Game/reducers/gameReducer';
 import {
   playerJoined,
   gameStarted,
-  turnChanged,
+  gameUpdated,
   gameEnded,
   newRoundStarted } from '../components/Game/actions';
 import { GameState } from '../../../common/constants';
@@ -65,14 +65,14 @@ describe('Game reducer', () => {
     expect(reducer.otherPlayers[2].name).to.equal('Player1');
   });
 
-  it('turnChanged', () => {
+  it('gameUpdated', () => {
     const initialState = gameReducer(undefined, { type: '' });
     const data = getGameData();
     let turnData = Object.assign({}, data);
     turnData.game.isRevolution = true;
 
     let reducer = gameReducer(initialState, gameStarted(data));
-    reducer = gameReducer(reducer, turnChanged(turnData));
+    reducer = gameReducer(reducer, gameUpdated(turnData));
     expect(reducer.isRevolution).to.equal(true);
   });
 
