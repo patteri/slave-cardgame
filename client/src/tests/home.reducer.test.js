@@ -3,6 +3,7 @@ import homeReducer from '../components/Home/reducer';
 import {
   playerCountChanged,
   cpuPlayerCountChanged,
+  gameCountChanged,
   playerNameChanged } from '../components/Home/actions';
 
 describe('Home reducer', () => {
@@ -38,6 +39,18 @@ describe('Home reducer', () => {
     const initialState = homeReducer(undefined, { type: '' });
     const reducer = homeReducer(initialState, cpuPlayerCountChanged(4));
     expect(reducer.cpuPlayerCount).to.equal(0);
+  });
+
+  it('Successful gameCountChanged', () => {
+    const initialState = homeReducer(undefined, { type: '' });
+    const reducer = homeReducer(initialState, gameCountChanged(5));
+    expect(reducer.gameCount).to.equal(5);
+  });
+
+  it('Invalid gameCountChanged: number too small', () => {
+    const initialState = homeReducer(undefined, { type: '' });
+    const reducer = homeReducer(initialState, gameCountChanged(0));
+    expect(reducer.gameCount).to.equal(initialState.gameCount);
   });
 
   it('Successful playerNameChanged', () => {

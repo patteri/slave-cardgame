@@ -72,7 +72,13 @@ class Game extends Component {
     this.setState({
       showModal: false
     });
-    this.props.requestCardExchange();
+
+    if (this.props.results.gameNumber < this.props.results.totalGameCount) {
+      this.props.requestCardExchange();
+    }
+    else {
+      browserHistory.push('/home');
+    }
   }
 
   handleJoinUrlFocus(e) {
@@ -84,7 +90,9 @@ class Game extends Component {
 
     return (
       <Grid className="Game" fluid>
-        <ResultsModal results={results} show={this.state.showModal} onHide={this.hideModal} />
+        {results &&
+          <ResultsModal results={results} show={this.state.showModal} onHide={this.hideModal} />
+        }
         <OtherPlayers playerCount={playerCount} players={otherPlayers} />
         <div className="Game-table">
           {gameState === GameState.NOT_STARTED &&
@@ -122,7 +130,7 @@ Game.propTypes = {
   table: PropTypes.array,
   isRevolution: PropTypes.bool,
   player: PropTypes.object,
-  results: PropTypes.array,
+  results: PropTypes.object,
   helpText: PropTypes.string
 };
 

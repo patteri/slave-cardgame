@@ -19,7 +19,7 @@ describe('/api/game/:id/hit', () => {
   });
 
   it('unknown user id', (done) => {
-    const game = gameService.createGame('Human', 4, 3);
+    const game = gameService.createGame('Human', 4, 3, 1);
 
     chai.request(app)
       .post('/api/game/' + game.game.id + '/hit')
@@ -32,7 +32,7 @@ describe('/api/game/:id/hit', () => {
   });
 
   it('successfull hit', (done) => {
-    const game = gameService.createGame('Human', 4, 3, false).game;
+    const game = gameService.createGame('Human', 4, 3, 1, false).game;
 
     chai.request(app)
       .post('/api/game/' + game.id + '/hit')
@@ -49,7 +49,7 @@ describe('/api/game/:id/hit', () => {
   });
 
   it('illegal game state', (done) => {
-    const game = gameService.createGame('Human', 4, 3, false).game;
+    const game = gameService.createGame('Human', 4, 3, 1, false).game;
     game._players[0].position = 1;
     game._players[1].position = 2;
     game._players[2].position = 3;

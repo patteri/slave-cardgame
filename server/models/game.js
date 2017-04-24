@@ -16,14 +16,17 @@ class Game {
 
   // Parameters:
   // playerCount: the number of players in the game
+  // gameCount: the number of games to be played
   // shuffleDeck: true, if the deck is shuffled
-  constructor(playerCount, shuffleDeck = true) {
+  constructor(playerCount, gameCount, shuffleDeck = true) {
     if (!Number.isInteger(playerCount) || playerCount < 1) {
       throw new Error('Invalid player count');
     }
 
     this._id = tokenGenerator.generateToken();
     this._playerCount = playerCount;
+    this._gameCount = gameCount;
+    this._currentGameIndex = 0;
     this._players = [];
     this._dealStartIndex = 0;
     this._configuration = {
@@ -194,7 +197,7 @@ class Game {
     let remainingHand = this._turn.hand;
     // If finished playing, assign position
     if (remainingHand.length === 0) {
-      this._turn.position = this.getNextPosition();
+      this.setPositionAndPoints(this._turn);
     }
 
     // Check revolution rule
@@ -220,7 +223,7 @@ class Game {
 
     // Check if the game ended
     if (this.getPlayersInGame().length === 1) {
-      this._turn.position = this.getNextPosition();
+      this.setPositionAndPoints(this._turn);
       // Dealing starts from the next of the player who lost
       this._dealStartIndex = (this._players.indexOf(this._turn) + 1) % this._players.length;
       this.notifyForGameEnd();
@@ -234,8 +237,9 @@ class Game {
     return remainingHand;
   }
 
-  getNextPosition() {
-    return Math.max(...this._players.map(item => item.position)) + 1;
+  setPositionAndPoints(player) {
+    player.position = Math.max(...this._players.map(item => item.position)) + 1;
+    player.points += this._players.length - player.position;
   }
 
   notifyForHit() {
@@ -243,50 +247,79 @@ class Game {
   }
 
   notifyForGameEnd() {
-    let results = this._players.map(player => ({
+    let currentResults = this._players.map(player => ({
       name: player.name,
       isCpu: player instanceof CpuPlayer,
-      position: player.position
+      position: player.position,
+      points: this._players.length - player.position
     })).sort((first, second) => first.position - second.position);
-    socketService.emitToGame(this.id, 'gameEnded', { game: this.toJSON(), results: results });
+    let overallResults = this._players.map(player => ({
+      name: player.name,
+      isCpu: player instanceof CpuPlayer,
+      points: player.points
+    })).sort((first, second) => second.points - first.points);
+    let previousPosition = -1;
+    let previousPoints = -1;
+    overallResults.forEach((player, index) => {
+      player.position = player.points === previousPoints ? previousPosition : index + 1;
+      previousPosition = player.position;
+      previousPoints = player.points;
+    });
+
+    socketService.emitToGame(this.id, 'gameEnded', {
+      game: this.toJSON(),
+      results: {
+        currentResults: currentResults,
+        overallResults: overallResults,
+        gameNumber: this._currentGameIndex + 1,
+        totalGameCount: this._gameCount
+      }
+    });
   }
 
   gameEnded() {
-    this.initializeNewGame(true, GameState.CARD_EXCHANGE);
-    this.dealCards();
+    this._currentGameIndex += 1;
 
-    // Set exchange rule for all players
-    this._players.forEach((player) => {
-      let count = 0;
-      if (player.position === 1 || player.position === this._players.length) {
-        count = 2;
-      }
-      else if (player.position === 2 || player.position === this._players.length - 1) {
-        count = 1;
-      }
-      let type = CardExchangeType.NONE;
-      if (count > 0) {
-        type = player.position <= (this._players.length / 2) ? CardExchangeType.FREE : CardExchangeType.BEST;
-      }
-      let toPlayer = this._players.find(item => item.position === this._players.length - player.position + 1);
-      if (type === CardExchangeType.NONE) {
-        toPlayer = null;
-      }
+    if (this._currentGameIndex < this._gameCount) {
+      this.initializeNewGame(true, GameState.CARD_EXCHANGE);
+      this.dealCards();
 
-      player.cardExchangeRule = {
-        exchangeCount: count,
-        exchangeType: type,
-        toPlayer: toPlayer
-      };
-    });
+      // Set exchange rule for all players
+      this._players.forEach((player) => {
+        let count = 0;
+        if (player.position === 1 || player.position === this._players.length) {
+          count = 2;
+        }
+        else if (player.position === 2 || player.position === this._players.length - 1) {
+          count = 1;
+        }
+        let type = CardExchangeType.NONE;
+        if (count > 0) {
+          type = player.position <= (this._players.length / 2) ? CardExchangeType.FREE : CardExchangeType.BEST;
+        }
+        let toPlayer = this._players.find(item => item.position === this._players.length - player.position + 1);
+        if (type === CardExchangeType.NONE) {
+          toPlayer = null;
+        }
 
-    // CPU players select cards for exchange
-    this._players.forEach((player) => {
-      if (player instanceof CpuPlayer) {
-        let cards = player.selectCardsForExchange();
-        this.setCardsForExchange(player.id, cards);
-      }
-    });
+        player.cardExchangeRule = {
+          exchangeCount: count,
+          exchangeType: type,
+          toPlayer: toPlayer
+        };
+      });
+
+      // CPU players select cards for exchange
+      this._players.forEach((player) => {
+        if (player instanceof CpuPlayer) {
+          let cards = player.selectCardsForExchange();
+          this.setCardsForExchange(player.id, cards);
+        }
+      });
+    }
+    else {
+      this._state = GameState.ENDED;
+    }
   }
 
   getPlayerState(player) {

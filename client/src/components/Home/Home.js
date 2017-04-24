@@ -11,7 +11,7 @@ class Home extends Component {
   }
 
   render() {
-    const { playerCount, cpuPlayerCount, playerName, isButtonDisabled } = this.props;
+    const { playerCount, cpuPlayerCount, gameCount, playerName, isButtonDisabled } = this.props;
 
     return (
       <div className="Home">
@@ -19,7 +19,7 @@ class Home extends Component {
         <Row className="Home-game-form">
           <Col md={4} sm={6} mdOffset={4} smOffset={3}>
             <form onSubmit={e => this.createGame(e)}>
-              <FormGroup>
+              <FormGroup controlId="numberOfPlayers">
                 <ControlLabel>Total number of players ({gv.minPlayerCount} - {gv.maxPlayerCount})</ControlLabel>
                 <NumericSelector
                   value={playerCount}
@@ -28,7 +28,7 @@ class Home extends Component {
                   onValueChanged={this.props.onPlayerCountChanged}
                 />
               </FormGroup>
-              <FormGroup>
+              <FormGroup controlId="numberOfCpuPlayers">
                 <ControlLabel>Number of CPU players</ControlLabel>
                 <NumericSelector
                   value={cpuPlayerCount}
@@ -37,7 +37,16 @@ class Home extends Component {
                   onValueChanged={this.props.onCpuPlayerCountChanged}
                 />
               </FormGroup>
-              <FormGroup>
+              <FormGroup controlId="numberOfGames">
+                <ControlLabel>Number of games to play</ControlLabel>
+                <NumericSelector
+                  value={gameCount}
+                  min={gv.minGameCount}
+                  max={gv.maxGameCount}
+                  onValueChanged={this.props.onGameCountChanged}
+                />
+              </FormGroup>
+              <FormGroup controlId="playerName">
                 <ControlLabel>Player name</ControlLabel>
                 <FormControl
                   type="text"

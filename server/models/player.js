@@ -11,6 +11,7 @@ class Player {
     this._name = name;
     this._hand = [];
     this._position = 0;
+    this._points = 0;
     this._cardExchangeRule = null;
     this._cardsForExchange = null;
     this._socket = null;
@@ -38,6 +39,14 @@ class Player {
 
   set position(position) {
     this._position = position;
+  }
+
+  get points() {
+    return this._points;
+  }
+
+  set points(points) {
+    this._points = points;
   }
 
   get cardExchangeRule() {

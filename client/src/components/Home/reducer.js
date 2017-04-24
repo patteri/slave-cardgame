@@ -3,12 +3,14 @@ import { GameValidation as gv } from '../../../../common/constants';
 import {
   playerCountChanged,
   cpuPlayerCountChanged,
+  gameCountChanged,
   playerNameChanged
 } from './actions';
 
 const initialState = {
   playerCount: 4,
   cpuPlayerCount: 0,
+  gameCount: 10,
   playerName: '',
   isButtonDisabled: true
 };
@@ -30,6 +32,14 @@ const homeReducer = handleActions({
       number < state.playerCount) ? number : state.cpuPlayerCount;
     return Object.assign({}, state, {
       cpuPlayerCount: cpuCount
+    });
+  },
+  [gameCountChanged]: (state, action) => {
+    let number = Number.parseInt(action.payload, 10);
+    let count = (number >= gv.minGameCount && number <= gv.maxGameCount) ?
+      number : state.gameCount;
+    return Object.assign({}, state, {
+      gameCount: count
     });
   },
   [playerNameChanged]: (state, action) => {

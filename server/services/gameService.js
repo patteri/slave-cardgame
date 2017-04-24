@@ -50,7 +50,7 @@ class GameService {
   // Creates a new game with one human player and specified CPU player count
   // Returns the game and the player
   // If player count is fulfilled, starts the game immediately
-  createGame(playerName, playerCount, cpuPlayerCount, shuffleDeck = true) {
+  createGame(playerName, playerCount, cpuPlayerCount, gameCount, shuffleDeck = true) {
     if (!this.validatePlayer(playerName)) {
       return null;
     }
@@ -58,9 +58,12 @@ class GameService {
       cpuPlayerCount < 0 || cpuPlayerCount > playerCount - 1) {
       return null;
     }
+    if (gameCount < GameValidation.minGameCount || gameCount > GameValidation.maxGameCount) {
+      return null;
+    }
 
     // Create game, players and deal cards
-    let game = new Game(playerCount, shuffleDeck);
+    let game = new Game(playerCount, gameCount, shuffleDeck);
     let human = new HumanPlayer(playerName);
     game.addPlayer(human);
 

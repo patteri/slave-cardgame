@@ -1,15 +1,52 @@
 import React, { PropTypes } from 'react';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button, ControlLabel, Table } from 'react-bootstrap';
+
+const formatPlayerName = player => player.name + (player.isCpu ? ' (CPU)' : '');
 
 const ResultsModal = ({ show, onHide, results }) => (
   <Modal className="Results-modal" show={show} onHide={onHide}>
     <Modal.Header closeButton>
-      <Modal.Title>Results</Modal.Title>
+      <Modal.Title>{results.gameNumber === results.totalGameCount ? 'Final results' : 'Results'}</Modal.Title>
     </Modal.Header>
     <Modal.Body>
-      {results.map((item, index) =>
-        <p key={index}>{item.position}. {item.name} {item.isCpu && '(CPU)'}</p>
-      )}
+      <ControlLabel>Previous game:</ControlLabel>
+      <Table bordered>
+        <thead>
+          <tr>
+            <th />
+            <th>Player</th>
+            <th>Points</th>
+          </tr>
+        </thead>
+        <tbody>
+          {results.currentResults.map((item, index) =>
+            <tr key={index}>
+              <td>{item.position}.</td>
+              <td>{formatPlayerName(item)}</td>
+              <td>{item.points}</td>
+            </tr>
+          )}
+        </tbody>
+      </Table>
+      <ControlLabel className="">Overall points after game {results.gameNumber}/{results.totalGameCount}:</ControlLabel>
+      <Table bordered>
+        <thead>
+          <tr>
+            <th />
+            <th>Player</th>
+            <th>Points</th>
+          </tr>
+        </thead>
+        <tbody>
+          {results.overallResults.map((item, index) =>
+            <tr key={index}>
+              <td>{item.position}.</td>
+              <td>{formatPlayerName(item)}</td>
+              <td>{item.points}</td>
+            </tr>
+          )}
+        </tbody>
+      </Table>
     </Modal.Body>
     <Modal.Footer>
       <Button onClick={onHide}>OK</Button>
@@ -20,7 +57,7 @@ const ResultsModal = ({ show, onHide, results }) => (
 ResultsModal.PropTypes = {
   show: PropTypes.bool.isRequired,
   onHide: PropTypes.func.isRequired,
-  results: PropTypes.array
+  results: PropTypes.object
 };
 
 export default ResultsModal;

@@ -4,6 +4,7 @@ import Home from './Home';
 import {
   playerCountChanged,
   cpuPlayerCountChanged,
+  gameCountChanged,
   playerNameChanged
 } from './actions';
 import { gameStarted } from '../Game/actions';
@@ -19,6 +20,9 @@ const mapDispatchToProps = dispatch => ({
   onCpuPlayerCountChanged(count) {
     dispatch(cpuPlayerCountChanged(count));
   },
+  onGameCountChanged(count) {
+    dispatch(gameCountChanged(count));
+  },
   onPlayerNameChanged(name) {
     dispatch(playerNameChanged(name));
   },
@@ -28,7 +32,8 @@ const mapDispatchToProps = dispatch => ({
       api.createGame({
         playerName: state.playerName,
         playerCount: state.playerCount,
-        cpuPlayerCount: state.cpuPlayerCount
+        cpuPlayerCount: state.cpuPlayerCount,
+        gameCount: state.gameCount
       }).then((response) => {
         dispatch(gameStarted(response.data));
         browserHistory.push('/game');

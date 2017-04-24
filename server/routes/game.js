@@ -31,7 +31,8 @@ const handleGameQueryResult = (res, result) => {
 
 // Initializes a new game
 router.post('/', (req, res) => {
-  const result = gameService.createGame(req.body.playerName, req.body.playerCount, req.body.cpuPlayerCount);
+  const result = gameService.createGame(req.body.playerName, req.body.playerCount, req.body.cpuPlayerCount,
+    req.body.gameCount);
   handleGameQueryResult(res, result);
 });
 

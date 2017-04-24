@@ -11,7 +11,7 @@ describe('/api/game', () => {
   it('Invalid game creation', (done) => {
     chai.request(app)
       .post('/api/game')
-      .send({ playerName: 'Human', playerCount: 4, cpuPlayerCount: 4 })
+      .send({ playerName: 'Human', playerCount: 4, cpuPlayerCount: 4, gameCount: 1 })
       .end((err, res) => {
         expect(res).to.have.status(400);
         expect(res).to.be.json; // eslint-disable-line no-unused-expressions
@@ -22,7 +22,7 @@ describe('/api/game', () => {
   it('Successful game creation', (done) => {
     chai.request(app)
       .post('/api/game')
-      .send({ playerName: 'Human', playerCount: 4, cpuPlayerCount: 3 })
+      .send({ playerName: 'Human', playerCount: 4, cpuPlayerCount: 3, gameCount: 1 })
       .end((err, res) => {
         expect(err).to.be.null; // eslint-disable-line no-unused-expressions
         expect(res).to.have.status(200);
@@ -56,7 +56,7 @@ describe('/api/game', () => {
   });
 
   it('Invalid game join (game already full)', (done) => {
-    let game = gameService.createGame('Human', 4, 3).game;
+    let game = gameService.createGame('Human', 4, 3, 1).game;
 
     chai.request(app)
       .post('/api/game/' + game.id + '/join')
@@ -69,7 +69,7 @@ describe('/api/game', () => {
   });
 
   it('Invalid game join (invalid player name)', (done) => {
-    let game = gameService.createGame('Human', 4, 2).game;
+    let game = gameService.createGame('Human', 4, 2, 1).game;
 
     chai.request(app)
       .post('/api/game/' + game.id + '/join')
@@ -82,7 +82,7 @@ describe('/api/game', () => {
   });
 
   it('Successful game join', (done) => {
-    let game = gameService.createGame('Human', 4, 2).game;
+    let game = gameService.createGame('Human', 4, 2, 1).game;
 
     chai.request(app)
       .post('/api/game/' + game.id + '/join')

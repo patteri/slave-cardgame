@@ -87,6 +87,10 @@
   color: #333;
 }
 
+.Results-modal label:not(:first-child) {
+  margin-top: 10px;
+}
+
 @media(min-width:1200px) {
   .Game-card:not(:first-child) {
     margin-left: -30px;

@@ -24,7 +24,7 @@ const initialState = {
   table: [],
   isFirstTurn: true,
   isRevolution: false,
-  results: [],
+  results: null,
   helpText: null
 };
 

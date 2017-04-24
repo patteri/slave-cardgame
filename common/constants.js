@@ -8,7 +8,9 @@ const GameValidation = {
   minPlayerNameLength: 1,
   maxPlayerNameLength: 12,
   minPlayerCount: 4,
-  maxPlayerCount: 8
+  maxPlayerCount: 8,
+  minGameCount: 1,
+  maxGameCount: 100
 };
 
 exports.GameState = GameState;

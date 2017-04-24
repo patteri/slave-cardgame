@@ -21,7 +21,7 @@ class Join extends Component {
         <Row className="Home-game-form">
           <Col md={4} sm={6} mdOffset={4} smOffset={3}>
             <form onSubmit={e => this.joinGame(e)}>
-              <FormGroup>
+              <FormGroup controlId="gameId">
                 <ControlLabel>Game ID</ControlLabel>
                 <FormControl
                   type="text"
@@ -29,7 +29,7 @@ class Join extends Component {
                   onChange={e => this.props.onGameIdChanged(e.target.value)}
                 />
               </FormGroup>
-              <FormGroup>
+              <FormGroup controlId="playerName">
                 <ControlLabel>Player name</ControlLabel>
                 <FormControl
                   type="text"

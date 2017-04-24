@@ -4,10 +4,8 @@ const Game = require('../../models/game');
 class GameTracker extends Game {
 
   constructor(playerCount, gameCount, roundDone, done) {
-    super(playerCount, true);
+    super(playerCount, gameCount, true);
 
-    this._gameCount = gameCount;
-    this._gameIndex = 0;
     this._roundDoneCallback = roundDone;
     this._doneCallback = done;
     this._playerPoints = new Map();
@@ -18,7 +16,7 @@ class GameTracker extends Game {
     };
   }
 
-  initializeNewRound() {
+  gameEnded() {
     this._players.forEach((player) => {
       let currentPoints = this._players.length - player.position;
       let existingPoints = this._playerPoints.get(player.id);
@@ -33,8 +31,7 @@ class GameTracker extends Game {
       })));
     }
 
-    this._gameIndex += 1;
-    if (this._gameIndex === this._gameCount) {
+    if (this._currentGameIndex === this._gameCount - 1) {
       if (this._doneCallback) {
         this._doneCallback(Array.from(this._playerPoints).map(([ key, value ]) => ({
           playerName: this._players.find(player => player.id === key).name,
@@ -42,9 +39,8 @@ class GameTracker extends Game {
         })));
       }
     }
-    else {
-      super.initializeNewRound();
-    }
+
+    super.gameEnded();
   }
 
 }
