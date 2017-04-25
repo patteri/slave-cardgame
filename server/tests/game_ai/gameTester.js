@@ -16,6 +16,26 @@ const GameCount = 1000;
 // Number of players in the simulation
 const PlayerCount = 4;
 
+// The AI parameters to to test
+const firstPlayerConf = {
+  aiInterval: 0,
+  applyHitDecisionLogic: true,
+  minCardGroupCount: 4,
+  calculateAverageAfter: true,
+  avgScaleFactor: 10,
+  valueScaleFactor: 11
+};
+
+// AI parameters for the rest of the players
+const otherPlayersConf = {
+  aiInterval: 0,
+  applyHitDecisionLogic: false,
+  minCardGroupCount: 4,
+  calculateAverageAfter: true,
+  avgScaleFactor: 12,
+  valueScaleFactor: 13
+};
+
 const startTime = Date.now();
 console.log('Script started...'); // eslint-disable-line no-console
 
@@ -24,21 +44,11 @@ let scriptEnded = false;
 const startGame = (gameCount, roundDone, done) => {
   let game = new GameTracker(PlayerCount, gameCount, roundDone, done);
 
-  // The player to test
-  let specializedCpuPlayer = new CpuPlayer('CPU 1', {
-    aiInterval: 0,
-    applyHitDecisionLogic: true,
-    minCardGroupCount: 4
-  });
+  let specializedCpuPlayer = new CpuPlayer('CPU 1', firstPlayerConf);
   game.addPlayer(specializedCpuPlayer);
 
-  // Rest of the players
   for (let i = 1; i < PlayerCount; ++i) {
-    let player = new CpuPlayer('CPU ' + (i + 1), {
-      aiInterval: 0,
-      applyHitDecisionLogic: false,
-      minCardGroupCount: 4
-    });
+    let player = new CpuPlayer('CPU ' + (i + 1), otherPlayersConf);
     game.addPlayer(player);
   }
 
@@ -99,6 +109,8 @@ else {
   }
   else {
     console.log('Method: ' + TestMethod + ', game count: ' + GameCount + ', player count: ' + PlayerCount); // eslint-disable-line no-console
+    console.log('AI conf to test:', firstPlayerConf); // eslint-disable-line no-console
+    console.log('AI conf to play against:', otherPlayersConf); // eslint-disable-line no-console
     console.log('Points:', results); // eslint-disable-line no-console
     console.log('Deviation:', deviation); // eslint-disable-line no-console
     console.log('Script ended in ' + ((Date.now() - startTime) / 1000) + ' seconds'); // eslint-disable-line no-console

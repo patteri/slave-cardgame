@@ -3,12 +3,19 @@ const CardHelper = require('../../common/cardHelper');
 const { CardExchangeType } = require('../../common/constants');
 const _ = require('lodash');
 
-const AIInterval = 1500;
+const AIInterval = 1000;
 
 const DefaultConfiguration = {
-  aiInterval: AIInterval, // Interval used for "thinking" the next hit
+  aiInterval: AIInterval, // Interval used for thinking the next hit
   applyHitDecisionLogic: true, // Flag indicating whether the special hit decision logic is used
-  minCardGroupCount: 4 // Magic number used by AI
+  minCardGroupCount: 4, // Minimum card group when hit decision logic is applied
+  calculateAverageAfter: true, // Indicates whether the card value average is calculated excluding the cards to hit
+  // Factor for scaling the hit decision probability by cards value average
+  // value 12: worst possible hand => +50%, average hand => 0%, best possible hand => -50%
+  avgScaleFactor: 10,
+  // Factor for scaling the hit decision probability by current value of cards to hit
+  // value 13: worst possible cards => -50%, average cards => 0%, best possible cards => +50%
+  valueScaleFactor: 11
 };
 
 // Helper table
@@ -18,7 +25,7 @@ class CpuPlayer extends Player {
 
   constructor(name, configuration = DefaultConfiguration) {
     super(name);
-    this._configuration = configuration;
+    this._conf = configuration;
   }
 
   playTurn(game) {
@@ -28,7 +35,7 @@ class CpuPlayer extends Player {
         game.isRevolution(),
         game.table)
       );
-    }, this._configuration.aiInterval, game);
+    }, this._conf.aiInterval, game);
   }
 
   // Returns a key representing the value
@@ -90,17 +97,26 @@ class CpuPlayer extends Player {
   // 2. going to hit revolution
   // 3. not many cards of different sizes left (specified by 'minCardGroupCount')
   makeHitDecision(cardGroupsCount, cardsToHit, isRevolution) {
-    if (cardsToHit.length > 0 && cardsToHit.length < 4 && cardGroupsCount >= this._configuration.minCardGroupCount) {
-      let average = this.hand.reduce((sum, card) => sum + CardHelper.getRealValue(card, isRevolution), 0) /
-        this.hand.length;
-      // Calculate probability of not to hit by the "goodness" of the hand
-      // (worst possible hand => 50%, average hand => 0%, best possible hand => -50%)
-      let averageFactor = !isRevolution ? (8 - average) / 12 : (average - 7) / 12;
+    if (cardsToHit.length > 0 && cardsToHit.length < 4 && cardGroupsCount >= this._conf.minCardGroupCount) {
+      // Calculate average by average rule
+      let sum = this.hand.reduce((sum, card) => sum + CardHelper.getRealValue(card, isRevolution), 0);
+      let average = 0;
+      if (this._conf.calculateAverageAfter) {
+        let cardsToHitSum = cardsToHit.reduce((sum, card) => sum + CardHelper.getRealValue(card, isRevolution), 0);
+        average = (sum - cardsToHitSum) / (this.hand.length - cardsToHit.length);
+      }
+      else {
+        average = sum / this.hand.length;
+      }
+
+      // Calculate hitting probability by the "goodness" of the hand (value average)
+      let averageFactor = !isRevolution ? (8 - average) / this._conf.avgScaleFactor :
+        (average - 7) / this._conf.avgScaleFactor;
+
+      // Calculate hitting probability by the "goodness" of the cards to hit (value)
       let realValue = CardHelper.getRealValue(cardsToHit[0], isRevolution);
-      // Calculate probability of not to hit by the "goodness" of the cards to hit
-      // (worst possible cards => 50%, average cards => 0%, best possible cards => -50%)
       let valueFactor = !isRevolution ? realValue - 1 : 14 - realValue;
-      valueFactor = (valueFactor / 13) - 0.5;
+      valueFactor = (valueFactor / this._conf.valueScaleFactor) - (6.5 / this._conf.valueScaleFactor);
 
       // The final probability is sum of the two factors
       if (Math.random() < valueFactor + averageFactor) {
@@ -154,7 +170,7 @@ class CpuPlayer extends Player {
           cardsToPlay.splice(0, cardsToPlay.length - previousHit.length);
         }
 
-        if (this._configuration.applyHitDecisionLogic &&
+        if (this._conf.applyHitDecisionLogic &&
           !this.makeHitDecision(groups.keys.length, cardsToPlay, isRevolution)) {
           cardsToPlay = [];
         }
