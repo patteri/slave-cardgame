@@ -66,20 +66,20 @@
   min-width: 120px;
 }
 
-.Player-status {
+.Player-hit-status {
   text-transform: uppercase;
 }
 
-.Player-status.Hit {
+.Player-hit-status.Hit {
   font-weight: bold;
 }
 
-.Player-status.Pass {
+.Player-hit-status.Pass {
   color: orange;
   font-weight: bold;
 }
 
-.Player-status.Waiting, .Player-status.OutOfGame {
+.Player-hit-status.Waiting {
   visibility: hidden;
 }
 
@@ -160,7 +160,7 @@
     margin: 0;
   }
 
-  .Player-status {
+  .Player-hit-status {
     font-size: 0.8em;
   }
 }

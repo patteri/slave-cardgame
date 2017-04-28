@@ -52,7 +52,7 @@ class Player extends Component {
         >
           {player.name}
         </span>
-        <PlayerStatus status={player.status} />
+        <PlayerStatus status={player.hitStatus} />
         <Button className="Game-hit-button" onClick={() => this.hitCards()} disabled={!canHit}>
           {buttonText}
         </Button>

@@ -5,7 +5,7 @@ const CpuPlayer = require('./cpuPlayer');
 const tokenGenerator = require('../helpers/tokenGenerator');
 const socketService = require('../services/socketService');
 const CardHelper = require('../../common/cardHelper');
-const { GameState, PlayerState, CardExchangeType } = require('../../common/constants');
+const { GameState, PlayerState, PlayerHitState, CardExchangeType } = require('../../common/constants');
 
 const StartCpuGameInterval = 1000;
 const StartNewRoundInterval = 5000;
@@ -186,6 +186,7 @@ class Game {
       this._previousHit.cards = [];
       this._previousHit.player = this._turn;
     }
+    this.setPlayerHitState(cards);
 
     // Move cards from player's hand to the table
     cards.forEach((card) => {
@@ -237,6 +238,15 @@ class Game {
     return remainingHand;
   }
 
+  setPlayerHitState(cards) {
+    this._turn.hitState = cards.length === 0 ? PlayerHitState.PASS : PlayerHitState.HIT;
+    if (this._turn.hitState === PlayerHitState.HIT) {
+      for (let i = 1; i < this._players.length; ++i) {
+        this._players[(this._players.indexOf(this._turn) + i) % this._players.length].hitState = PlayerHitState.WAITING;
+      }
+    }
+  }
+
   setPositionAndPoints(player) {
     player.position = Math.max(...this._players.map(item => item.position)) + 1;
     player.points += this._players.length - player.position;
@@ -284,8 +294,8 @@ class Game {
       this.initializeNewGame(true, GameState.CARD_EXCHANGE);
       this.dealCards();
 
-      // Set exchange rule for all players
       this._players.forEach((player) => {
+        // Set exchange rules
         let count = 0;
         if (player.position === 1 || player.position === this._players.length) {
           count = 2;
@@ -307,6 +317,11 @@ class Game {
           exchangeType: type,
           toPlayer: toPlayer
         };
+
+        // Initialize hit states
+        this._players.forEach((player) => {
+          player.hitState = PlayerHitState.WAITING;
+        });
       });
 
       // CPU players select cards for exchange
@@ -320,36 +335,6 @@ class Game {
     else {
       this._state = GameState.ENDED;
     }
-  }
-
-  getPlayerState(player) {
-    if (player.hand.length === 0) {
-      return PlayerState.OUT_OF_GAME;
-    }
-    if (this._previousHit.player != null) {
-      let prevHitIdx = this._players.indexOf(this._previousHit.player);
-      let playerIdx = this._players.indexOf(player);
-      let turnIdx = this._players.indexOf(this._turn);
-
-      let turnNumber = turnIdx > prevHitIdx ? turnIdx - prevHitIdx : (this._players.length - prevHitIdx) + turnIdx;
-      let playerNumber = playerIdx > prevHitIdx ?
-      playerIdx - prevHitIdx : (this._players.length - prevHitIdx) + playerIdx;
-      // Invert index when revolution
-      if (this.isRevolution() && turnNumber !== this._players.length) {
-        turnNumber = this._players.length - turnNumber;
-      }
-      if (this.isRevolution() && playerNumber !== this._players.length) {
-        playerNumber = this._players.length - playerNumber;
-      }
-
-      if (player === this._previousHit.player && player !== this._turn) {
-        return PlayerState.HIT;
-      }
-      else if ((playerNumber < turnNumber) && player.hand.length > 0) {
-        return PlayerState.PASS;
-      }
-    }
-    return PlayerState.WAITING;
   }
 
   getCardsForExchange(clientId) {
@@ -442,7 +427,8 @@ class Game {
         isCpu: player instanceof CpuPlayer,
         cardCount: player.hand.length,
         turn: player === this._turn,
-        status: this.getPlayerState(player)
+        status: player.hand.length === 0 ? PlayerState.OUT_OF_GAME : PlayerState.PLAYING,
+        hitStatus: player.hitState
       }))
     };
   }

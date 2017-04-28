@@ -6,7 +6,7 @@ const HumanPlayer = require('../../models/humanPlayer');
 const CpuPlayer = require('../../models/cpuPlayer');
 const gameService = require('../../services/gameService');
 const CardHelper = require('../../../common/cardHelper');
-const { CardExchangeType, GameState } = require('../../../common/constants');
+const { CardExchangeType, GameState, PlayerHitState } = require('../../../common/constants');
 
 const expect = chai.expect;
 
@@ -257,5 +257,28 @@ describe('Game', () => {
 
     game.setCardsForExchange(game._players[0].id, _.take(game._players[0].hand, 2));
     expect(game.state).to.equal(GameState.ENDED);
+  });
+
+  it('Players hit states are assigned correctly', () => {
+    let game = gameService.createGame('Human', 4, 3, 1, false).game;
+    expect(game._players[0].hitState).to.equal(PlayerHitState.WAITING);
+    expect(game._players[1].hitState).to.equal(PlayerHitState.WAITING);
+    expect(game._players[2].hitState).to.equal(PlayerHitState.WAITING);
+    expect(game._players[3].hitState).to.equal(PlayerHitState.WAITING);
+    game.playTurn([ game._players[1].hand[0] ]);
+    expect(game._players[0].hitState).to.equal(PlayerHitState.WAITING);
+    expect(game._players[1].hitState).to.equal(PlayerHitState.HIT);
+    expect(game._players[2].hitState).to.equal(PlayerHitState.WAITING);
+    expect(game._players[3].hitState).to.equal(PlayerHitState.WAITING);
+    game.playTurn([]);
+    expect(game._players[0].hitState).to.equal(PlayerHitState.WAITING);
+    expect(game._players[1].hitState).to.equal(PlayerHitState.HIT);
+    expect(game._players[2].hitState).to.equal(PlayerHitState.PASS);
+    expect(game._players[3].hitState).to.equal(PlayerHitState.WAITING);
+    game.playTurn([ game._players[3].hand[0] ]);
+    expect(game._players[0].hitState).to.equal(PlayerHitState.WAITING);
+    expect(game._players[1].hitState).to.equal(PlayerHitState.WAITING);
+    expect(game._players[2].hitState).to.equal(PlayerHitState.WAITING);
+    expect(game._players[3].hitState).to.equal(PlayerHitState.HIT);
   });
 });

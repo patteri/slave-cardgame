@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const tokenGenerator = require('../helpers/tokenGenerator');
 const Card = require('../../common/card');
+const { PlayerHitState } = require('../../common/constants');
 
 class Player {
 
@@ -15,6 +16,7 @@ class Player {
     this._cardExchangeRule = null;
     this._cardsForExchange = null;
     this._socket = null;
+    this._hitState = PlayerHitState.WAITING;
   }
 
   get id() {
@@ -71,6 +73,14 @@ class Player {
 
   set socket(socket) {
     this._socket = socket;
+  }
+
+  get hitState() {
+    return this._hitState;
+  }
+
+  set hitState(hitState) {
+    this._hitState = hitState;
   }
 
   playTurn(game) { // eslint-disable-line no-unused-vars

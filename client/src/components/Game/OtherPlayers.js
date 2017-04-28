@@ -19,7 +19,7 @@ const OtherPlayers = ({ playerCount, players }) => (
         <p className={classNames('Game-player-card-count', { OutOfGame: item.status === PlayerState.OUT_OF_GAME })}>
           <span className="Game-player-card-count-number">{item.cardCount}</span> cards
         </p>
-        <PlayerStatus status={item.status} />
+        <PlayerStatus status={item.hitStatus} />
       </div>
     ))}
   </Row>
