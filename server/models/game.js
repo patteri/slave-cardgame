@@ -65,14 +65,14 @@ class Game {
   }
 
   // Registers a socket for the specified client
-  // Returns true if succeeded, otherwise false
+  // Returns the player if succeeded, otherwise null
   registerSocket(clientId, socket) {
     let player = this._players.find(item => item.id === clientId);
     if (player) {
       player.socket = socket;
-      return true;
+      return player;
     }
-    return false;
+    return null;
   }
 
   isFull() {

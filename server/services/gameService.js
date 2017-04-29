@@ -2,7 +2,7 @@ const Game = require('../models/game');
 const HumanPlayer = require('../models/humanPlayer');
 const CpuPlayer = require('../models/cpuPlayer');
 const socketService = require('../services/socketService');
-const { GameValidation } = require('../../common/constants');
+const { GameValidation, MaxChatMessageLength } = require('../../common/constants');
 
 class GameService {
 
@@ -14,14 +14,27 @@ class GameService {
     socket.on('connection', (socket) => {
       socket.on('joinGame', (gameId, clientId) => {
         let game = this.getGame(gameId);
-        if (game && game.registerSocket(clientId, socket)) {
-          socket.join(gameId);
-          // Send the latest game state to the joined client to avoid timing issues
-          // between call to join API and registering the socket
-          socketService.emitToClient(socket, 'gameUpdated', { game: game.toJSON() });
+        if (game) {
+          const player = game.registerSocket(clientId, socket);
+          if (player) {
+            socket.player = player;
+            socket.join(gameId);
+            // Send the latest game state to the joined client to avoid timing issues
+            // between call to join API and registering the socket
+            socketService.emitToClient(socket, 'gameUpdated', { game: game.toJSON() });
+          }
         }
         else {
           socket.close();
+        }
+      });
+      socket.on('sendChatMessage', (gameId, message) => {
+        if (socket.rooms.hasOwnProperty(gameId)) {
+          const msg = message.trim().substring(0, MaxChatMessageLength);
+          socketService.emitToGame(gameId, 'chatMessageReceived', {
+            sender: socket.player.name,
+            message: msg
+          });
         }
       });
       socket.on('disconnect', (socket) => { // eslint-disable-line no-unused-vars

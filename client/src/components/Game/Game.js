@@ -5,6 +5,7 @@ import io from 'socket.io-client';
 import OtherPlayers from './OtherPlayers';
 import Table from './Table';
 import Player from './Player';
+import Chat from '../Chat';
 import ResultsModal from './ResultsModal';
 import { GameState, GameSocketUrl } from '../../../../common/constants';
 
@@ -14,11 +15,10 @@ class Game extends Component {
     super(props);
 
     this.state = {
+      socket: null,
       showModal: false,
       joinUrl: ''
     };
-
-    this.socket = null;
 
     this.gameEnded = this.gameEnded.bind(this);
     this.showModal = this.showModal.bind(this);
@@ -29,16 +29,17 @@ class Game extends Component {
   componentWillMount() {
     if (this.props.gameId) {
       // Configure websocket
-      this.socket = io('', { path: GameSocketUrl });
-      this.socket.emit('joinGame', this.props.gameId, this.props.playerId);
-      this.socket.on('playerJoined', this.props.onPlayerJoined);
-      this.socket.on('gameStarted', this.props.onGameStarted);
-      this.socket.on('gameUpdated', this.props.onGameUpdated);
-      this.socket.on('gameEnded', this.gameEnded);
-      this.socket.on('cardsExchanged', this.props.onCardsExchanged);
-      this.socket.on('newRoundStarted', this.props.onNewRoundStarted);
+      const socket = io('', { path: GameSocketUrl });
+      socket.emit('joinGame', this.props.gameId, this.props.playerId);
+      socket.on('playerJoined', this.props.onPlayerJoined);
+      socket.on('gameStarted', this.props.onGameStarted);
+      socket.on('gameUpdated', this.props.onGameUpdated);
+      socket.on('gameEnded', this.gameEnded);
+      socket.on('cardsExchanged', this.props.onCardsExchanged);
+      socket.on('newRoundStarted', this.props.onNewRoundStarted);
 
       this.setState({
+        socket: socket,
         joinUrl: window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1) +
           'join/' + this.props.gameId
       });
@@ -49,8 +50,8 @@ class Game extends Component {
   }
 
   componentWillUnmount() {
-    if (this.socket) {
-      this.socket.close();
+    if (this.state.socket) {
+      this.state.socket.close();
     }
   }
 
@@ -86,10 +87,11 @@ class Game extends Component {
   }
 
   render() {
-    const { playerCount, gameState, otherPlayers, table, isRevolution, player, results, helpText } = this.props;
+    const { gameId, playerCount, gameState, otherPlayers, table, isRevolution, player, results, helpText } = this.props;
 
     return (
       <Grid className="Game" fluid>
+        <Chat socket={this.state.socket} gameId={gameId} />
         {results &&
           <ResultsModal results={results} show={this.state.showModal} onHide={this.hideModal} />
         }

@@ -14,9 +14,12 @@ const GameValidation = {
   maxGameCount: 100
 };
 
+const MaxChatMessageLength = 200;
+
 exports.GameState = GameState;
 exports.PlayerState = PlayerState;
 exports.PlayerHitState = PlayerHitState;
 exports.CardExchangeType = CardExchangeType;
 exports.GameSocketUrl = GameSocketUrl;
 exports.GameValidation = GameValidation;
+exports.MaxChatMessageLength = MaxChatMessageLength;
