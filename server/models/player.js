@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const tokenGenerator = require('../helpers/tokenGenerator');
-const Card = require('../../common/card');
-const { PlayerHitState } = require('../../common/constants');
+const Card = require('../../client/src/shared/card');
+const { PlayerHitState } = require('../../client/src/shared/constants');
 
 class Player {
 

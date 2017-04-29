@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const Card = require('../../common/card');
+const Card = require('../../client/src/shared/card');
 
 class Deck {
 

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { Row } from 'react-bootstrap';
 import classNames from 'classnames';
 import PlayerStatus from './PlayerStatus';
-import { PlayerState } from '../../../../common/constants';
+import { PlayerState } from '../../shared/constants';
 import './style.css';
 
 const OtherPlayers = ({ playerCount, players }) => (

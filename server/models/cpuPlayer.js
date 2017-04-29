@@ -1,6 +1,6 @@
 const Player = require('./player');
-const CardHelper = require('../../common/cardHelper');
-const { CardExchangeType } = require('../../common/constants');
+const CardHelper = require('../../client/src/shared/cardHelper');
+const { CardExchangeType } = require('../../client/src/shared/constants');
 const _ = require('lodash');
 
 const AIInterval = 1000;

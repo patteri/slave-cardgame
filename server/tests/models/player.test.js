@@ -1,9 +1,9 @@
 const chai = require('chai');
 const HumanPlayer = require('../../models/humanPlayer');
 const CpuPlayer = require('../../models/cpuPlayer');
-const Card = require('../../../common/card');
+const Card = require('../../../client/src/shared/card');
 const Deck = require('../../models/deck');
-const { CardExchangeType } = require('../../../common/constants');
+const { CardExchangeType } = require('../../../client/src/shared/constants');
 
 const expect = chai.expect;
 

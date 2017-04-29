@@ -1,5 +1,5 @@
 const Socket = require('socket.io');
-const { GameSocketUrl } = require('../../common/constants');
+const { GameSocketUrl } = require('../../client/src/shared/constants');
 
 class SocketService {
 

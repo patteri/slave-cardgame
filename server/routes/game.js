@@ -1,6 +1,6 @@
 const express = require('express');
 const gameService = require('../services/gameService');
-const { GameState } = require('../../common/constants');
+const { GameState } = require('../../client/src/shared/constants');
 
 const router = express.Router();
 

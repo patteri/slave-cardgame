@@ -1,12 +1,12 @@
 const chai = require('chai');
 const _ = require('lodash');
 const Game = require('../../models/game');
-const Card = require('../../../common/card');
+const Card = require('../../../client/src/shared/card');
 const HumanPlayer = require('../../models/humanPlayer');
 const CpuPlayer = require('../../models/cpuPlayer');
 const gameService = require('../../services/gameService');
-const CardHelper = require('../../../common/cardHelper');
-const { CardExchangeType, GameState, PlayerHitState } = require('../../../common/constants');
+const CardHelper = require('../../../client/src/shared/cardHelper');
+const { CardExchangeType, GameState, PlayerHitState } = require('../../../client/src/shared/constants');
 
 const expect = chai.expect;
 

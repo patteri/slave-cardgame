@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions';
-import { GameValidation as gv } from '../../../../common/constants';
+import { GameValidation as gv } from '../../shared/constants';
 import {
   playerCountChanged,
   cpuPlayerCountChanged,

@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { Row, Col, FormGroup, ControlLabel, FormControl, Button } from 'react-bootstrap';
 import NumericSelector from './NumericSelector';
-import { GameValidation as gv } from '../../../../common/constants';
+import { GameValidation as gv } from '../../shared/constants';
 
 class Home extends Component {
 

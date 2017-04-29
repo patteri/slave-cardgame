@@ -2,7 +2,7 @@ const Game = require('../models/game');
 const HumanPlayer = require('../models/humanPlayer');
 const CpuPlayer = require('../models/cpuPlayer');
 const socketService = require('../services/socketService');
-const { GameValidation, MaxChatMessageLength } = require('../../common/constants');
+const { GameValidation, MaxChatMessageLength } = require('../../client/src/shared/constants');
 
 class GameService {
 
@@ -37,8 +37,11 @@ class GameService {
           });
         }
       });
-      socket.on('disconnect', (socket) => { // eslint-disable-line no-unused-vars
-        // TODO: handle disconnection
+      socket.on('disconnect', () => {
+        // TODO: handle disconnection properly
+        if (socket.player) {
+          console.log(socket.player.name + ' disconnected...'); // eslint-disable-line no-console
+        }
       });
     });
   }

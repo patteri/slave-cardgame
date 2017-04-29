@@ -7,7 +7,7 @@ import Table from './Table';
 import Player from './Player';
 import Chat from '../Chat';
 import ResultsModal from './ResultsModal';
-import { GameState, GameSocketUrl } from '../../../../common/constants';
+import { GameState, GameSocketUrl } from '../../shared/constants';
 
 class Game extends Component {
 

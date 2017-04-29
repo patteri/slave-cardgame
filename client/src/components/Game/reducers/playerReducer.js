@@ -10,9 +10,9 @@ import {
   cardsGiven,
   cardsExchanged,
   newRoundStarted } from '../actions';
-import CardHelper from '../../../../../common/cardHelper';
-import Card from '../../../../../common/card';
-import { GameState, CardExchangeType } from '../../../../../common/constants';
+import CardHelper from '../../../shared/cardHelper';
+import Card from '../../../shared/card';
+import { GameState, CardExchangeType } from '../../../shared/constants';
 
 const initialState = {
   player: null,

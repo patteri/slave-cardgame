@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { FormControl, InputGroup, Button } from 'react-bootstrap';
 import Dimensions from 'react-dimensions';
 import classNames from 'classnames';
-import { MaxChatMessageLength } from '../../../../common/constants';
+import { MaxChatMessageLength } from '../../shared/constants';
 import './style.css';
 
 const ChatAutoOpenMinWidth = 1200;

@@ -3,7 +3,7 @@ import { Button } from 'react-bootstrap';
 import classNames from 'classnames';
 import PlayerStatus from './PlayerStatus';
 import Card from './Card';
-import { PlayerState, CardExchangeType } from '../../../../common/constants';
+import { PlayerState, CardExchangeType } from '../../shared/constants';
 import './style.css';
 
 class Player extends Component {

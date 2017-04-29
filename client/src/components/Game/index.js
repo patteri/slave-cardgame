@@ -12,7 +12,7 @@ import {
   cardsExchanged,
   newRoundStarted } from './actions';
 import api from '../../api/api';
-import { GameState, CardExchangeType } from '../../../../common/constants';
+import { GameState, CardExchangeType } from '../../shared/constants';
 import './style.css';
 import './playerColumns.css';
 

@@ -6,7 +6,7 @@ import {
   gameUpdated,
   gameEnded,
   newRoundStarted } from '../components/Game/actions';
-import { GameState } from '../../../common/constants';
+import { GameState } from '../shared/constants';
 
 const getGameData = () => ({
   game: {

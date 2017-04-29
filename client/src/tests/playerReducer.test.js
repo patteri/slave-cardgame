@@ -9,8 +9,8 @@ import {
   cardsGiven,
   cardsExchanged,
   newRoundStarted } from '../components/Game/actions';
-import Card from '../../../common/card';
-import { GameState, CardExchangeType } from '../../../common/constants';
+import Card from '../shared/card';
+import { GameState, CardExchangeType } from '../shared/constants';
 
 const getGameData = () => ({
   game: {

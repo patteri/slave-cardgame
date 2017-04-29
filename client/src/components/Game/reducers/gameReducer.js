@@ -11,7 +11,7 @@ import {
   cardsGiven,
   cardsExchanged,
   newRoundStarted } from '../actions';
-import { CardExchangeType } from '../../../../../common/constants';
+import { CardExchangeType } from '../../../shared/constants';
 
 const initialState = {
   gameId: null,

@@ -1,11 +1,11 @@
 const _ = require('lodash');
 const Deck = require('./deck');
-const Card = require('../../common/card');
+const Card = require('../../client/src/shared/card');
 const CpuPlayer = require('./cpuPlayer');
 const tokenGenerator = require('../helpers/tokenGenerator');
 const socketService = require('../services/socketService');
-const CardHelper = require('../../common/cardHelper');
-const { GameState, PlayerState, PlayerHitState, CardExchangeType } = require('../../common/constants');
+const CardHelper = require('../../client/src/shared/cardHelper');
+const { GameState, PlayerState, PlayerHitState, CardExchangeType } = require('../../client/src/shared/constants');
 
 const StartCpuGameInterval = 1000;
 const StartNewRoundInterval = 5000;
