@@ -2,7 +2,7 @@ const Game = require('../models/game');
 const HumanPlayer = require('../models/humanPlayer');
 const CpuPlayer = require('../models/cpuPlayer');
 const socketService = require('../services/socketService');
-const { GameValidation, MaxChatMessageLength } = require('../../client/src/shared/constants');
+const { GameState, GameValidation, MaxChatMessageLength } = require('../../client/src/shared/constants');
 
 class GameService {
 
@@ -10,7 +10,18 @@ class GameService {
     this._games = new Map();
   }
 
-  initializeSocket(socket) {
+  socketsInitialized() {
+    // Initialize play room socket
+    let socket = socketService.getSocket('playRoom');
+    socket.on('connection', (socket) => {
+      socket.on('register', () => {
+        socket.join('playRoom');
+        socketService.emitToClient(socket, 'openGamesChanged', this.getOpenGames());
+      });
+    });
+
+    // Initialize game socket
+    socket = socketService.getSocket('game');
     socket.on('connection', (socket) => {
       socket.on('joinGame', (gameId, clientId) => {
         let game = this.getGame(gameId);
@@ -18,6 +29,7 @@ class GameService {
           const player = game.registerSocket(clientId, socket);
           if (player) {
             socket.player = player;
+            socket.game = game;
             socket.join(gameId);
             // Send the latest game state to the joined client to avoid timing issues
             // between call to join API and registering the socket
@@ -31,7 +43,7 @@ class GameService {
       socket.on('sendChatMessage', (gameId, message) => {
         if (socket.rooms.hasOwnProperty(gameId)) {
           const msg = message.trim().substring(0, MaxChatMessageLength);
-          socketService.emitToGame(gameId, 'chatMessageReceived', {
+          socketService.emitToRoom('game', gameId, 'chatMessageReceived', {
             sender: socket.player.name,
             message: msg
           });
@@ -42,8 +54,27 @@ class GameService {
         if (socket.player) {
           console.log(socket.player.name + ' disconnected...'); // eslint-disable-line no-console
         }
+
+        if (socket.game && socket.game.state === GameState.NOT_STARTED) {
+          socket.game.endGame();
+          socketService.emitToRoom('playRoom', 'playRoom', 'openGamesChanged', this.getOpenGames());
+        }
       });
     });
+  }
+
+  getOpenGames() {
+    const openGames = Array.from(this._games.values()).filter(game => game.state === GameState.NOT_STARTED);
+    return {
+      games: openGames.map(game => ({
+        id: game.id,
+        createdBy: game.players[0].name,
+        playerCount: game._playerCount,
+        gameCount: game._gameCount,
+        joinedHumanPlayers: game.players.filter(player => player instanceof HumanPlayer).length,
+        joinedCpuPlayers: game.players.filter(player => player instanceof CpuPlayer).length
+      }))
+    };
   }
 
   validatePlayer(playerName) {
@@ -87,11 +118,15 @@ class GameService {
       game.addPlayer(new CpuPlayer('Computer ' + (i + 1)));
     }
 
+    this._games.set(game.id, game);
+
     if (game.isFull()) {
       game.startNewGame();
     }
+    else {
+      socketService.emitToRoom('playRoom', 'playRoom', 'openGamesChanged', this.getOpenGames());
+    }
 
-    this._games.set(game.id, game);
     return { game: game, player: human };
   }
 
@@ -111,7 +146,8 @@ class GameService {
     if (game.isFull()) {
       game.startNewGame();
 
-      // Notify other players
+      // Notify game room and other players
+      socketService.emitToRoom('playRoom', 'playRoom', 'openGamesChanged', this.getOpenGames());
       game.players.filter(player => player !== human).forEach((player) => {
         socketService.emitToClient(player.socket, 'gameStarted', { game: game, player: player });
       });

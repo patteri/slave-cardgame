@@ -12,8 +12,8 @@ app.set('port', port);
 const server = http.createServer(app);
 
 // Initialize websockets
-const socket = socketService.initialize(server);
-gameService.initializeSocket(socket);
+socketService.initialize(server);
+gameService.socketsInitialized();
 
 // Listen on provided port, on all network interfaces.
 server.listen(port);

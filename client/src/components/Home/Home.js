@@ -1,9 +1,35 @@
 import React, { Component, PropTypes } from 'react';
-import { Row, Col, FormGroup, ControlLabel, FormControl, Button } from 'react-bootstrap';
+import { browserHistory } from 'react-router';
+import { Row, Col, Table, FormGroup, ControlLabel, FormControl, Button } from 'react-bootstrap';
+import io from 'socket.io-client';
 import NumericSelector from './NumericSelector';
-import { GameValidation as gv } from '../../shared/constants';
+import { SocketInfo, GameValidation as gv } from '../../shared/constants';
 
 class Home extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this._socket = null;
+    this.joinGame = this.joinGame.bind(this);
+  }
+
+  componentWillMount() {
+    // Configure websocket
+    this._socket = io('', { path: SocketInfo.playRoomSocketUrl });
+    this._socket.on('openGamesChanged', this.props.onOpenGamesChanged);
+    this._socket.emit('register');
+  }
+
+  componentWillUnmount() {
+    if (this._socket) {
+      this._socket.close();
+    }
+  }
+
+  joinGame(id) {
+    browserHistory.push('/join/' + id);
+  }
 
   createGame(e) {
     e.preventDefault();
@@ -11,13 +37,46 @@ class Home extends Component {
   }
 
   render() {
-    const { playerCount, cpuPlayerCount, gameCount, playerName, isButtonDisabled } = this.props;
+    const { openGames, playerCount, cpuPlayerCount, gameCount, playerName, isButtonDisabled } = this.props;
 
     return (
       <div className="Home">
-        <h2>Welcome to play Slave!</h2>
-        <Row className="Home-game-form">
-          <Col md={4} sm={6} mdOffset={4} smOffset={3}>
+        <h2 className="Home-header">Welcome to play Slave!</h2>
+        <Row className="Home-container">
+          <Col md={5} sm={6} mdOffset={1}>
+            <h4>Join a game</h4>
+            <Table className="Open-games-table Open-games-table-head" bordered>
+              <thead>
+                <tr>
+                  <th className="col-sm-5">Joined players (CPUs)</th>
+                  <th className="col-sm-3">Games</th>
+                  <th className="col-sm-4">Created by player</th>
+                </tr>
+              </thead>
+            </Table>
+            <div className="Open-games-scroll-container">
+              <Table className="Open-games-table Open-games-table-body" hover bordered>
+                <tbody>
+                  {openGames.map((item, index) =>
+                    <tr key={index} className="clickable" onClick={() => this.joinGame(item.id)}>
+                      <td className="col-sm-5">
+                        {item.joinedHumanPlayers + item.joinedCpuPlayers} / {item.playerCount} ({item.joinedCpuPlayers})
+                      </td>
+                      <td className="col-sm-3">{item.gameCount}</td>
+                      <td className="col-sm-4">{item.createdBy}</td>
+                    </tr>
+                  )}
+                  {openGames.length === 0 &&
+                    <tr>
+                      <td colSpan="3">No open games at the moment. Why wouldn&apos;t you create one?</td>
+                    </tr>
+                  }
+                </tbody>
+              </Table>
+            </div>
+          </Col>
+          <Col md={4} sm={6} mdOffset={1}>
+            <h4>Create a game</h4>
             <form onSubmit={e => this.createGame(e)}>
               <FormGroup controlId="numberOfPlayers">
                 <ControlLabel>Total number of players ({gv.minPlayerCount} - {gv.maxPlayerCount})</ControlLabel>

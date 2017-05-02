@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
 import Home from './Home';
 import {
+  openGamesChanged,
   playerCountChanged,
   cpuPlayerCountChanged,
   gameCountChanged,
@@ -14,6 +15,9 @@ import './style.css';
 const mapStateToProps = state => state.get('home');
 
 const mapDispatchToProps = dispatch => ({
+  onOpenGamesChanged(data) {
+    dispatch(openGamesChanged(data));
+  },
   onPlayerCountChanged(count) {
     dispatch(playerCountChanged(count));
   },

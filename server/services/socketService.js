@@ -1,22 +1,30 @@
 const Socket = require('socket.io');
-const { GameSocketUrl } = require('../../client/src/shared/constants');
+const { SocketInfo } = require('../../client/src/shared/constants');
 
 class SocketService {
 
   constructor() {
-    this._socket = null;
+    this._sockets = new Map();
   }
 
-  // Initializes the websocket connection
-  // Returns the created socket
+  // Initializes the websocket connections
   initialize(server) {
-    this._socket = new Socket(server, { path: GameSocketUrl });
-    return this._socket;
+    this._sockets.set('playRoom', new Socket(server, { path: SocketInfo.playRoomSocketUrl }));
+    this._sockets.set('game', new Socket(server, { path: SocketInfo.gameSocketUrl }));
   }
 
-  emitToGame(gameId, eventName, data) {
-    if (this._socket) {
-      this._socket.sockets.in(gameId).emit(eventName, data);
+  // Gets a socket with the specified id
+  // Returns null if the socket doesn't exist
+  getSocket(id) {
+    if (!this._sockets.has(id)) {
+      return null;
+    }
+    return this._sockets.get(id);
+  }
+
+  emitToRoom(socketId, roomId, eventName, data) {
+    if (this._sockets.has(socketId)) {
+      this._sockets.get(socketId).sockets.in(roomId).emit(eventName, data);
     }
   }
 

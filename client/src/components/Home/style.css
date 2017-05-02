@@ -2,6 +2,33 @@
   text-align: center;
 }
 
-.Home-game-form {
+.Home-header {
+  margin-top: 5px;
+}
+
+.Home-container {
+  margin-top: 15px;
+}
+
+.Open-games-table {
+  background-color: white;
+  color: #333;
+  margin-bottom: 0;
+}
+
+.Open-games-table-head {
   margin-top: 20px;
+}
+
+.Open-games-scroll-container {
+  max-height: 278px;
+  overflow-y: auto;
+}
+
+.Open-games-table-body {
+  margin-top: 0;
+}
+
+.Open-games-table .clickable {
+  cursor: pointer;
 }

@@ -75,6 +75,10 @@ class Game {
     return null;
   }
 
+  endGame() {
+    this._state = GameState.ENDED;
+  }
+
   isFull() {
     return this._players.length === this._playerCount;
   }
@@ -157,7 +161,7 @@ class Game {
 
     this.startNewRound();
     setTimeout(() => {
-      socketService.emitToGame(this.id, 'newRoundStarted', { game: this.toJSON() });
+      socketService.emitToRoom('game', this.id, 'newRoundStarted', { game: this.toJSON() });
       if (this._turn instanceof CpuPlayer) {
         setTimeout(() => {
           this.startCpuGame();
@@ -253,7 +257,7 @@ class Game {
   }
 
   notifyForHit() {
-    socketService.emitToGame(this.id, 'gameUpdated', { game: this.toJSON() });
+    socketService.emitToRoom('game', this.id, 'gameUpdated', { game: this.toJSON() });
   }
 
   notifyForGameEnd() {
@@ -276,7 +280,7 @@ class Game {
       previousPoints = player.points;
     });
 
-    socketService.emitToGame(this.id, 'gameEnded', {
+    socketService.emitToRoom('game', this.id, 'gameEnded', {
       game: this.toJSON(),
       results: {
         currentResults: currentResults,

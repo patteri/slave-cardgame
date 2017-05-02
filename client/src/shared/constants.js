@@ -3,7 +3,10 @@ const PlayerState = { PLAYING: 'Playing', OUT_OF_GAME: 'OutOfGame' };
 const PlayerHitState = { HIT: 'Hit', PASS: 'Pass', WAITING: 'Waiting' };
 const CardExchangeType = { NONE: 'None', FREE: 'Free', BEST: 'Best' };
 
-const GameSocketUrl = '/api/game/socket';
+const SocketInfo = {
+  playRoomSocketUrl: '/api/playroom/socket',
+  gameSocketUrl: '/api/game/socket'
+};
 
 const GameValidation = {
   minPlayerNameLength: 1,
@@ -20,6 +23,6 @@ exports.GameState = GameState;
 exports.PlayerState = PlayerState;
 exports.PlayerHitState = PlayerHitState;
 exports.CardExchangeType = CardExchangeType;
-exports.GameSocketUrl = GameSocketUrl;
+exports.SocketInfo = SocketInfo;
 exports.GameValidation = GameValidation;
 exports.MaxChatMessageLength = MaxChatMessageLength;

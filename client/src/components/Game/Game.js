@@ -7,7 +7,7 @@ import Table from './Table';
 import Player from './Player';
 import Chat from '../Chat';
 import ResultsModal from './ResultsModal';
-import { GameState, GameSocketUrl } from '../../shared/constants';
+import { GameState, SocketInfo } from '../../shared/constants';
 
 class Game extends Component {
 
@@ -29,14 +29,14 @@ class Game extends Component {
   componentWillMount() {
     if (this.props.gameId) {
       // Configure websocket
-      const socket = io('', { path: GameSocketUrl });
-      socket.emit('joinGame', this.props.gameId, this.props.playerId);
+      const socket = io('', { path: SocketInfo.gameSocketUrl });
       socket.on('playerJoined', this.props.onPlayerJoined);
       socket.on('gameStarted', this.props.onGameStarted);
       socket.on('gameUpdated', this.props.onGameUpdated);
       socket.on('gameEnded', this.gameEnded);
       socket.on('cardsExchanged', this.props.onCardsExchanged);
       socket.on('newRoundStarted', this.props.onNewRoundStarted);
+      socket.emit('joinGame', this.props.gameId, this.props.playerId);
 
       this.setState({
         socket: socket,
