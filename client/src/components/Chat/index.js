@@ -93,6 +93,10 @@ class Chat extends Component {
     return (
       <div className={classNames('Chat', { Open: this.state.open })}>
         <div className={classNames('Chat-click-border', { unread: this.state.unread })} onClick={this.borderClicked}>
+          <div
+            className={classNames('glyphicon', 'Close-chat', { 'glyphicon-triangle-right': this.state.open },
+              { 'glyphicon-triangle-left': !this.state.open })}
+          />
           <div className="Click-border-text">
             <span>Chat</span>
           </div>
@@ -104,7 +108,10 @@ class Chat extends Component {
           >
             <ul className="list-unstyled">
               {this.state.chatText.map((item, index) => (
-                <li key={index}><span className="Sender">{item.sender}:</span> {item.message}</li>
+                <li key={index}>
+                  <span className="Sender">{item.sender}: </span>
+                  <span className="Message">{item.message}</span>
+                </li>
               ))}
             </ul>
           </div>

@@ -1,11 +1,11 @@
 .Chat {
   position: fixed;
   z-index: 1010;
-  right: 0;
+  right: -275px;
   top: 50%;
   margin-top: -175px;
-  width: 25px;
-  transition: width 0.3s;
+  width: 300px;
+  transition: right 0.3s;
   height: 350px;
   background-color: #eeeeee;
   color: #333;
@@ -18,11 +18,7 @@
 }
 
 .Chat.Open {
-  width: 300px;
-}
-
-.Chat.Open .Chat-area {
-  width: 275px;
+  right: 0;
 }
 
 .Chat-click-border {
@@ -37,9 +33,14 @@
   background-color: orange;
 }
 
+.Chat-click-border .Close-chat {
+  font-size: 15px;
+  margin-top: 18px;
+}
+
 .Click-border-text {
-  height: 350px;
-  line-height: 350px;
+  height: 262px;
+  line-height: 262px;
   font-weight: bold;
 
   transform: rotate(90.0deg) !important;
@@ -52,13 +53,12 @@
 .Chat-area {
   background-color: white;
   float: left;
-  width: 0;
-  transition: width 0.3s;
+  width: 275px;
   height: 350px;
 }
 
 .Text-area {
-  overflow-y: scroll;
+  overflow-y: auto;
   height: 316px;
   padding: 3px 8px;
 }
@@ -71,11 +71,15 @@
   font-weight: bold;
 }
 
+.Text-area li .Message {
+  word-wrap: break-word;
+}
+
 @media(max-width:767px) {
   .Chat {
+    right: -280px;
     top: 10%;
     margin-top: 0;
-    width: 20px;
     height: 250px;
   }
 
@@ -84,16 +88,13 @@
     height: 250px;
   }
 
-  .Chat.Open .Chat-area {
-    width: 280px;
-  }
-
   .Click-border-text {
-    height: 250px;
-    line-height: 250px;
+    height: 162px;
+    line-height: 162px;
   }
 
   .Chat-area {
+    width: 280px;
     height: 250px;
   }
 
