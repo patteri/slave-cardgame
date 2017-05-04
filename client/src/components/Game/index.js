@@ -7,6 +7,7 @@ import {
   gameEnded,
   selectedCardsChanged,
   cardsHit,
+  toggleResultsModal,
   cardExchangeRequested,
   cardsGiven,
   cardsExchanged,
@@ -16,7 +17,7 @@ import { GameState, CardExchangeType } from '../../shared/constants';
 import './style.css';
 import './playerColumns.css';
 
-const mapStateToProps = state => state.get('game');
+const mapStateToProps = state => state.game;
 
 const setCardsForExchange = (state, dispatch, cards) => {
   api.cardsForExchange(state.gameId, {
@@ -46,7 +47,7 @@ const mapDispatchToProps = dispatch => ({
   },
   onCardsHit(cards) {
     dispatch((dispatch, getState) => {
-      let state = getState().get('game');
+      let state = getState().game;
       let gameState = state.gameState;
       if (gameState === GameState.PLAYING) {
         api.hit(state.gameId, {
@@ -61,9 +62,12 @@ const mapDispatchToProps = dispatch => ({
       }
     });
   },
+  toggleResultsModal(value) {
+    dispatch(toggleResultsModal(value));
+  },
   requestCardExchange() {
     dispatch((dispatch, getState) => {
-      let state = getState().get('game');
+      let state = getState().game;
       api.getCardExchange(state.gameId, state.playerId).then((response) => {
         dispatch(cardExchangeRequested(response.data));
         if (response.data.exchangeRule.exchangeType === CardExchangeType.NONE) {

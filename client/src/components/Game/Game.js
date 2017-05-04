@@ -16,13 +16,11 @@ class Game extends Component {
 
     this.state = {
       socket: null,
-      showModal: false,
       joinUrl: ''
     };
 
     this.gameEnded = this.gameEnded.bind(this);
-    this.showModal = this.showModal.bind(this);
-    this.hideModal = this.hideModal.bind(this);
+    this.hideResultsModal = this.hideResultsModal.bind(this);
     this.handleJoinUrlFocus = this.handleJoinUrlFocus.bind(this);
   }
 
@@ -30,13 +28,19 @@ class Game extends Component {
     if (this.props.gameId) {
       // Configure websocket
       const socket = io('', { path: SocketInfo.gameSocketUrl });
+
+      // Connection events
+      socket.on('connect', () => {
+        socket.emit('joinGame', this.props.gameId, this.props.playerId);
+      });
+
+      // Game events
       socket.on('playerJoined', this.props.onPlayerJoined);
       socket.on('gameStarted', this.props.onGameStarted);
       socket.on('gameUpdated', this.props.onGameUpdated);
       socket.on('gameEnded', this.gameEnded);
       socket.on('cardsExchanged', this.props.onCardsExchanged);
       socket.on('newRoundStarted', this.props.onNewRoundStarted);
-      socket.emit('joinGame', this.props.gameId, this.props.playerId);
 
       this.setState({
         socket: socket,
@@ -59,20 +63,12 @@ class Game extends Component {
     this.props.onGameEnd(data);
 
     setTimeout(() => {
-      this.showModal();
+      this.props.toggleResultsModal(true);
     }, 1000);
   }
 
-  showModal() {
-    this.setState({
-      showModal: true
-    });
-  }
-
-  hideModal() {
-    this.setState({
-      showModal: false
-    });
+  hideResultsModal() {
+    this.props.toggleResultsModal(false);
 
     if (this.props.results.gameNumber < this.props.results.totalGameCount) {
       this.props.requestCardExchange();
@@ -87,13 +83,14 @@ class Game extends Component {
   }
 
   render() {
-    const { gameId, playerCount, gameState, otherPlayers, table, isRevolution, player, results, helpText } = this.props;
+    const { gameId, playerCount, gameState, otherPlayers, table, isRevolution, player, showResultsModal, results,
+      helpText } = this.props;
 
     return (
       <Grid className="Game" fluid>
         <Chat socket={this.state.socket} gameId={gameId} />
         {results &&
-          <ResultsModal results={results} show={this.state.showModal} onHide={this.hideModal} />
+          <ResultsModal results={results} show={showResultsModal} onHide={this.hideResultsModal} />
         }
         <OtherPlayers playerCount={playerCount} players={otherPlayers} />
         <div className="Game-table">

@@ -4,7 +4,7 @@ import { Modal, Button, ControlLabel, Table } from 'react-bootstrap';
 const formatPlayerName = player => player.name + (player.isCpu ? ' (CPU)' : '');
 
 const ResultsModal = ({ show, onHide, results }) => (
-  <Modal className="Results-modal" show={show} onHide={onHide}>
+  <Modal className="Results-modal" show={show} onHide={onHide} backdrop={'static'}>
     <Modal.Header closeButton>
       <Modal.Title>{results.gameNumber === results.totalGameCount ? 'Final results' : 'Results'}</Modal.Title>
     </Modal.Header>

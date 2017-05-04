@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux-immutable';
+import { combineReducers } from 'redux';
 import homeReducer from './components/Home/reducer';
 import joinReducer from './components/Join/reducer';
 import gameReducer from './components/Game/reducers';

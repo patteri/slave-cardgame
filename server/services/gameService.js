@@ -36,9 +36,6 @@ class GameService {
             socketService.emitToClient(socket, 'gameUpdated', { game: game.toJSON() });
           }
         }
-        else {
-          socket.close();
-        }
       });
       socket.on('sendChatMessage', (gameId, message) => {
         if (socket.rooms.hasOwnProperty(gameId)) {

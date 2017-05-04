@@ -3,6 +3,7 @@ import { Button } from 'react-bootstrap';
 import classNames from 'classnames';
 import PlayerStatus from './PlayerStatus';
 import Card from './Card';
+import DeckCard from '../../shared/card';
 import { PlayerState, CardExchangeType } from '../../shared/constants';
 import './style.css';
 
@@ -17,7 +18,7 @@ class Player extends Component {
   }
 
   getIndexOfSelected(card) {
-    return this.props.selectedCards.indexOf(card);
+    return this.props.selectedCards.findIndex(item => DeckCard.isEqual(item, card));
   }
 
   selectCard(card) {

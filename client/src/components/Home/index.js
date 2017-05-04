@@ -12,7 +12,7 @@ import { gameStarted } from '../Game/actions';
 import api from '../../api/api';
 import './style.css';
 
-const mapStateToProps = state => state.get('home');
+const mapStateToProps = state => state.home;
 
 const mapDispatchToProps = dispatch => ({
   onOpenGamesChanged(data) {
@@ -32,7 +32,7 @@ const mapDispatchToProps = dispatch => ({
   },
   onCreateGame() {
     dispatch((dispatch, getState) => {
-      let state = getState().get('home');
+      let state = getState().home;
       api.createGame({
         playerName: state.playerName,
         playerCount: state.playerCount,

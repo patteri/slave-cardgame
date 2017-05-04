@@ -6,6 +6,7 @@ export const gameUpdated = createAction('GAME_UPDATED');
 export const gameEnded = createAction('GAME_ENDED');
 export const selectedCardsChanged = createAction('SELECTED_CARDS_CHANGED');
 export const cardsHit = createAction('CARDS_HIT');
+export const toggleResultsModal = createAction('TOGGLE_RESULTS_MODAL');
 export const cardExchangeRequested = createAction('CARD_EXCHANGE_REQUESTED');
 export const cardsGiven = createAction('CARDS_GIVEN');
 export const cardsExchanged = createAction('CARDS_EXCHANGED');

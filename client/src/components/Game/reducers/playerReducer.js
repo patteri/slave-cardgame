@@ -29,7 +29,7 @@ const getButtonText = (gameState, selectedCards, exchangeRule) => {
     case GameState.PLAYING:
       return selectedCards.length > 0 ? 'Hit' : 'Pass';
     case GameState.CARD_EXCHANGE:
-      return exchangeRule.exchangeType === CardExchangeType.NONE ? 'Waiting...' : 'Give cards';
+      return exchangeRule && exchangeRule.exchangeType !== CardExchangeType.NONE ? 'Give cards' : 'Waiting...';
     case GameState.NOT_STARTED:
       return 'Waiting...';
     case GameState.ENDED:
@@ -43,7 +43,7 @@ const canHit = (gameState, turn, selectedCards, table, isFirstTurn, isRevolution
     case GameState.PLAYING:
       return turn && CardHelper.validateHit(selectedCards, table, isFirstTurn, isRevolution);
     case GameState.CARD_EXCHANGE:
-      if (exchangeRule.exchangeType !== CardExchangeType.NONE) {
+      if (exchangeRule && exchangeRule.exchangeType !== CardExchangeType.NONE) {
         return selectedCards.length === exchangeRule.exchangeCount;
       }
       return false;
@@ -74,7 +74,7 @@ const playerReducer = handleActions({
     buttonText: getButtonText(action.payload.game.state, state.player.selectedCards, state.player.exchangeRule),
     canHit: canHit(action.payload.game.state, action.payload.game.players[state.playerIndex].turn,
       state.player.selectedCards, action.payload.game.previousHit, action.payload.game.isFirstTurn,
-      action.payload.game.isRevolution, null)
+      action.payload.game.isRevolution, state.player.exchangeRule)
   }),
   [gameEnded]: state => Object.assign({}, state.player, {
     canHit: false

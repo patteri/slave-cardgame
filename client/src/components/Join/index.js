@@ -7,7 +7,7 @@ import { gameStarted } from '../Game/actions';
 import api from '../../api/api';
 import './style.css';
 
-const mapStateToProps = state => state.get('join');
+const mapStateToProps = state => state.join;
 
 const mapDispatchToProps = dispatch => ({
   onGameIdChanged(id) {
@@ -18,7 +18,7 @@ const mapDispatchToProps = dispatch => ({
   },
   onJoinGame() {
     dispatch((dispatch, getState) => {
-      let state = getState().get('join');
+      let state = getState().join;
       api.joinGame(state.gameId, {
         playerName: state.playerName
       }).then((response) => {

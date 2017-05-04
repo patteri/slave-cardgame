@@ -7,6 +7,7 @@ import {
   gameEnded,
   selectedCardsChanged,
   cardsHit,
+  toggleResultsModal,
   cardExchangeRequested,
   cardsGiven,
   cardsExchanged,
@@ -24,6 +25,7 @@ const initialState = {
   table: [],
   isFirstTurn: true,
   isRevolution: false,
+  showResultsModal: false,
   results: null,
   helpText: null
 };
@@ -102,6 +104,9 @@ const gameReducer = handleActions({
   }),
   [cardsHit]: (state, action) => Object.assign({}, state, {
     player: playerReducer(state, action)
+  }),
+  [toggleResultsModal]: (state, action) => Object.assign({}, state, {
+    showResultsModal: action.payload
   }),
   [cardExchangeRequested]: (state, action) => {
     let gameParameters = getGameParameters(action.payload.game);
