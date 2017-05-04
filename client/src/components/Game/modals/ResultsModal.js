@@ -1,10 +1,11 @@
 import React, { PropTypes } from 'react';
 import { Modal, Button, ControlLabel, Table } from 'react-bootstrap';
+import './style.css';
 
 const formatPlayerName = player => player.name + (player.isCpu ? ' (CPU)' : '');
 
 const ResultsModal = ({ show, onHide, results }) => (
-  <Modal className="Results-modal" show={show} onHide={onHide} backdrop={'static'}>
+  <Modal className="Game-modal Results-modal" show={show} onHide={onHide} backdrop={'static'}>
     <Modal.Header closeButton>
       <Modal.Title>{results.gameNumber === results.totalGameCount ? 'Final results' : 'Results'}</Modal.Title>
     </Modal.Header>
@@ -28,7 +29,7 @@ const ResultsModal = ({ show, onHide, results }) => (
           )}
         </tbody>
       </Table>
-      <ControlLabel className="">Overall points after game {results.gameNumber}/{results.totalGameCount}:</ControlLabel>
+      <ControlLabel>Overall points after game {results.gameNumber}/{results.totalGameCount}:</ControlLabel>
       <Table bordered>
         <thead>
           <tr>

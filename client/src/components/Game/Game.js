@@ -6,7 +6,8 @@ import OtherPlayers from './OtherPlayers';
 import Table from './Table';
 import Player from './Player';
 import Chat from '../Chat';
-import ResultsModal from './ResultsModal';
+import ResultsModal from './modals/ResultsModal';
+import DisconnectedModal from './modals/DisconnectedModal';
 import { GameState, SocketInfo } from '../../shared/constants';
 
 class Game extends Component {
@@ -16,7 +17,8 @@ class Game extends Component {
 
     this.state = {
       socket: null,
-      joinUrl: ''
+      joinUrl: '',
+      showConnectionError: false
     };
 
     this.gameEnded = this.gameEnded.bind(this);
@@ -31,7 +33,15 @@ class Game extends Component {
 
       // Connection events
       socket.on('connect', () => {
+        this.setState({
+          showConnectionError: false
+        });
         socket.emit('joinGame', this.props.gameId, this.props.playerId);
+      });
+      socket.on('disconnect', () => {
+        this.setState({
+          showConnectionError: true
+        });
       });
 
       // Game events
@@ -92,6 +102,7 @@ class Game extends Component {
         {results &&
           <ResultsModal results={results} show={showResultsModal} onHide={this.hideResultsModal} />
         }
+        <DisconnectedModal show={this.state.showConnectionError} />
         <OtherPlayers playerCount={playerCount} players={otherPlayers} />
         <div className="Game-table">
           {gameState === GameState.NOT_STARTED &&
