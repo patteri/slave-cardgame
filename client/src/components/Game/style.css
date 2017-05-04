@@ -4,6 +4,7 @@
 
 .Game-player-name {
   font-size: 1.8em;
+  display: inline-block;
 }
 
 .Game-player-name-cpu {
@@ -12,7 +13,7 @@
 
 .Game-player-name.turn {
   font-weight: bold;
-  border: 2px solid white;
+  outline: 2px solid white;
 }
 
 .OutOfGame {

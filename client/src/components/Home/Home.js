@@ -45,25 +45,23 @@ class Home extends Component {
         <Row className="Home-container">
           <Col md={5} sm={6} mdOffset={1}>
             <h4>Join a game</h4>
-            <Table className="Open-games-table Open-games-table-head" bordered>
-              <thead>
-                <tr>
-                  <th className="col-sm-5">Joined players (CPUs)</th>
-                  <th className="col-sm-3">Games</th>
-                  <th className="col-sm-4">Created by player</th>
-                </tr>
-              </thead>
-            </Table>
             <div className="Open-games-scroll-container">
-              <Table className="Open-games-table Open-games-table-body" hover bordered>
+              <Table className="Open-games-table" bordered>
+                <thead>
+                  <tr>
+                    <th>Joined players (CPUs)</th>
+                    <th>Games</th>
+                    <th>Created by player</th>
+                  </tr>
+                </thead>
                 <tbody>
                   {openGames.map((item, index) =>
                     <tr key={index} className="clickable" onClick={() => this.joinGame(item.id)}>
-                      <td className="col-sm-5">
+                      <td>
                         {item.joinedHumanPlayers + item.joinedCpuPlayers} / {item.playerCount} ({item.joinedCpuPlayers})
                       </td>
-                      <td className="col-sm-3">{item.gameCount}</td>
-                      <td className="col-sm-4">{item.createdBy}</td>
+                      <td>{item.gameCount}</td>
+                      <td>{item.createdBy}</td>
                     </tr>
                   )}
                   {openGames.length === 0 &&

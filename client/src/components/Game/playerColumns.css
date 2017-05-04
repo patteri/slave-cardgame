@@ -4,6 +4,7 @@ The number specifies the total count of players
 */
 
 .player-col-4, .player-col-5, .player-col-6, .player-col-7, .player-col-8 {
+  padding: 2px;
   float: left;
 }
 
