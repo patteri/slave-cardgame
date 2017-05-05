@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import Game from './Game';
 import {
-  playerJoined,
+  joinedPlayersChanged,
   gameStarted,
   gameUpdated,
   gameEnded,
@@ -29,8 +29,8 @@ const setCardsForExchange = (state, dispatch, cards) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  onPlayerJoined(data) {
-    dispatch(playerJoined(data));
+  onJoinedPlayersChanged(data) {
+    dispatch(joinedPlayersChanged(data));
   },
   onGameStarted(data) {
     dispatch(gameStarted(data));
@@ -81,6 +81,14 @@ const mapDispatchToProps = dispatch => ({
   },
   onNewRoundStarted(data) {
     dispatch(newRoundStarted(data));
+  },
+  onQuitGame() {
+    dispatch((dispatch, getState) => {
+      let state = getState().game;
+      api.quitGame(state.gameId, {
+        clientId: state.playerId
+      });
+    });
   }
 });
 

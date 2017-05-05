@@ -1,6 +1,9 @@
 const chai = require('chai');
 const gameService = require('../../services/gameService');
 const Game = require('../../models/game');
+const HumanPlayer = require('../../models/humanPlayer');
+const CpuPlayer = require('../../models/cpuPlayer');
+const { GameState } = require('../../../client/src/shared/constants');
 
 const expect = chai.expect;
 
@@ -62,5 +65,46 @@ describe('GameService', () => {
     let game = gameService.createGame('Human', 4, 2, 1).game;
     let result = gameService.joinGame(game, 'Human 2');
     expect(result.game).to.be.an.instanceof(Game);
+  });
+
+  it('Invalid game quit (player id)', () => {
+    let game = gameService.createGame('Human', 4, 3, 1).game;
+    let result = gameService.quitGame(game, 'invalid_id');
+    expect(result).to.equal(false);
+  });
+
+  it('Successful game quit, game ended', () => {
+    let game = gameService.createGame('Human', 4, 3, 1).game;
+    let result = gameService.quitGame(game, game.players[0].id);
+    expect(result).to.equal(true);
+    expect(game.state).to.equal(GameState.ENDED);
+  });
+
+  it('Successful game quit, game not started', () => {
+    let game = gameService.createGame('Human', 4, 1, 1).game;
+    gameService.joinGame(game, 'Human 2');
+    expect(game.players.length).to.equal(3);
+    let result = gameService.quitGame(game, game.players[0].id);
+    expect(result).to.equal(true);
+    expect(game.state).to.equal(GameState.NOT_STARTED);
+    expect(game.players.length).to.equal(2);
+    expect(game.players[1].name).to.equal('Human 2');
+  });
+
+  it('Successful game quit, player replaced', () => {
+    let game = gameService.createGame('Human', 4, 2, 1).game;
+    gameService.joinGame(game, 'Human 2');
+    expect(game.players[0]).to.be.an.instanceof(HumanPlayer);
+    let result = gameService.quitGame(game, game.players[0].id);
+    expect(result).to.equal(true);
+    expect(game.state).to.equal(GameState.PLAYING);
+    expect(game.players[0]).to.be.an.instanceof(CpuPlayer);
+  });
+
+  it('Game is removed after game ended', () => {
+    let game = gameService.createGame('Human', 4, 3, 1).game;
+    gameService.quitGame(game, game.players[0].id);
+    let result = gameService.getGame(game.id);
+    expect(result).to.be.null; // eslint-disable-line no-unused-expressions
   });
 });

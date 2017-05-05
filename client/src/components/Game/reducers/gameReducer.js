@@ -1,7 +1,7 @@
 import { handleActions } from 'redux-actions';
 import playerReducer from './playerReducer';
 import {
-  playerJoined,
+  joinedPlayersChanged,
   gameStarted,
   gameUpdated,
   gameEnded,
@@ -71,9 +71,13 @@ const getHelpTextAfterExchange = (exchangedCards) => {
 };
 
 const gameReducer = handleActions({
-  [playerJoined]: (state, action) => Object.assign({}, state, {
-    otherPlayers: getOtherPlayers(action.payload.game.players, state.playerIndex)
-  }),
+  [joinedPlayersChanged]: (state, action) => {
+    let playerIndex = action.payload.playerIndex !== undefined ? action.payload.playerIndex : state.playerIndex;
+    return Object.assign({}, state, {
+      playerIndex: playerIndex,
+      otherPlayers: getOtherPlayers(action.payload.game.players, playerIndex)
+    });
+  },
   [gameStarted]: (state, action) => {
     let gameParameters = getGameParameters(action.payload.game);
     let playerIndex = action.payload.playerIndex !== undefined ? action.payload.playerIndex : state.playerIndex;

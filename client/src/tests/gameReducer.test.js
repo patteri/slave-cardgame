@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import gameReducer from '../components/Game/reducers/gameReducer';
 import {
-  playerJoined,
+  joinedPlayersChanged,
   gameStarted,
   gameUpdated,
   gameEnded,
@@ -44,7 +44,7 @@ describe('Game reducer', () => {
     expect(reducer.isRevolution).to.equal(false);
   });
 
-  it('playerJoined', () => {
+  it('joinedPlayersChanged', () => {
     const initialState = gameReducer(undefined, { type: '' });
     const data = getGameData();
     data.game.players.splice(2, 2);
@@ -53,12 +53,12 @@ describe('Game reducer', () => {
     let reducer = gameReducer(initialState, gameStarted(data));
     expect(reducer.otherPlayers.length).to.equal(1);
     data.game.players.push({ name: 'Player3' });
-    reducer = gameReducer(reducer, playerJoined(data));
+    reducer = gameReducer(reducer, joinedPlayersChanged(data));
     expect(reducer.otherPlayers.length).to.equal(2);
     expect(reducer.otherPlayers[0].name).to.equal('Player3');
     expect(reducer.otherPlayers[1].name).to.equal('Player1');
     data.game.players.push({ name: 'Player4' });
-    reducer = gameReducer(reducer, playerJoined(data));
+    reducer = gameReducer(reducer, joinedPlayersChanged(data));
     expect(reducer.otherPlayers.length).to.equal(3);
     expect(reducer.otherPlayers[0].name).to.equal('Player3');
     expect(reducer.otherPlayers[1].name).to.equal('Player4');

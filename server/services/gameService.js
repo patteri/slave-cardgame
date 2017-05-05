@@ -4,6 +4,8 @@ const CpuPlayer = require('../models/cpuPlayer');
 const socketService = require('../services/socketService');
 const { GameState, GameValidation, MaxChatMessageLength } = require('../../client/src/shared/constants');
 
+const REMOVE_AFTER_DISCONNECTION_PERIOD = 30000;
+
 class GameService {
 
   constructor() {
@@ -28,11 +30,12 @@ class GameService {
         if (game) {
           const player = game.registerSocket(clientId, socket);
           if (player) {
+            player.connected = true;
+            player.connectionTime = Date.now();
             socket.player = player;
             socket.game = game;
             socket.join(gameId);
-            // Send the latest game state to the joined client to avoid timing issues
-            // between call to join API and registering the socket
+            // Sync the latest game state to the joined client
             socketService.emitToClient(socket, 'gameUpdated', { game: game.toJSON() });
           }
         }
@@ -40,23 +43,34 @@ class GameService {
       socket.on('sendChatMessage', (gameId, message) => {
         if (socket.rooms.hasOwnProperty(gameId)) {
           const msg = message.trim().substring(0, MaxChatMessageLength);
-          socketService.emitToRoom('game', gameId, 'chatMessageReceived', {
-            sender: socket.player.name,
-            message: msg
-          });
+          this.sendChatMessage(gameId, socket.player.name, msg);
         }
       });
       socket.on('disconnect', () => {
-        // TODO: handle disconnection properly
-        if (socket.player) {
-          console.log(socket.player.name + ' disconnected...'); // eslint-disable-line no-console
-        }
-
-        if (socket.game && socket.game.state === GameState.NOT_STARTED) {
-          socket.game.endGame();
-          socketService.emitToRoom('playRoom', 'playRoom', 'openGamesChanged', this.getOpenGames());
+        // If game hasn't started or is ended, player can be removed immediately
+        // If game is ongoing, wait for REMOVE_AFTER_DISCONNECTION_PERIOD for reconnection until remove
+        if (socket.game && socket.player) {
+          if (socket.game.state === GameState.NOT_STARTED || socket.game.state === GameState.ENDED) {
+            this.removePlayerFromGame(socket.game, socket.player);
+          }
+          else {
+            socket.player.connected = false;
+            setTimeout((player, game) => {
+              // Ensure that the client hasn't reconnected and disconnected again after the timer was started
+              if (!player.connected && (Date.now() - player.connectionTime) > REMOVE_AFTER_DISCONNECTION_PERIOD) {
+                this.removePlayerFromGame(game, player);
+              }
+            }, REMOVE_AFTER_DISCONNECTION_PERIOD, socket.player, socket.game);
+          }
         }
       });
+    });
+  }
+
+  sendChatMessage(gameId, sender, message) {
+    socketService.emitToRoom('game', gameId, 'chatMessageReceived', {
+      sender: sender,
+      message: message
     });
   }
 
@@ -65,7 +79,7 @@ class GameService {
     return {
       games: openGames.map(game => ({
         id: game.id,
-        createdBy: game.players[0].name,
+        createdBy: game.players.find(player => player instanceof HumanPlayer).name,
         playerCount: game._playerCount,
         gameCount: game._gameCount,
         joinedHumanPlayers: game.players.filter(player => player instanceof HumanPlayer).length,
@@ -74,12 +88,69 @@ class GameService {
     };
   }
 
-  validatePlayer(playerName) {
-    if (!(typeof (playerName) === 'string') || playerName.length < GameValidation.minPlayerNameLength ||
-      playerName.length > GameValidation.maxPlayerNameLength) {
-      return false;
+  removePlayerFromGame(game, player) {
+    if (player.socket) {
+      player.socket.player = null;
+      player.socket.game = null;
+      player.socket.disconnect(true);
+      player.socket = null;
     }
-    return true;
+
+    switch (game.state) {
+      case GameState.NOT_STARTED:
+        this.removePlayer(game, player);
+        socketService.emitToRoom('playRoom', 'playRoom', 'openGamesChanged', this.getOpenGames());
+        break;
+      case GameState.PLAYING:
+      case GameState.CARD_EXCHANGE:
+        this.removePlayer(game, player, true);
+        break;
+      case GameState.ENDED:
+        this.removePlayer(game, player);
+        break;
+      default:
+        break;
+    }
+  }
+
+  removePlayer(game, player, replace = false) {
+    if (!replace) {
+      game.removePlayer(player);
+    }
+    else {
+      game.replacePlayerByCpu(player);
+    }
+
+    if (game.players.filter(player => player instanceof HumanPlayer).length === 0) {
+      game.endGame();
+      this._games.delete(game.id);
+    }
+    else if (!replace) {
+      game.players.forEach((item) => {
+        socketService.emitToClient(item.socket, 'joinedPlayersChanged', {
+          game: game,
+          playerIndex: game.players.indexOf(item)
+        });
+      });
+      this.sendChatMessage(game.id, null, "Player '" + player.name + "' left the game...");
+    }
+    else {
+      socketService.emitToRoom('game', game.id, 'joinedPlayersChanged', { game: game });
+      this.sendChatMessage(game.id, null, "Player '" + player.name + "' left the game and was replaced by a CPU...");
+    }
+  }
+
+  validatePlayer(playerName) {
+    return !(!(typeof (playerName) === 'string') || playerName.length < GameValidation.minPlayerNameLength ||
+      playerName.length > GameValidation.maxPlayerNameLength);
+  }
+
+  startNewGame(game) {
+    game.startNewGame();
+    // Add some delay to make sure that the last joined player has initialized the socket
+    setTimeout(() => {
+      this.sendChatMessage(game.id, null, 'The game started!');
+    }, 750);
   }
 
   // Gets a game with the specified id
@@ -118,7 +189,7 @@ class GameService {
     this._games.set(game.id, game);
 
     if (game.isFull()) {
-      game.startNewGame();
+      this.startNewGame(game);
     }
     else {
       socketService.emitToRoom('playRoom', 'playRoom', 'openGamesChanged', this.getOpenGames());
@@ -140,23 +211,37 @@ class GameService {
 
     let human = new HumanPlayer(playerName);
     game.addPlayer(human);
-    if (game.isFull()) {
-      game.startNewGame();
 
-      // Notify game room and other players
-      socketService.emitToRoom('playRoom', 'playRoom', 'openGamesChanged', this.getOpenGames());
+    if (game.isFull()) {
+      this.startNewGame(game);
+
+      // Notify other players
       game.players.filter(player => player !== human).forEach((player) => {
         socketService.emitToClient(player.socket, 'gameStarted', { game: game, player: player });
       });
     }
     else {
-      // Notify other players
-      game.players.filter(player => player !== human).forEach((player) => {
-        socketService.emitToClient(player.socket, 'playerJoined', { game: game });
-      });
+      socketService.emitToRoom('game', game.id, 'joinedPlayersChanged', { game: game });
     }
+    socketService.emitToRoom('playRoom', 'playRoom', 'openGamesChanged', this.getOpenGames());
+
+    this.sendChatMessage(game.id, null, "Player '" + human.name + "' joined the game!");
 
     return { game: game, player: human };
+  }
+
+  // Quits the player from a game
+  // Returns whether the operation was valid
+  quitGame(game, clientId) {
+    // Validate player
+    let player = game.players.find(item => item.id === clientId);
+    if (player === undefined) {
+      return false;
+    }
+
+    this.removePlayerFromGame(game, player);
+
+    return true;
   }
 
 }

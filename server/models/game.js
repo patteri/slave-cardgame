@@ -114,6 +114,27 @@ class Game {
     this._players.push(player);
   }
 
+  removePlayer(player) {
+    _.remove(this._players, item => item.id === player.id);
+  }
+
+  replacePlayerByCpu(player) {
+    const cpuPlayer = new CpuPlayer(player.name);
+    cpuPlayer.assign(player);
+    const index = this._players.indexOf(player);
+    this._players[index] = cpuPlayer;
+
+    if (this._turn === player) {
+      this._turn = cpuPlayer;
+      if (this.state === GameState.PLAYING) {
+        this.startCpuGame();
+      }
+    }
+    if (this.state === GameState.CARD_EXCHANGE && cpuPlayer.cardsForExchange == null) {
+      this.setCardsForExchange(cpuPlayer.id, cpuPlayer.selectCardsForExchange());
+    }
+  }
+
   dealCards() {
     this._deck.deck.forEach((card, index) => {
       this._players[(index + this._dealStartIndex) % this._players.length].hand.push(card);
@@ -331,8 +352,7 @@ class Game {
       // CPU players select cards for exchange
       this._players.forEach((player) => {
         if (player instanceof CpuPlayer) {
-          let cards = player.selectCardsForExchange();
-          this.setCardsForExchange(player.id, cards);
+          this.setCardsForExchange(player.id, player.selectCardsForExchange());
         }
       });
     }

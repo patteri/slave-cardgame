@@ -75,6 +75,10 @@
   word-wrap: break-word;
 }
 
+.Text-area li .Notification {
+  font-style: italic;
+}
+
 @media(max-width:767px) {
   .Chat {
     right: -280px;

@@ -281,4 +281,23 @@ describe('Game', () => {
     expect(game._players[2].hitState).to.equal(PlayerHitState.WAITING);
     expect(game._players[3].hitState).to.equal(PlayerHitState.HIT);
   });
+
+  it('Player is removed correctly', () => {
+    let game = gameService.createGame('Human', 4, 3, 1, false).game;
+    game.removePlayer(game.players[0]);
+    expect(game.players.length).to.equal(3);
+    expect(game.players[0]).to.be.an.instanceof(CpuPlayer);
+    expect(game.players[1]).to.be.an.instanceof(CpuPlayer);
+    expect(game.players[2]).to.be.an.instanceof(CpuPlayer);
+  });
+
+  it('Player is replaced by CPU correctly', () => {
+    let game = gameService.createGame('Human', 4, 3, 1, false).game;
+    game.replacePlayerByCpu(game.players[0]);
+    expect(game.players.length).to.equal(4);
+    expect(game.players[0]).to.be.an.instanceof(CpuPlayer);
+    expect(game.players[1]).to.be.an.instanceof(CpuPlayer);
+    expect(game.players[2]).to.be.an.instanceof(CpuPlayer);
+    expect(game.players[3]).to.be.an.instanceof(CpuPlayer);
+  });
 });

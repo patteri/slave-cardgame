@@ -109,8 +109,10 @@ class Chat extends Component {
             <ul className="list-unstyled">
               {this.state.chatText.map((item, index) => (
                 <li key={index}>
-                  <span className="Sender">{item.sender}: </span>
-                  <span className="Message">{item.message}</span>
+                  {item.sender && <span className="Sender">{item.sender}: </span>}
+                  <span className={classNames('Message', { Notification: item.sender == null })}>
+                    {item.message}
+                  </span>
                 </li>
               ))}
             </ul>

@@ -45,7 +45,7 @@ class Game extends Component {
       });
 
       // Game events
-      socket.on('playerJoined', this.props.onPlayerJoined);
+      socket.on('joinedPlayersChanged', this.props.onJoinedPlayersChanged);
       socket.on('gameStarted', this.props.onGameStarted);
       socket.on('gameUpdated', this.props.onGameUpdated);
       socket.on('gameEnded', this.gameEnded);
@@ -65,7 +65,10 @@ class Game extends Component {
 
   componentWillUnmount() {
     if (this.state.socket) {
-      this.state.socket.close();
+      this.state.socket.removeAllListeners('disconnect');
+    }
+    if (this.props.gameId) {
+      this.props.onQuitGame();
     }
   }
 

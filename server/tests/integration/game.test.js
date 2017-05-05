@@ -99,4 +99,17 @@ describe('/api/game', () => {
         done();
       });
   });
+
+  it('Successful game quit', (done) => {
+    let game = gameService.createGame('Human', 4, 3, 1).game;
+
+    chai.request(app)
+      .post('/api/game/' + game.id + '/quit')
+      .send({ clientId: game.players[0].id })
+      .end((err, res) => {
+        expect(err).to.be.null; // eslint-disable-line no-unused-expressions
+        expect(res).to.have.status(200);
+        done();
+      });
+  });
 });

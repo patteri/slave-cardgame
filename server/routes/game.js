@@ -45,6 +45,19 @@ router.post('/:id/join', (req, res) => {
   }
 });
 
+// Quits from a game
+router.post('/:id/quit', (req, res) => {
+  const game = getAndValidateGame(req, res);
+  if (game != null) {
+    if (!gameService.quitGame(game, req.body.clientId)) {
+      res.status(403).json({ error: 'The request is forbidden' });
+    }
+    else {
+      res.sendStatus(200);
+    }
+  }
+});
+
 // Player makes a hit for the specified game
 router.post('/:id/hit', (req, res) => {
   const game = getAndValidateGame(req, res, GameState.PLAYING);

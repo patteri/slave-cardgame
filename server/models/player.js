@@ -15,8 +15,11 @@ class Player {
     this._points = 0;
     this._cardExchangeRule = null;
     this._cardsForExchange = null;
-    this._socket = null;
     this._hitState = PlayerHitState.WAITING;
+
+    this._socket = null;
+    this._connected = false;
+    this._connectionTime = null;
   }
 
   get id() {
@@ -67,6 +70,14 @@ class Player {
     this._cardsForExchange = cards;
   }
 
+  get hitState() {
+    return this._hitState;
+  }
+
+  set hitState(hitState) {
+    this._hitState = hitState;
+  }
+
   get socket() {
     return this._socket;
   }
@@ -75,12 +86,20 @@ class Player {
     this._socket = socket;
   }
 
-  get hitState() {
-    return this._hitState;
+  get connected() {
+    return this._connected;
   }
 
-  set hitState(hitState) {
-    this._hitState = hitState;
+  set connected(value) {
+    this._connected = value;
+  }
+
+  get connectionTime() {
+    return this._connectionTime;
+  }
+
+  set connectionTime(time) {
+    this._connectionTime = time;
   }
 
   playTurn(game) { // eslint-disable-line no-unused-vars
@@ -93,6 +112,15 @@ class Player {
 
   notifyForCardExchange(cards, fromPlayer) { // eslint-disable-line no-unused-vars
     // Overwrite this method in subclass for specialized logic
+  }
+
+  assign(player) {
+    this._hand = player.hand;
+    this._position = player.position;
+    this._points = player.points;
+    this._cardExchangeRule = player.cardExchangeRule;
+    this._cardsForExchange = player.cardsForExchange;
+    this._hitState = player.hitState;
   }
 
   initializeRoundData() {

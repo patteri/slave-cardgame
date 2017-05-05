@@ -17,8 +17,14 @@ class Home extends Component {
   componentWillMount() {
     // Configure websocket
     this._socket = io('', { path: SocketInfo.playRoomSocketUrl });
+
+    // Connection events
+    this._socket.on('connect', () => {
+      this._socket.emit('register');
+    });
+
+    // Game room events
     this._socket.on('openGamesChanged', this.props.onOpenGamesChanged);
-    this._socket.emit('register');
   }
 
   componentWillUnmount() {
