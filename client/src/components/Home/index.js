@@ -9,6 +9,7 @@ import {
   playerNameChanged
 } from './actions';
 import { gameStarted } from '../Game/actions';
+import { openErrorModal } from '../Errors/actions';
 import api from '../../api/api';
 import './style.css';
 
@@ -41,6 +42,8 @@ const mapDispatchToProps = dispatch => ({
       }).then((response) => {
         dispatch(gameStarted(response.data));
         browserHistory.push('/game');
+      }).catch(() => {
+        dispatch(openErrorModal('An unknown error occurred.'));
       });
     });
   }

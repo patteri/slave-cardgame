@@ -1,7 +1,3 @@
-.Game-modal {
-  color: #333;
-}
-
 .Results-modal label:not(:first-child) {
   margin-top: 10px;
 }

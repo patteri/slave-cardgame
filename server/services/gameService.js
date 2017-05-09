@@ -38,6 +38,12 @@ class GameService {
             // Sync the latest game state to the joined client
             socketService.emitToClient(socket, 'gameUpdated', { game: game.toJSON() });
           }
+          else {
+            socketService.emitToClient(socket, 'exception', { message: 'Forbidden' });
+          }
+        }
+        else {
+          socketService.emitToClient(socket, 'exception', { message: 'Not found' });
         }
       });
       socket.on('sendChatMessage', (gameId, message) => {

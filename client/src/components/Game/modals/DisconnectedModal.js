@@ -3,7 +3,7 @@ import { Modal } from 'react-bootstrap';
 import './style.css';
 
 const DisconnectedModal = ({ show }) => (
-  <Modal className="Game-modal Disconnected-modal" show={show} backdrop={'static'}>
+  <Modal className="Slave-modal Disconnected-modal" show={show} backdrop={'static'}>
     <Modal.Header>
       <Modal.Title>Connection error</Modal.Title>
     </Modal.Header>

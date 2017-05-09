@@ -5,7 +5,7 @@ import './style.css';
 const formatPlayerName = player => player.name + (player.isCpu ? ' (CPU)' : '');
 
 const ResultsModal = ({ show, onHide, results }) => (
-  <Modal className="Game-modal Results-modal" show={show} onHide={onHide} backdrop={'static'}>
+  <Modal className="Slave-modal Results-modal" show={show} onHide={onHide} backdrop={'static'}>
     <Modal.Header closeButton>
       <Modal.Title>{results.gameNumber === results.totalGameCount ? 'Final results' : 'Results'}</Modal.Title>
     </Modal.Header>
@@ -50,7 +50,7 @@ const ResultsModal = ({ show, onHide, results }) => (
       </Table>
     </Modal.Body>
     <Modal.Footer>
-      <Button onClick={onHide}>OK</Button>
+      <Button className="Close-button" onClick={onHide}>OK</Button>
     </Modal.Footer>
   </Modal>
 );

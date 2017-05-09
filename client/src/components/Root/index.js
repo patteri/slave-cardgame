@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Grid, Navbar, Nav, NavItem } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
+import ErrorModal from '../Errors/ErrorModal';
 
 const Root = props => (
   <div className="Root">
@@ -24,6 +25,7 @@ const Root = props => (
     </Navbar>
 
     <Grid className="fill">
+      <ErrorModal />
       {props.children}
     </Grid>
   </div>

@@ -12,6 +12,7 @@ import {
   cardsGiven,
   cardsExchanged,
   newRoundStarted } from './actions';
+import { openErrorModal } from '../Errors/actions';
 import api from '../../api/api';
 import { GameState, CardExchangeType } from '../../shared/constants';
 import './style.css';
@@ -19,12 +20,18 @@ import './playerColumns.css';
 
 const mapStateToProps = state => state.game;
 
+const onError = (dispatch) => {
+  dispatch(openErrorModal('An unknown error occurred.'));
+};
+
 const setCardsForExchange = (state, dispatch, cards) => {
   api.cardsForExchange(state.gameId, {
     clientId: state.playerId,
     cards: cards
   }).then(() => {
     dispatch(cardsGiven());
+  }).catch(() => {
+    onError(dispatch);
   });
 };
 
@@ -55,6 +62,8 @@ const mapDispatchToProps = dispatch => ({
           cards: cards
         }).then((response) => {
           dispatch(cardsHit(response.data));
+        }).catch(() => {
+          onError(dispatch);
         });
       }
       else if (gameState === GameState.CARD_EXCHANGE) {
@@ -73,6 +82,8 @@ const mapDispatchToProps = dispatch => ({
         if (response.data.exchangeRule.exchangeType === CardExchangeType.NONE) {
           setCardsForExchange(state, dispatch, []);
         }
+      }).catch(() => {
+        onError(dispatch);
       });
     });
   },

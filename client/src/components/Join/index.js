@@ -4,6 +4,7 @@ import Join from './Join';
 import { gameIdChanged } from './actions';
 import { playerNameChanged } from '../Home/actions';
 import { gameStarted } from '../Game/actions';
+import { openErrorModal } from '../Errors/actions';
 import api from '../../api/api';
 import './style.css';
 
@@ -24,6 +25,16 @@ const mapDispatchToProps = dispatch => ({
       }).then((response) => {
         dispatch(gameStarted(response.data));
         browserHistory.push('/game');
+      }).catch((error) => {
+        if (error.response && error.response.status === 403) {
+          dispatch(openErrorModal('The game is full.'));
+        }
+        else if (error.response && error.response.status === 404) {
+          dispatch(openErrorModal("The game doesn't exist."));
+        }
+        else {
+          dispatch(openErrorModal('An unknown error occurred.'));
+        }
       });
     });
   }

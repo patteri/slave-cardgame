@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { browserHistory } from 'react-router';
 import { Grid, Col, ControlLabel, FormControl } from 'react-bootstrap';
 import io from 'socket.io-client';
+import ErrorModal from '../Errors/ErrorModal';
 import OtherPlayers from './OtherPlayers';
 import Table from './Table';
 import Player from './Player';
@@ -16,8 +17,9 @@ class Game extends Component {
     super(props);
 
     this.state = {
-      socket: null,
       joinUrl: '',
+      socket: null,
+      socketConnected: false,
       showConnectionError: false
     };
 
@@ -34,12 +36,14 @@ class Game extends Component {
       // Connection events
       socket.on('connect', () => {
         this.setState({
+          socketConnected: true,
           showConnectionError: false
         });
         socket.emit('joinGame', this.props.gameId, this.props.playerId);
       });
       socket.on('disconnect', () => {
         this.setState({
+          socketConnected: false,
           showConnectionError: true
         });
       });
@@ -51,6 +55,7 @@ class Game extends Component {
       socket.on('gameEnded', this.gameEnded);
       socket.on('cardsExchanged', this.props.onCardsExchanged);
       socket.on('newRoundStarted', this.props.onNewRoundStarted);
+      socket.on('exception', this.exitGame);
 
       this.setState({
         socket: socket,
@@ -64,11 +69,12 @@ class Game extends Component {
   }
 
   componentWillUnmount() {
-    if (this.state.socket) {
+    if (this.state.socketConnected) {
       this.state.socket.removeAllListeners('disconnect');
-    }
-    if (this.props.gameId) {
-      this.props.onQuitGame();
+
+      if (this.props.gameId) {
+        this.props.onQuitGame();
+      }
     }
   }
 
@@ -78,6 +84,10 @@ class Game extends Component {
     setTimeout(() => {
       this.props.toggleResultsModal(true);
     }, 1000);
+  }
+
+  exitGame() {
+    browserHistory.push('/home');
   }
 
   hideResultsModal() {
@@ -101,6 +111,7 @@ class Game extends Component {
 
     return (
       <Grid className="Game" fluid>
+        <ErrorModal />
         <Chat socket={this.state.socket} gameId={gameId} />
         {results &&
           <ResultsModal results={results} show={showResultsModal} onHide={this.hideResultsModal} />
