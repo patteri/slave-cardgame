@@ -4,7 +4,7 @@ const CpuPlayer = require('../models/cpuPlayer');
 const socketService = require('../services/socketService');
 const { GameState, GameValidation, MaxChatMessageLength } = require('../../client/src/shared/constants');
 
-const REMOVE_AFTER_DISCONNECTION_PERIOD = 30000;
+const RemoveAfterDisconnectionPeriod = 30000;
 
 class GameService {
 
@@ -54,7 +54,7 @@ class GameService {
       });
       socket.on('disconnect', () => {
         // If game hasn't started or is ended, player can be removed immediately
-        // If game is ongoing, wait for REMOVE_AFTER_DISCONNECTION_PERIOD for reconnection until remove
+        // If game is ongoing, wait for RemoveAfterDisconnectionPeriod for reconnection until remove
         if (socket.game && socket.player) {
           if (socket.game.state === GameState.NOT_STARTED || socket.game.state === GameState.ENDED) {
             this.removePlayerFromGame(socket.game, socket.player);
@@ -63,21 +63,28 @@ class GameService {
             socket.player.connected = false;
             setTimeout((player, game) => {
               // Ensure that the client hasn't reconnected and disconnected again after the timer was started
-              if (!player.connected && (Date.now() - player.connectionTime) > REMOVE_AFTER_DISCONNECTION_PERIOD) {
+              if (!player.connected && (Date.now() - player.connectionTime) > RemoveAfterDisconnectionPeriod) {
                 this.removePlayerFromGame(game, player);
               }
-            }, REMOVE_AFTER_DISCONNECTION_PERIOD, socket.player, socket.game);
+            }, RemoveAfterDisconnectionPeriod, socket.player, socket.game);
           }
         }
       });
     });
   }
 
-  sendChatMessage(gameId, sender, message) {
-    socketService.emitToRoom('game', gameId, 'chatMessageReceived', {
+  sendChatMessage(gameId, sender, message, client = null) {
+    const value = {
       sender: sender,
       message: message
-    });
+    };
+
+    if (client == null) {
+      socketService.emitToRoom('game', gameId, 'chatMessageReceived', value);
+    }
+    else if (client.socket) {
+      socketService.emitToClient(client.socket, 'chatMessageReceived', value);
+    }
   }
 
   getOpenGames() {
@@ -129,6 +136,8 @@ class GameService {
 
     if (game.players.filter(player => player instanceof HumanPlayer).length === 0) {
       game.endGame();
+      game.eventEmitter.removeAllListeners('playerInactive');
+      game.eventEmitter.removeAllListeners('playerInactiveWarning');
       this._games.delete(game.id);
     }
     else if (!replace) {
@@ -183,8 +192,19 @@ class GameService {
       return null;
     }
 
-    // Create game, players and deal cards
+    // Create game and players
     let game = new Game(playerCount, gameCount, shuffleDeck);
+    game.eventEmitter.on('playerInactive', (game, player) => {
+      if (player.socket) {
+        socketService.emitToClient(player.socket, 'exception', { message: 'Too long inactivity' });
+      }
+      this.removePlayerFromGame(game, player);
+    });
+    game.eventEmitter.on('playerInactiveWarning', (game, player, remainingTime) => {
+      this.sendChatMessage(game.id, null, 'Wake up! You have ' + remainingTime +
+        " seconds until you'll be removed from the game...", player);
+    });
+
     let human = new HumanPlayer(playerName);
     game.addPlayer(human);
 

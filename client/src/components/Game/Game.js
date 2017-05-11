@@ -9,7 +9,9 @@ import Player from './Player';
 import Chat from '../Chat';
 import ResultsModal from './modals/ResultsModal';
 import DisconnectedModal from './modals/DisconnectedModal';
-import { GameState, SocketInfo } from '../../shared/constants';
+import { GameState, SocketInfo, TimerValues } from '../../shared/constants';
+
+const ModalOpenDelay = 1000;
 
 class Game extends Component {
 
@@ -18,12 +20,14 @@ class Game extends Component {
 
     this.state = {
       joinUrl: '',
+      resultsClosedForGame: null,
       socket: null,
       socketConnected: false,
       showConnectionError: false
     };
 
     this.gameEnded = this.gameEnded.bind(this);
+    this.onSocketException = this.onSocketException.bind(this);
     this.hideResultsModal = this.hideResultsModal.bind(this);
     this.handleJoinUrlFocus = this.handleJoinUrlFocus.bind(this);
   }
@@ -55,7 +59,7 @@ class Game extends Component {
       socket.on('gameEnded', this.gameEnded);
       socket.on('cardsExchanged', this.props.onCardsExchanged);
       socket.on('newRoundStarted', this.props.onNewRoundStarted);
-      socket.on('exception', this.exitGame);
+      socket.on('exception', this.onSocketException);
 
       this.setState({
         socket: socket,
@@ -70,7 +74,7 @@ class Game extends Component {
 
   componentWillUnmount() {
     if (this.state.socketConnected) {
-      this.state.socket.removeAllListeners('disconnect');
+      this.removeSocketListeners();
 
       if (this.props.gameId) {
         this.props.onQuitGame();
@@ -78,20 +82,42 @@ class Game extends Component {
     }
   }
 
+  // 'exception' socket event is a signal that server has removed the player from the game
+  onSocketException() {
+    this.setState({
+      socketConnected: false
+    });
+    this.removeSocketListeners();
+    browserHistory.push('/home');
+  }
+
+  removeSocketListeners() {
+    // Only removing of 'disconnect' event is required
+    this.state.socket.removeAllListeners('disconnect');
+  }
+
   gameEnded(data) {
     this.props.onGameEnd(data);
 
     setTimeout(() => {
       this.props.toggleResultsModal(true);
-    }, 1000);
-  }
 
-  exitGame() {
-    browserHistory.push('/home');
+      // Auto-close modal when inactive
+      setTimeout((gameNumber) => {
+        if (this.state.resultsClosedForGame == null || this.state.resultsClosedForGame < gameNumber) {
+          this.hideResultsModal();
+        }
+      }, TimerValues.cardExchangeInactivityMaxPeriod - TimerValues.inactivityWarningTime - ModalOpenDelay,
+        this.props.results.gameNumber);
+    }, ModalOpenDelay);
   }
 
   hideResultsModal() {
     this.props.toggleResultsModal(false);
+
+    this.setState({
+      resultsClosedForGame: this.props.results.gameNumber
+    });
 
     if (this.props.results.gameNumber < this.props.results.totalGameCount) {
       this.props.requestCardExchange();

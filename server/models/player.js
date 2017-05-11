@@ -17,9 +17,13 @@ class Player {
     this._cardsForExchange = null;
     this._hitState = PlayerHitState.WAITING;
 
+    // Socket and connection data
     this._socket = null;
     this._connected = false;
     this._connectionTime = null;
+
+    // Activity data
+    this._lastActivityTime = null;
   }
 
   get id() {
@@ -100,6 +104,14 @@ class Player {
 
   set connectionTime(time) {
     this._connectionTime = time;
+  }
+
+  get lastActivityTime() {
+    return this._lastActivityTime;
+  }
+
+  set lastActivityTime(time) {
+    this._lastActivityTime = time;
   }
 
   playTurn(game) { // eslint-disable-line no-unused-vars

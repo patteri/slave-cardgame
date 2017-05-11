@@ -1,11 +1,18 @@
+const events = require('events');
 const _ = require('lodash');
 const Deck = require('./deck');
 const Card = require('../../client/src/shared/card');
 const CpuPlayer = require('./cpuPlayer');
+const HumanPlayer = require('./humanPlayer');
 const tokenGenerator = require('../helpers/tokenGenerator');
 const socketService = require('../services/socketService');
 const CardHelper = require('../../client/src/shared/cardHelper');
-const { GameState, PlayerState, PlayerHitState, CardExchangeType } = require('../../client/src/shared/constants');
+const {
+  GameState,
+  PlayerState,
+  PlayerHitState,
+  CardExchangeType,
+  TimerValues } = require('../../client/src/shared/constants');
 
 const StartCpuGameInterval = 1000;
 const StartNewRoundInterval = 5000;
@@ -33,6 +40,8 @@ class Game {
       startCpuGameInterval: StartCpuGameInterval,
       startNewRoundInterval: StartNewRoundInterval
     };
+    this._eventEmitter = new events.EventEmitter();
+
     this.initializeNewGame(shuffleDeck);
   }
 
@@ -48,20 +57,47 @@ class Game {
     return this._table;
   }
 
-  get turn() {
-    return this._turn;
-  }
-
-  set turn(player) {
-    this._turn = player;
-  }
-
   get previousHit() {
     return this._previousHit;
   }
 
   get state() {
     return this._state;
+  }
+
+  get eventEmitter() {
+    return this._eventEmitter;
+  }
+
+  setTurn(player, trackInactivity = false) {
+    if (this._turn) {
+      this._turn.lastActivityTime = Date.now();
+    }
+
+    this._turn = player;
+
+    if (trackInactivity && this.getHumanPlayers().length > 1 && player instanceof HumanPlayer) {
+      setTimeout((player) => {
+        this.inactivityCheck(player, TimerValues.hitInactivityMaxPeriod);
+      }, TimerValues.hitInactivityMaxPeriod - TimerValues.inactivityWarningTime, player);
+    }
+  }
+
+  getHumanPlayers() {
+    return this._players.filter(player => player instanceof HumanPlayer);
+  }
+
+  inactivityCheck(player, period) {
+    if ((Date.now() - player.lastActivityTime) > (period - TimerValues.inactivityWarningTime) &&
+      this._players.find(item => item.id === player.id) !== undefined) {
+      this.eventEmitter.emit('playerInactiveWarning', this, player, TimerValues.inactivityWarningTime / 1000);
+      setTimeout((player) => {
+        if ((Date.now() - player.lastActivityTime) > period &&
+          this._players.find(item => item.id === player.id) !== undefined) {
+          this.eventEmitter.emit('playerInactive', this, player);
+        }
+      }, TimerValues.inactivityWarningTime, player);
+    }
   }
 
   // Registers a socket for the specified client
@@ -125,7 +161,7 @@ class Game {
     this._players[index] = cpuPlayer;
 
     if (this._turn === player) {
-      this._turn = cpuPlayer;
+      this.setTurn(cpuPlayer);
       if (this.state === GameState.PLAYING) {
         this.startCpuGame();
       }
@@ -143,9 +179,9 @@ class Game {
 
   setStartingTurn() {
     // The player with the two of clubs gets the starting turn
-    this._turn = this._players.find(player =>
+    this.setTurn(this._players.find(player =>
       CardHelper.findTwoOfClubs(player.hand) !== undefined
-    );
+    ), true);
   }
 
   // Validates the player and the hit
@@ -233,22 +269,26 @@ class Game {
 
     // Switch turn
     let index = this._players.indexOf(this._turn);
+    let turn = null;
     do {
       index = this.isRevolution() ? index - 1 : index + 1;
       if (index === -1) {
         index = this._players.length - 1;
       }
-      this._turn = this._players[index % this._players.length];
+      turn = this._players[index % this._players.length];
 
       // If full round without hits, clear the table
-      if (this._turn === this._previousHit.player) {
+      if (turn === this._previousHit.player) {
         this._previousHit.cards = [];
       }
     }
-    while (this._turn.hand.length === 0);
+    while (turn.hand.length === 0);
 
-    // Check if the game ended
-    if (this.getPlayersInGame().length === 1) {
+    const gameEnded = this.getPlayersInGame().length === 1;
+
+    this.setTurn(turn, !gameEnded);
+
+    if (gameEnded) {
       this.setPositionAndPoints(this._turn);
       // Dealing starts from the next of the player who lost
       this._dealStartIndex = (this._players.indexOf(this._turn) + 1) % this._players.length;
@@ -316,6 +356,15 @@ class Game {
     this._currentGameIndex += 1;
 
     if (this._currentGameIndex < this._gameCount) {
+      if (this.getHumanPlayers().length > 1) {
+        // Start tracking inactivity
+        setTimeout(() => {
+          this._players.filter(player => player instanceof HumanPlayer).forEach((player) => {
+            this.inactivityCheck(player, TimerValues.cardExchangeInactivityMaxPeriod);
+          });
+        }, TimerValues.cardExchangeInactivityMaxPeriod - TimerValues.inactivityWarningTime);
+      }
+
       this.initializeNewGame(true, GameState.CARD_EXCHANGE);
       this.dealCards();
 
@@ -416,6 +465,7 @@ class Game {
     }
 
     player.cardsForExchange = cards;
+    player.lastActivityTime = Date.now();
 
     // Check if everybody has selected cards for exchange
     if (this._players.filter(player => player.cardsForExchange != null).length === this._players.length) {

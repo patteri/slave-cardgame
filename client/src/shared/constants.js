@@ -17,6 +17,12 @@ const GameValidation = {
   maxGameCount: 100
 };
 
+const TimerValues = {
+  hitInactivityMaxPeriod: 45000,
+  cardExchangeInactivityMaxPeriod: 60000,
+  inactivityWarningTime: 15000
+};
+
 const MaxChatMessageLength = 200;
 
 exports.GameState = GameState;
@@ -25,4 +31,5 @@ exports.PlayerHitState = PlayerHitState;
 exports.CardExchangeType = CardExchangeType;
 exports.SocketInfo = SocketInfo;
 exports.GameValidation = GameValidation;
+exports.TimerValues = TimerValues;
 exports.MaxChatMessageLength = MaxChatMessageLength;
