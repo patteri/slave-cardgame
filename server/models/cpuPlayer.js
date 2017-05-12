@@ -45,7 +45,7 @@ class CpuPlayer extends Player {
       return '14';
     }
     else if (value < 10) {
-      return '0' + value;
+      return `0${value}`;
     }
     return value.toString();
   }

@@ -44,17 +44,17 @@ function onError(error) {
   }
 
   let bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
+    ? `Pipe ${port}`
+    : `Port ${port}`;
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
-      console.error(bind + ' requires elevated privileges'); // eslint-disable-line no-console
+      console.error(`${bind} requires elevated privileges`); // eslint-disable-line no-console
       process.exit(1);
       break;
     case 'EADDRINUSE':
-      console.error(bind + ' is already in use'); // eslint-disable-line no-console
+      console.error(`${bind} is already in use`); // eslint-disable-line no-console
       process.exit(1);
       break;
     default:
@@ -67,7 +67,7 @@ function onError(error) {
 function onListening() {
   let addr = server.address();
   let bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+    ? `pipe ${addr}`
+    : `port ${addr.port}`;
+  debug(`Listening on ${bind}`);
 }

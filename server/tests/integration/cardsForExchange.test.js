@@ -22,7 +22,7 @@ describe('/api/game/:id/cardsForExchange', () => {
     const game = gameService.createGame('Human', 4, 3, 1);
 
     chai.request(app)
-      .post('/api/game/' + game.game.id + '/cardsForExchange')
+      .post(`/api/game/${game.game.id}/cardsForExchange`)
       .send({ clientId: 'unknown', cards: [ game.player.hand[0] ] })
       .end((err, res) => {
         expect(res).to.have.status(403);
@@ -40,7 +40,7 @@ describe('/api/game/:id/cardsForExchange', () => {
     game.gameEnded();
 
     chai.request(app)
-      .post('/api/game/' + game.id + '/cardsForExchange')
+      .post(`/api/game/${game.id}/cardsForExchange`)
       .send({ clientId: game._players[0].id, cards: [ game._players[0].hand[0], game._players[0].hand[1] ] })
       .end((err, res) => {
         expect(err).to.be.null; // eslint-disable-line no-unused-expressions
@@ -53,7 +53,7 @@ describe('/api/game/:id/cardsForExchange', () => {
     const game = gameService.createGame('Human', 4, 3, 1, false).game;
 
     chai.request(app)
-      .post('/api/game/' + game.id + '/cardsForExchange')
+      .post(`/api/game/${game.id}/cardsForExchange`)
       .send({ clientId: game._players[0].id, cards: [ game._players[0].hand[0], game._players[0].hand[1] ] })
       .end((err, res) => {
         expect(res).to.have.status(403);

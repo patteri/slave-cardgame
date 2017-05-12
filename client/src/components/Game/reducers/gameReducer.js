@@ -48,11 +48,9 @@ const getOtherPlayers = (players, playerIndex) => {
 const getHelpTextForExchange = (exchangeRule) => {
   switch (exchangeRule.exchangeType) {
     case CardExchangeType.FREE:
-      return 'Give ' + exchangeRule.exchangeCount + ' freely chosen cards to player \'' +
-        exchangeRule.toPlayer.name + '\'';
+      return `Give ${exchangeRule.exchangeCount} freely chosen cards to player '${exchangeRule.toPlayer.name}'`;
     case CardExchangeType.BEST:
-      return 'Give ' + exchangeRule.exchangeCount + ' best card(s) to player \'' +
-        exchangeRule.toPlayer.name + '\'';
+      return `Give ${exchangeRule.exchangeCount} best card(s) to player '${exchangeRule.toPlayer.name}'`;
     case CardExchangeType.NONE:
     default:
       return 'You don\'t change cards in this round';
@@ -60,12 +58,12 @@ const getHelpTextForExchange = (exchangeRule) => {
 };
 
 const getHelpTextAfterExchange = (exchangedCards) => {
-  let text = 'Player \'' + exchangedCards.fromPlayer.name + '\' gave you ' + exchangedCards.cards.length;
+  let text = `Player '${exchangedCards.fromPlayer.name}' gave you ${exchangedCards.cards.length}`;
   if (exchangedCards.exchangeType === CardExchangeType.FREE) {
-    return text + ' freely chosen card(s)';
+    return `${text} freely chosen card(s)`;
   }
   else if (exchangedCards.exchangeType === CardExchangeType.BEST) {
-    return text + ' best card(s)';
+    return `${text} best card(s)`;
   }
   return '';
 };

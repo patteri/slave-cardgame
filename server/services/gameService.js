@@ -147,11 +147,11 @@ class GameService {
           playerIndex: game.players.indexOf(item)
         });
       });
-      this.sendChatMessage(game.id, null, "Player '" + player.name + "' left the game...");
+      this.sendChatMessage(game.id, null, `Player '${player.name}' left the game...`);
     }
     else {
       socketService.emitToRoom('game', game.id, 'joinedPlayersChanged', { game: game });
-      this.sendChatMessage(game.id, null, "Player '" + player.name + "' left the game and was replaced by a CPU...");
+      this.sendChatMessage(game.id, null, `Player '${player.name}' left the game and was replaced by a CPU...`);
     }
   }
 
@@ -201,15 +201,15 @@ class GameService {
       this.removePlayerFromGame(game, player);
     });
     game.eventEmitter.on('playerInactiveWarning', (game, player, remainingTime) => {
-      this.sendChatMessage(game.id, null, 'Wake up! You have ' + remainingTime +
-        " seconds until you'll be removed from the game...", player);
+      this.sendChatMessage(game.id, null,
+        `Wake up! You have ${remainingTime} seconds until you'll be removed from the game...`, player);
     });
 
     let human = new HumanPlayer(playerName);
     game.addPlayer(human);
 
     for (let i = 0; i < cpuPlayerCount; ++i) {
-      game.addPlayer(new CpuPlayer('Computer ' + (i + 1)));
+      game.addPlayer(new CpuPlayer(`Computer ${i + 1}`));
     }
 
     this._games.set(game.id, game);
@@ -251,7 +251,7 @@ class GameService {
     }
     socketService.emitToRoom('playRoom', 'playRoom', 'openGamesChanged', this.getOpenGames());
 
-    this.sendChatMessage(game.id, null, "Player '" + human.name + "' joined the game!");
+    this.sendChatMessage(game.id, null, `Player '${human.name}' joined the game!`);
 
     return { game: game, player: human };
   }

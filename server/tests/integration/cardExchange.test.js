@@ -22,7 +22,7 @@ describe('/api/game/:id/cardExchange', () => {
     const game = gameService.createGame('Human', 4, 3, 1);
 
     chai.request(app)
-      .get('/api/game/' + game.game.id + '/cardExchange?clientId=unknown')
+      .get(`/api/game/${game.game.id}/cardExchange?clientId=unknown`)
       .end((err, res) => {
         expect(res).to.have.status(403);
         expect(res).to.be.json; // eslint-disable-line no-unused-expressions
@@ -39,7 +39,7 @@ describe('/api/game/:id/cardExchange', () => {
     game.gameEnded();
 
     chai.request(app)
-      .get('/api/game/' + game.id + '/cardExchange?clientId=' + game._players[0].id)
+      .get(`/api/game/${game.id}/cardExchange?clientId=${game._players[0].id}`)
       .end((err, res) => {
         expect(err).to.be.null; // eslint-disable-line no-unused-expressions
         expect(res).to.have.status(200);
@@ -61,7 +61,7 @@ describe('/api/game/:id/cardExchange', () => {
     const game = gameService.createGame('Human', 4, 3, 1, false).game;
 
     chai.request(app)
-      .get('/api/game/' + game.id + '/cardExchange?clientId=' + game._players[0].id)
+      .get(`/api/game/${game.id}/cardExchange?clientId=${game._players[0].id}`)
       .end((err, res) => {
         expect(res).to.have.status(403);
         expect(res).to.be.json; // eslint-disable-line no-unused-expressions

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import './style.css';
 
-const getImageSrc = card => '/images/cards/' + card.suit.toLowerCase() + '-' + card.value + '-150.png';
+const getImageSrc = card => `/images/cards/${card.suit.toLowerCase()}-${card.value}-150.png`;
 
 const Card = ({ card, selected, onClick }) => (
   <input

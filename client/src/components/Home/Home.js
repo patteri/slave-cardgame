@@ -34,7 +34,7 @@ class Home extends Component {
   }
 
   joinGame(id) {
-    browserHistory.push('/join/' + id);
+    browserHistory.push(`/join/${id}`);
   }
 
   createGame(e) {

@@ -48,7 +48,7 @@ const startGame = (gameCount, roundDone, done) => {
   game.addPlayer(specializedCpuPlayer);
 
   for (let i = 1; i < PlayerCount; ++i) {
-    let player = new CpuPlayer('CPU ' + (i + 1), otherPlayersConf);
+    let player = new CpuPlayer(`CPU ${i + 1}`, otherPlayersConf);
     game.addPlayer(player);
   }
 
@@ -66,7 +66,7 @@ if (TestMethod === TestMethods.CONTINUOUS) {
     let cpu1 = points.find(item => item.playerName === 'CPU 1');
     deviation.set(cpu1.points, deviation.get(cpu1.points) + 1);
 
-    console.log(gameCounter + ' games simulated... CPU 1 points:', cpu1.points); // eslint-disable-line no-console
+    console.log(`${gameCounter} games simulated... CPU 1 points: ${cpu1.points}`); // eslint-disable-line no-console
   };
 
   const done = (points) => {
@@ -90,7 +90,7 @@ else {
     deviation.set(cpu1.points, deviation.get(cpu1.points) + 1);
 
     gameCounter += 1;
-    console.log(gameCounter + ' games simulated... CPU 1 points:', cpu1.points); // eslint-disable-line no-console
+    console.log(`${gameCounter} games simulated... CPU 1 points: ${cpu1.points}`); // eslint-disable-line no-console
     if (gameCounter === GameCount) {
       results = resultsMap;
       scriptEnded = true;
@@ -108,11 +108,11 @@ else {
     setTimeout(wait, 1000);
   }
   else {
-    console.log('Method: ' + TestMethod + ', game count: ' + GameCount + ', player count: ' + PlayerCount); // eslint-disable-line no-console
+    console.log(`Method: ${TestMethod}, game count: ${GameCount}, player count: ${PlayerCount}`); // eslint-disable-line no-console
     console.log('AI conf to test:', firstPlayerConf); // eslint-disable-line no-console
     console.log('AI conf to play against:', otherPlayersConf); // eslint-disable-line no-console
     console.log('Points:', results); // eslint-disable-line no-console
     console.log('Deviation:', deviation); // eslint-disable-line no-console
-    console.log('Script ended in ' + ((Date.now() - startTime) / 1000) + ' seconds'); // eslint-disable-line no-console
+    console.log(`Script ended in ${(Date.now() - startTime) / 1000} seconds`); // eslint-disable-line no-console
   }
 }());

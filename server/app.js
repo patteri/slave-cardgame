@@ -22,7 +22,7 @@ if (process.env.NODE_ENV === 'production') {
   const pathName = path.join(__dirname, '../client/build');
   app.use(express.static(pathName));
   app.get('*', (req, res) => {
-    res.sendFile(pathName + '/index.html');
+    res.sendFile(`${pathName}/index.html`);
   });
 }
 

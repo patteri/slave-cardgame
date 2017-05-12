@@ -59,7 +59,7 @@ describe('/api/game', () => {
     let game = gameService.createGame('Human', 4, 3, 1).game;
 
     chai.request(app)
-      .post('/api/game/' + game.id + '/join')
+      .post(`/api/game/${game.id}/join`)
       .send({ playerName: 'Human 2' })
       .end((err, res) => {
         expect(res).to.have.status(403);
@@ -72,7 +72,7 @@ describe('/api/game', () => {
     let game = gameService.createGame('Human', 4, 2, 1).game;
 
     chai.request(app)
-      .post('/api/game/' + game.id + '/join')
+      .post(`/api/game/${game.id}/join`)
       .send({ playerName: '' })
       .end((err, res) => {
         expect(res).to.have.status(400);
@@ -85,7 +85,7 @@ describe('/api/game', () => {
     let game = gameService.createGame('Human', 4, 2, 1).game;
 
     chai.request(app)
-      .post('/api/game/' + game.id + '/join')
+      .post(`/api/game/${game.id}/join`)
       .send({ playerName: 'Human 2' })
       .end((err, res) => {
         expect(err).to.be.null; // eslint-disable-line no-unused-expressions
@@ -104,7 +104,7 @@ describe('/api/game', () => {
     let game = gameService.createGame('Human', 4, 3, 1).game;
 
     chai.request(app)
-      .post('/api/game/' + game.id + '/quit')
+      .post(`/api/game/${game.id}/quit`)
       .send({ clientId: game.players[0].id })
       .end((err, res) => {
         expect(err).to.be.null; // eslint-disable-line no-unused-expressions

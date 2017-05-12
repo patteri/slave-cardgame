@@ -63,8 +63,8 @@ class Game extends Component {
 
       this.setState({
         socket: socket,
-        joinUrl: window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1) +
-          'join/' + this.props.gameId
+        joinUrl: `${window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1)}join/` +
+          `${this.props.gameId}`
       });
     }
     else {

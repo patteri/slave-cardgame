@@ -23,7 +23,7 @@
     "no-prototype-builtins": 0,
     "object-shorthand": 0,
     "prefer-const": 0,
-    "prefer-template": 0,
+    "prefer-template": 1,
     "quote-props": [1, "consistent-as-needed"],
     "react/forbid-prop-types": 0,
     "react/no-multi-comp": 0,

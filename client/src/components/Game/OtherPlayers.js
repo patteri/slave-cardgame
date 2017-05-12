@@ -8,7 +8,7 @@ import './style.css';
 const OtherPlayers = ({ playerCount, players }) => (
   <Row>
     {players.map((item, index) => (
-      <div className={'player-col-' + playerCount} key={index}>
+      <div className={`player-col-${playerCount}`} key={index}>
         <span
           className={classNames('Game-player-name',
             { turn: item.turn, OutOfGame: item.status === PlayerState.OUT_OF_GAME })}
