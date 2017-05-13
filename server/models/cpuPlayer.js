@@ -1,3 +1,4 @@
+const events = require('events');
 const Player = require('./player');
 const CardHelper = require('../../client/src/shared/cardHelper');
 const { CardExchangeType } = require('../../client/src/shared/constants');
@@ -21,11 +22,53 @@ const DefaultConfiguration = {
 // Helper table
 const CardValues = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 ];
 
+const WinComments = [
+  'King in the castle! King in the castle!',
+  ';)',
+  'I\'m invincible!!!',
+  'Losers... :)',
+  'Yeah, baby, yeah!'
+];
+
+const RevolutionComments = [
+  'You didn\'t expect this, did you? ;)',
+  'Revolution, baby!',
+  'Who\'s laughing now?',
+  ';)',
+  'Revolution it is!'
+];
+
+const RandomComments = [
+  'Lorem ipsum dolor sit amet',
+  'How much is the fish? Just wondering...',
+  ';D',
+  ':)',
+  'Sometimes the cards just suck really bad...',
+  'Are there some aces still in the game?',
+  'I\'m gonna win for sure',
+  'This one time, at band camp, I stuck my cards up my...',
+  'Pairs... pairs is what I need'
+];
+
+const CardExchangeComments = [
+  'My cards are better than yours. You can have one but I have to charge.',
+  'God, why? Why me...',
+  'Here\'s some sweets for you ;)',
+  'Give me some aces',
+  'Hail to the king!',
+  'Sweet cards o\' mine...'
+];
+
 class CpuPlayer extends Player {
 
   constructor(name, configuration = DefaultConfiguration) {
     super(name);
     this._conf = configuration;
+    this._eventEmitter = new events.EventEmitter();
+  }
+
+  get eventEmitter() {
+    return this._eventEmitter;
   }
 
   playTurn(game) {
@@ -33,9 +76,36 @@ class CpuPlayer extends Player {
       game.playTurn(this.getNextCardsToPlay(
         game.previousHit.cards,
         game.isRevolution(),
-        game.table)
+        game.table,
+        game.getPlayersInGame().length === game.playerCount)
       );
     }, this._conf.aiInterval, game);
+  }
+
+  randomizeComment(comments, probability) {
+    return Math.random() < probability ? comments[Math.floor(Math.random() * comments.length)] : null;
+  }
+
+  generateComment(cardsToPlay, allPlayersInGame, isRevolution, cardExchange = false) {
+    let comment = null;
+    if (cardExchange) {
+      comment = this.randomizeComment(CardExchangeComments, 0.02);
+    }
+    else if (this.hand.length - cardsToPlay.length === 0 && allPlayersInGame) {
+      comment = this.randomizeComment(WinComments, 0.2);
+    }
+    else if (cardsToPlay.length === 4 && !isRevolution) {
+      comment = this.randomizeComment(RevolutionComments, 0.5);
+    }
+    else {
+      comment = this.randomizeComment(RandomComments, 0.005);
+    }
+
+    if (comment) {
+      setTimeout((comment) => {
+        this.eventEmitter.emit('comment', this, comment);
+      }, Math.floor(Math.random() * 2000) + 1000, comment);
+    }
   }
 
   // Returns a key representing the value
@@ -129,7 +199,7 @@ class CpuPlayer extends Player {
 
   // Chooses the next cards to play
   // The computer is capable of remembering the cards that was hit to the table :)
-  getNextCardsToPlay(previousHit, isRevolution, tableCards) {
+  getNextCardsToPlay(previousHit, isRevolution, tableCards, allPlayersInGame) {
     let cardsToPlay = [];
 
     if (previousHit.length === 0 || previousHit[0].value !== 1) {
@@ -176,6 +246,8 @@ class CpuPlayer extends Player {
         }
       }
     }
+
+    this.generateComment(cardsToPlay, allPlayersInGame, isRevolution);
 
     return cardsToPlay;
   }
@@ -227,6 +299,8 @@ class CpuPlayer extends Player {
       default:
         break;
     }
+
+    this.generateComment(null, null, null, true);
 
     return cards;
   }

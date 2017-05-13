@@ -33,6 +33,20 @@ class SocketService {
       socket.emit(eventName, data);
     }
   }
+
+  sendChatMessage(gameId, sender, message, client = null) {
+    const value = {
+      sender: sender,
+      message: message
+    };
+
+    if (client == null) {
+      this.emitToRoom('game', gameId, 'chatMessageReceived', value);
+    }
+    else if (client.socket) {
+      this.emitToClient(client.socket, 'chatMessageReceived', value);
+    }
+  }
 }
 
 const socketService = new SocketService();

@@ -49,7 +49,7 @@ class GameService {
       socket.on('sendChatMessage', (gameId, message) => {
         if (socket.rooms.hasOwnProperty(gameId)) {
           const msg = message.trim().substring(0, MaxChatMessageLength);
-          this.sendChatMessage(gameId, socket.player.name, msg);
+          socketService.sendChatMessage(gameId, socket.player.name, msg);
         }
       });
       socket.on('disconnect', () => {
@@ -71,20 +71,6 @@ class GameService {
         }
       });
     });
-  }
-
-  sendChatMessage(gameId, sender, message, client = null) {
-    const value = {
-      sender: sender,
-      message: message
-    };
-
-    if (client == null) {
-      socketService.emitToRoom('game', gameId, 'chatMessageReceived', value);
-    }
-    else if (client.socket) {
-      socketService.emitToClient(client.socket, 'chatMessageReceived', value);
-    }
   }
 
   getOpenGames() {
@@ -147,11 +133,12 @@ class GameService {
           playerIndex: game.players.indexOf(item)
         });
       });
-      this.sendChatMessage(game.id, null, `Player '${player.name}' left the game...`);
+      socketService.sendChatMessage(game.id, null, `Player '${player.name}' left the game...`);
     }
     else {
       socketService.emitToRoom('game', game.id, 'joinedPlayersChanged', { game: game });
-      this.sendChatMessage(game.id, null, `Player '${player.name}' left the game and was replaced by a CPU...`);
+      socketService.sendChatMessage(game.id, null,
+        `Player '${player.name}' left the game and was replaced by a CPU...`);
     }
   }
 
@@ -164,7 +151,7 @@ class GameService {
     game.startNewGame();
     // Add some delay to make sure that the last joined player has initialized the socket
     setTimeout(() => {
-      this.sendChatMessage(game.id, null, 'The game started!');
+      socketService.sendChatMessage(game.id, null, 'The game started!');
     }, 750);
   }
 
@@ -201,7 +188,7 @@ class GameService {
       this.removePlayerFromGame(game, player);
     });
     game.eventEmitter.on('playerInactiveWarning', (game, player, remainingTime) => {
-      this.sendChatMessage(game.id, null,
+      socketService.sendChatMessage(game.id, null,
         `Wake up! You have ${remainingTime} seconds until you'll be removed from the game...`, player);
     });
 
@@ -251,7 +238,7 @@ class GameService {
     }
     socketService.emitToRoom('playRoom', 'playRoom', 'openGamesChanged', this.getOpenGames());
 
-    this.sendChatMessage(game.id, null, `Player '${human.name}' joined the game!`);
+    socketService.sendChatMessage(game.id, null, `Player '${human.name}' joined the game!`);
 
     return { game: game, player: human };
   }

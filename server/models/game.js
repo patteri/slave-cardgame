@@ -49,6 +49,10 @@ class Game {
     return this._id;
   }
 
+  get playerCount() {
+    return this._playerCount;
+  }
+
   get players() {
     return this._players;
   }
@@ -111,6 +115,16 @@ class Game {
     return null;
   }
 
+  registerEventListener(player) {
+    player.eventEmitter.on('comment', (player, comment) => {
+      this.onPlayerComment(player, comment);
+    });
+  }
+
+  onPlayerComment(player, comment) {
+    socketService.sendChatMessage(this.id, player.name, comment);
+  }
+
   endGame() {
     this._state = GameState.ENDED;
   }
@@ -148,6 +162,10 @@ class Game {
     }
 
     this._players.push(player);
+
+    if (player instanceof CpuPlayer) {
+      this.registerEventListener(player);
+    }
   }
 
   removePlayer(player) {
@@ -157,6 +175,7 @@ class Game {
   replacePlayerByCpu(player) {
     const cpuPlayer = new CpuPlayer(player.name);
     cpuPlayer.assign(player);
+    this.registerEventListener(cpuPlayer);
     const index = this._players.indexOf(player);
     this._players[index] = cpuPlayer;
 
