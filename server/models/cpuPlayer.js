@@ -9,7 +9,8 @@ const AIInterval = 1000;
 const DefaultConfiguration = {
   aiInterval: AIInterval, // Interval used for thinking the next hit
   applyHitDecisionLogic: true, // Flag indicating whether the special hit decision logic is used
-  minCardGroupCount: 4, // Minimum card group when hit decision logic is applied
+  minCardGroupCount: 4, // Minimum number of card groups when hit decision logic is applied
+  minOpponentCardCount: 4, // Minimum number of opponent cards when hit decision logic is applied
   calculateAverageAfter: true, // Indicates whether the card value average is calculated excluding the cards to hit
   // Factor for scaling the hit decision probability by cards value average
   // value 12: worst possible hand => +50%, average hand => 0%, best possible hand => -50%
@@ -166,8 +167,9 @@ class CpuPlayer extends Player {
   // 1. having no cards to hit
   // 2. going to hit revolution
   // 3. not many cards of different sizes left (specified by 'minCardGroupCount')
-  makeHitDecision(cardGroupsCount, cardsToHit, isRevolution) {
-    if (cardsToHit.length > 0 && cardsToHit.length < 4 && cardGroupsCount >= this._conf.minCardGroupCount) {
+  makeHitDecision(cardGroupsCount, cardsToHit, opponentCardCount, isRevolution) {
+    if (cardsToHit.length > 0 && cardsToHit.length < 4 && cardGroupsCount >= this._conf.minCardGroupCount &&
+      opponentCardCount >= this._conf.minOpponentCardCount) {
       // Calculate average by average rule
       let sum = this.hand.reduce((sum, card) => sum + CardHelper.getRealValue(card, isRevolution), 0);
       let average = 0;
@@ -241,7 +243,7 @@ class CpuPlayer extends Player {
         }
 
         if (this._conf.applyHitDecisionLogic &&
-          !this.makeHitDecision(groups.keys.length, cardsToPlay, isRevolution)) {
+          !this.makeHitDecision(groups.keys.length, cardsToPlay, opponentCardCount, isRevolution)) {
           cardsToPlay = [];
         }
       }

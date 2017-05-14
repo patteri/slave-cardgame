@@ -21,6 +21,7 @@ const firstPlayerConf = {
   aiInterval: 0,
   applyHitDecisionLogic: true,
   minCardGroupCount: 4,
+  minOpponentCardCount: 4,
   calculateAverageAfter: true,
   avgScaleFactor: 10,
   valueScaleFactor: 11
@@ -31,9 +32,10 @@ const otherPlayersConf = {
   aiInterval: 0,
   applyHitDecisionLogic: false,
   minCardGroupCount: 4,
+  minOpponentCardCount: 1,
   calculateAverageAfter: true,
-  avgScaleFactor: 12,
-  valueScaleFactor: 13
+  avgScaleFactor: 10,
+  valueScaleFactor: 11
 };
 
 const startTime = Date.now();
