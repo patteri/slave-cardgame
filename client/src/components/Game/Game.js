@@ -26,6 +26,11 @@ class Game extends Component {
       showConnectionError: false
     };
 
+    this.timers = {
+      resultsModalOpen: null,
+      resultsModalClose: null
+    };
+
     this.gameEnded = this.gameEnded.bind(this);
     this.onSocketException = this.onSocketException.bind(this);
     this.hideResultsModal = this.hideResultsModal.bind(this);
@@ -80,6 +85,16 @@ class Game extends Component {
         this.props.onQuitGame();
       }
     }
+
+    // Cancel timers
+    for (let key in this.timers) { // eslint-disable-line no-restricted-syntax
+      if (this.timers.hasOwnProperty(key)) {
+        let timer = this.timers[key];
+        if (timer) {
+          clearTimeout(timer);
+        }
+      }
+    }
   }
 
   // 'exception' socket event is a signal that server has removed the player from the game
@@ -99,11 +114,11 @@ class Game extends Component {
   gameEnded(data) {
     this.props.onGameEnd(data);
 
-    setTimeout(() => {
+    this.timers.resultsModalOpen = setTimeout(() => {
       this.props.toggleResultsModal(true);
 
-      // Auto-close modal when inactive
-      setTimeout((gameNumber) => {
+      // Auto-close modal on inactivity warning
+      this.timers.resultsModalClose = setTimeout((gameNumber) => {
         if (this.state.resultsClosedForGame == null || this.state.resultsClosedForGame < gameNumber) {
           this.hideResultsModal();
         }
