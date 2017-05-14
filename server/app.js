@@ -26,4 +26,15 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
+app.use((req, res) => {
+  res.status(404).json({ error: 'Not found' });
+});
+app.use((err, req, res) => {
+  const message = { error: 'Unexpected error occurred' };
+  if (process.env.NODE_ENV !== 'production') {
+    message.stackTrace = err;
+  }
+  res.status(err.status || 500).json(message);
+});
+
 module.exports = app;
