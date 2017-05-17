@@ -11,7 +11,8 @@ import {
   cardExchangeRequested,
   cardsGiven,
   cardsExchanged,
-  newRoundStarted } from '../actions';
+  newRoundStarted,
+  gameFinished } from '../actions';
 import { CardExchangeType } from '../../../shared/constants';
 
 const initialState = {
@@ -134,7 +135,10 @@ const gameReducer = handleActions({
       helpText: null,
       ...gameParameters
     });
-  }
+  },
+  [gameFinished]: (state, action) => Object.assign({}, state, {
+    player: playerReducer(state, action)
+  })
 }, initialState);
 
 export default gameReducer;

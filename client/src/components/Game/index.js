@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { browserHistory } from 'react-router';
 import Game from './Game';
 import {
   joinedPlayersChanged,
@@ -11,7 +12,8 @@ import {
   cardExchangeRequested,
   cardsGiven,
   cardsExchanged,
-  newRoundStarted } from './actions';
+  newRoundStarted,
+  gameFinished } from './actions';
 import { openErrorModal } from '../Errors/actions';
 import api from '../../api/api';
 import { GameState, CardExchangeType } from '../../shared/constants';
@@ -56,18 +58,25 @@ const mapDispatchToProps = dispatch => ({
     dispatch((dispatch, getState) => {
       let state = getState().game;
       let gameState = state.gameState;
-      if (gameState === GameState.PLAYING) {
-        api.hit(state.gameId, {
-          clientId: state.playerId,
-          cards: cards
-        }).then((response) => {
-          dispatch(cardsHit(response.data));
-        }).catch(() => {
-          onError(dispatch);
-        });
-      }
-      else if (gameState === GameState.CARD_EXCHANGE) {
-        setCardsForExchange(state, dispatch, cards);
+      switch (gameState) {
+        case GameState.PLAYING:
+          api.hit(state.gameId, {
+            clientId: state.playerId,
+            cards: cards
+          }).then((response) => {
+            dispatch(cardsHit(response.data));
+          }).catch(() => {
+            onError(dispatch);
+          });
+          break;
+        case GameState.CARD_EXCHANGE:
+          setCardsForExchange(state, dispatch, cards);
+          break;
+        case GameState.ENDED:
+          browserHistory.push('/home');
+          break;
+        default:
+          break;
       }
     });
   },
@@ -92,6 +101,9 @@ const mapDispatchToProps = dispatch => ({
   },
   onNewRoundStarted(data) {
     dispatch(newRoundStarted(data));
+  },
+  onGameFinished() {
+    dispatch(gameFinished());
   },
   onQuitGame() {
     dispatch((dispatch, getState) => {

@@ -124,6 +124,7 @@ class GameService {
       game.endGame();
       game.eventEmitter.removeAllListeners('playerInactive');
       game.eventEmitter.removeAllListeners('playerInactiveWarning');
+      game.eventEmitter.removeAllListeners('gameEnded');
       this._games.delete(game.id);
     }
     else if (!replace) {
@@ -190,6 +191,9 @@ class GameService {
     game.eventEmitter.on('playerInactiveWarning', (game, player, remainingTime) => {
       socketService.sendChatMessage(game.id, null,
         `Wake up! You have ${remainingTime} seconds until you'll be removed from the game...`, player);
+    });
+    game.eventEmitter.on('gameEnded', (game) => {
+      socketService.sendChatMessage(game.id, null, 'The game ended.');
     });
 
     let human = new HumanPlayer(playerName);

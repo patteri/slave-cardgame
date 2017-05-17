@@ -118,12 +118,14 @@ class Game extends Component {
       this.props.toggleResultsModal(true);
 
       // Auto-close modal on inactivity warning
-      this.timers.resultsModalClose = setTimeout((gameNumber) => {
-        if (this.state.resultsClosedForGame == null || this.state.resultsClosedForGame < gameNumber) {
-          this.hideResultsModal();
-        }
-      }, TimerValues.cardExchangeInactivityMaxPeriod - TimerValues.inactivityWarningTime - ModalOpenDelay,
-        this.props.results.gameNumber);
+      if (this.props.results.gameNumber < this.props.results.totalGameCount) {
+        this.timers.resultsModalClose = setTimeout((gameNumber) => {
+          if (this.state.resultsClosedForGame == null || this.state.resultsClosedForGame < gameNumber) {
+            this.hideResultsModal();
+          }
+        }, TimerValues.cardExchangeInactivityMaxPeriod - TimerValues.inactivityWarningTime - ModalOpenDelay,
+          this.props.results.gameNumber);
+      }
     }, ModalOpenDelay);
   }
 
@@ -138,7 +140,7 @@ class Game extends Component {
       this.props.requestCardExchange();
     }
     else {
-      browserHistory.push('/home');
+      this.props.onGameFinished();
     }
   }
 

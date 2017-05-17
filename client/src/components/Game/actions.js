@@ -11,3 +11,4 @@ export const cardExchangeRequested = createAction('CARD_EXCHANGE_REQUESTED');
 export const cardsGiven = createAction('CARDS_GIVEN');
 export const cardsExchanged = createAction('CARDS_EXCHANGED');
 export const newRoundStarted = createAction('NEW_ROUND_STARTED');
+export const gameFinished = createAction('GAME_FINISHED');

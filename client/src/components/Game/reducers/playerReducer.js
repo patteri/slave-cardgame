@@ -9,7 +9,8 @@ import {
   cardExchangeRequested,
   cardsGiven,
   cardsExchanged,
-  newRoundStarted } from '../actions';
+  newRoundStarted,
+  gameFinished } from '../actions';
 import CardHelper from '../../../shared/cardHelper';
 import Card from '../../../shared/card';
 import { GameState, CardExchangeType } from '../../../shared/constants';
@@ -33,6 +34,7 @@ const getButtonText = (gameState, selectedCards, exchangeRule) => {
     case GameState.NOT_STARTED:
       return 'Waiting...';
     case GameState.ENDED:
+      return 'Leave the game';
     default:
       return null;
   }
@@ -137,6 +139,10 @@ const playerReducer = handleActions({
       action.payload.game.previousHit, action.payload.game.isFirstTurn, action.payload.game.isRevolution, null),
     exchangeRule: null,
     cardsGiven: false
+  }),
+  [gameFinished]: state => Object.assign({}, state.player, {
+    buttonText: getButtonText(state.gameState, [], null),
+    canHit: true
   })
 }, initialState);
 

@@ -311,7 +311,6 @@ class Game {
       this.setPositionAndPoints(this._turn);
       // Dealing starts from the next of the player who lost
       this._dealStartIndex = (this._players.indexOf(this._turn) + 1) % this._players.length;
-      this.notifyForGameEnd();
       this.gameEnded();
     }
     else {
@@ -365,7 +364,7 @@ class Game {
       results: {
         currentResults: currentResults,
         overallResults: overallResults,
-        gameNumber: this._currentGameIndex + 1,
+        gameNumber: this._currentGameIndex,
         totalGameCount: this._gameCount
       }
     });
@@ -375,6 +374,8 @@ class Game {
     this._currentGameIndex += 1;
 
     if (this._currentGameIndex < this._gameCount) {
+      this.notifyForGameEnd();
+
       if (this.getHumanPlayers().length > 1) {
         // Start tracking inactivity
         setTimeout(() => {
@@ -426,6 +427,8 @@ class Game {
     }
     else {
       this._state = GameState.ENDED;
+      this.notifyForGameEnd();
+      this.eventEmitter.emit('gameEnded', this);
     }
   }
 
