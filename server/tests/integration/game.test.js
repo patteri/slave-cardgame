@@ -2,18 +2,30 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const app = require('../../app');
 const gameService = require('../../services/gameService');
+const authService = require('../../services/authService');
 
 const expect = chai.expect;
 
 chai.use(chaiHttp);
 
 describe('/api/game', () => {
-  it('Invalid game creation', (done) => {
+  it('Invalid game creation (invalid CPU player count)', (done) => {
     chai.request(app)
       .post('/api/game')
       .send({ playerName: 'Human', playerCount: 4, cpuPlayerCount: 4, gameCount: 1 })
       .end((err, res) => {
         expect(res).to.have.status(400);
+        expect(res).to.be.json; // eslint-disable-line no-unused-expressions
+        done();
+      });
+  });
+
+  it('Invalid game creation (not authenticated)', (done) => {
+    chai.request(app)
+      .post('/api/game')
+      .send({ playerName: 'admin', playerCount: 4, cpuPlayerCount: 3, gameCount: 1 })
+      .end((err, res) => {
+        expect(res).to.have.status(401);
         expect(res).to.be.json; // eslint-disable-line no-unused-expressions
         done();
       });
@@ -55,6 +67,18 @@ describe('/api/game', () => {
       });
   });
 
+  it('Successful game creation with auth', (done) => {
+    let authToken = authService.generateAuthToken({ username: 'admin' });
+    chai.request(app)
+      .post('/api/game')
+      .send({ playerName: 'admin', playerCount: 4, cpuPlayerCount: 3, gameCount: 1, access_token: authToken })
+      .end((err, res) => {
+        expect(err).to.be.null; // eslint-disable-line no-unused-expressions
+        expect(res).to.have.status(200);
+        done();
+      });
+  });
+
   it('Invalid game join (game already full)', (done) => {
     let game = gameService.createGame('Human', 4, 3, 1).game;
 
@@ -68,14 +92,27 @@ describe('/api/game', () => {
       });
   });
 
-  it('Invalid game join (invalid player name)', (done) => {
+  it('Invalid game join (no player name)', (done) => {
     let game = gameService.createGame('Human', 4, 2, 1).game;
 
     chai.request(app)
       .post(`/api/game/${game.id}/join`)
       .send({ playerName: '' })
       .end((err, res) => {
-        expect(res).to.have.status(400);
+        expect(res).to.have.status(401);
+        expect(res).to.be.json; // eslint-disable-line no-unused-expressions
+        done();
+      });
+  });
+
+  it('Invalid game join (not authenticated)', (done) => {
+    let game = gameService.createGame('Human', 4, 2, 1).game;
+
+    chai.request(app)
+      .post(`/api/game/${game.id}/join`)
+      .send({ playerName: 'admin' })
+      .end((err, res) => {
+        expect(res).to.have.status(401);
         expect(res).to.be.json; // eslint-disable-line no-unused-expressions
         done();
       });
@@ -96,6 +133,20 @@ describe('/api/game', () => {
         expect(res.body.playerIndex).to.equal(3);
         expect(res.body).to.have.property('game');
         expect(res.body.game.players.length).to.equal(4);
+        done();
+      });
+  });
+
+  it('Successful game join with auth', (done) => {
+    let game = gameService.createGame('Human', 4, 2, 1).game;
+    let authToken = authService.generateAuthToken({ username: 'admin' });
+
+    chai.request(app)
+      .post(`/api/game/${game.id}/join`)
+      .send({ playerName: 'Human 2', access_token: authToken })
+      .end((err, res) => {
+        expect(err).to.be.null; // eslint-disable-line no-unused-expressions
+        expect(res).to.have.status(200);
         done();
       });
   });

@@ -6,9 +6,12 @@
     "babel-cli": "^6.23.0",
     "babel-core": "^6.23.1",
     "body-parser": "~1.16.1",
+    "crypto": "0.0.3",
     "debug": "^2.6.1",
     "express": "4.13.3",
+    "jwt-simple": "^0.5.1",
     "lodash": "^4.17.4",
+    "mongoose": "^4.9.10",
     "morgan": "^1.8.1",
     "socket.io": "^1.7.3"
   },

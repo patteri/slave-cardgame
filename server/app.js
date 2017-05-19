@@ -3,9 +3,16 @@ const logger = require('morgan');
 const bodyParser = require('body-parser');
 const routes = require('./routes');
 const path = require('path');
+const dbService = require('./services/databaseService');
 
 // Create and configure Express app
 const app = express();
+
+dbService.connect();
+if (process.env.NODE_ENV !== 'production') {
+  dbService.clear();
+  dbService.initDev();
+}
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -35,6 +42,10 @@ app.use((err, req, res) => {
     message.stackTrace = err;
   }
   res.status(err.status || 500).json(message);
+});
+
+process.on('exit', () => {
+  dbService.disconnect();
 });
 
 module.exports = app;
