@@ -115,7 +115,7 @@ class Home extends Component {
                   type="text"
                   value={playerName}
                   required
-                  maxLength={12}
+                  maxLength={gv.maxPlayerNameLength}
                   onChange={e => this.props.onPlayerNameChanged(e.target.value)}
                 />
               </FormGroup>

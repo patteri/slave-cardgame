@@ -27,7 +27,7 @@ const onError = (dispatch) => {
 };
 
 const setCardsForExchange = (state, dispatch, cards) => {
-  api.cardsForExchange(state.gameId, {
+  api.game.cardsForExchange(state.gameId, {
     clientId: state.playerId,
     cards: cards
   }).then(() => {
@@ -60,7 +60,7 @@ const mapDispatchToProps = dispatch => ({
       let gameState = state.gameState;
       switch (gameState) {
         case GameState.PLAYING:
-          api.hit(state.gameId, {
+          api.game.hit(state.gameId, {
             clientId: state.playerId,
             cards: cards
           }).then((response) => {
@@ -86,7 +86,7 @@ const mapDispatchToProps = dispatch => ({
   requestCardExchange() {
     dispatch((dispatch, getState) => {
       let state = getState().game;
-      api.getCardExchange(state.gameId, state.playerId).then((response) => {
+      api.game.getCardExchange(state.gameId, state.playerId).then((response) => {
         dispatch(cardExchangeRequested(response.data));
         if (response.data.exchangeRule.exchangeType === CardExchangeType.NONE) {
           setCardsForExchange(state, dispatch, []);
@@ -108,7 +108,7 @@ const mapDispatchToProps = dispatch => ({
   onQuitGame() {
     dispatch((dispatch, getState) => {
       let state = getState().game;
-      api.quitGame(state.gameId, {
+      api.game.quitGame(state.gameId, {
         clientId: state.playerId
       });
     });

@@ -34,7 +34,7 @@ const mapDispatchToProps = dispatch => ({
   onCreateGame() {
     dispatch((dispatch, getState) => {
       let state = getState().home;
-      api.createGame({
+      api.game.createGame({
         playerName: state.playerName,
         playerCount: state.playerCount,
         cpuPlayerCount: state.cpuPlayerCount,

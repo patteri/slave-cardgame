@@ -1,38 +1,17 @@
-import React, { PropTypes } from 'react';
-import { Grid, Navbar, Nav, NavItem } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
-import ErrorModal from '../Errors/ErrorModal';
+import { connect } from 'react-redux';
+import Root from './Root';
+import { logout } from '../Login/actions';
+import './style.css';
 
-const Root = props => (
-  <div className="Root">
-    <Navbar collapseOnSelect>
-      <Navbar.Header>
-        <Navbar.Brand>
-          <span>Slave</span>
-        </Navbar.Brand>
-        <Navbar.Toggle />
-      </Navbar.Header>
-      <Navbar.Collapse>
-        <Nav>
-          <LinkContainer to="/home">
-            <NavItem eventKey="1">Play</NavItem>
-          </LinkContainer>
-          <LinkContainer to="/highscores">
-            <NavItem eventKey="2">Highscores</NavItem>
-          </LinkContainer>
-        </Nav>
-      </Navbar.Collapse>
-    </Navbar>
+const mapStateToProps = state => state.auth;
 
-    <Grid className="fill">
-      <ErrorModal />
-      {props.children}
-    </Grid>
-  </div>
-);
+const mapDispatchToProps = dispatch => ({
+  onLogout() {
+    dispatch(logout());
+  }
+});
 
-Root.propTypes = {
-  children: PropTypes.node.isRequired
-};
-
-export default Root;
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Root);

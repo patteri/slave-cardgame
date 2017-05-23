@@ -1,6 +1,13 @@
 import axios from 'axios';
+import setHttpInterceptors from './interceptors';
 
-const api = {
+setHttpInterceptors();
+
+const authApi = {
+  login: data => axios.post('/api/auth/login', data)
+};
+
+const gameApi = {
   createGame: data => axios.post('/api/game', data),
   joinGame: (gameId, data) => axios.post(`/api/game/${gameId}/join`, data),
   quitGame: (gameId, data) => axios.post(`/api/game/${gameId}/quit`, data),
@@ -9,4 +16,7 @@ const api = {
   cardsForExchange: (gameId, data) => axios.post(`/api/game/${gameId}/cardsForExchange`, data)
 };
 
-export default api;
+export default {
+  auth: authApi,
+  game: gameApi
+};

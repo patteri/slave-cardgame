@@ -20,7 +20,7 @@ const mapDispatchToProps = dispatch => ({
   onJoinGame() {
     dispatch((dispatch, getState) => {
       let state = getState().join;
-      api.joinGame(state.gameId, {
+      api.game.joinGame(state.gameId, {
         playerName: state.playerName
       }).then((response) => {
         dispatch(gameStarted(response.data));

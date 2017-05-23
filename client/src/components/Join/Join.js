@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Row, Col, FormGroup, ControlLabel, FormControl, Button } from 'react-bootstrap';
+import { GameValidation as gv } from '../../shared/constants';
 
 class Join extends Component {
 
@@ -35,7 +36,7 @@ class Join extends Component {
                   type="text"
                   value={playerName}
                   required
-                  maxLength={12}
+                  maxLength={gv.maxPlayerNameLength}
                   onChange={e => this.props.onPlayerNameChanged(e.target.value)}
                 />
               </FormGroup>
