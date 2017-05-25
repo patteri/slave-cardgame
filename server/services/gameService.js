@@ -2,6 +2,7 @@ const Game = require('../models/game');
 const HumanPlayer = require('../models/humanPlayer');
 const CpuPlayer = require('../models/cpuPlayer');
 const socketService = require('../services/socketService');
+const authService = require('../services/authService');
 const { GameState, GameValidation, MaxChatMessageLength } = require('../../client/src/shared/constants');
 
 const RemoveAfterDisconnectionPeriod = 30000;
@@ -143,11 +144,6 @@ class GameService {
     }
   }
 
-  validatePlayer(playerName) {
-    return !(!(typeof (playerName) === 'string') || playerName.length < GameValidation.minPlayerNameLength ||
-      playerName.length > GameValidation.maxPlayerNameLength);
-  }
-
   startNewGame(game) {
     game.startNewGame();
     // Add some delay to make sure that the last joined player has initialized the socket
@@ -169,7 +165,7 @@ class GameService {
   // Returns the game and the player
   // If player count is fulfilled, starts the game immediately
   createGame(playerName, playerCount, cpuPlayerCount, gameCount, shuffleDeck = true) {
-    if (!this.validatePlayer(playerName)) {
+    if (!authService.validateUsername(playerName)) {
       return null;
     }
     if (playerCount < GameValidation.minPlayerCount || playerCount > GameValidation.maxPlayerCount ||
@@ -219,7 +215,7 @@ class GameService {
   // Returns the game and the player
   // If player count is fulfilled, starts the game immediately
   joinGame(game, playerName) {
-    if (!this.validatePlayer(playerName)) {
+    if (!authService.validateUsername(playerName)) {
       return null;
     }
     if (game.isFull()) {

@@ -16,7 +16,7 @@ const UsernameInput = props => (
         type="text"
         value={props.username}
         required
-        maxLength={gv.maxPlayerNameLength}
+        maxLength={gv.maxUsernameLength}
         onChange={e => props.onUsernameChanged(e.target.value)}
       />
     </div>

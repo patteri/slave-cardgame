@@ -1,6 +1,7 @@
 const jwt = require('jwt-simple');
 const crypto = require('crypto');
 const User = require('../datamodels/user');
+const { GameValidation } = require('../../client/src/shared/constants');
 
 const JwtSecret = process.env.JWT_SECRET || 'dev_jwt_secret';
 const TokenValidityTime = 7; // Validity time in days
@@ -45,6 +46,27 @@ class AuthService {
   static parseTokenFromReq(req) {
     return (req.body && req.body.access_token) || (req.query && req.query.access_token) ||
       req.headers['x-access-token'];
+  }
+
+  // Registers the user
+  // Note: doesn't validate the username so it must be validated before calling the method
+  static register(username, password, email) {
+    const user = new User({
+      username: username,
+      password: crypto.createHash('sha256').update(password).digest('hex'),
+      email: email
+    });
+    return user.save();
+  }
+
+  static validateUsername(username) {
+    return !(!(typeof (username) === 'string') || username.length < GameValidation.minUsernameLength ||
+      username.length > GameValidation.maxUsernameLength);
+  }
+
+  static validatePassword(password) {
+    return !(!(typeof (password) === 'string') || password.length < GameValidation.minPasswordLength ||
+      password.length > GameValidation.maxPasswordLength);
   }
 
 }

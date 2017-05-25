@@ -5,7 +5,7 @@ const { GameState } = require('../../client/src/shared/constants');
 
 const router = express.Router();
 
-const validateUser = req => new Promise((resolve, reject) => {
+const authorize = req => new Promise((resolve, reject) => {
   if (req.body.playerName) {
     return authService.findUserByUsername(req.body.playerName).then((user) => {
       if (user) {
@@ -56,7 +56,7 @@ const handleGameQueryResult = (res, result) => {
 
 // Initializes a new game
 router.post('/', (req, res) => {
-  validateUser(req).then(() => {
+  authorize(req).then(() => {
     const result = gameService.createGame(req.body.playerName, req.body.playerCount, req.body.cpuPlayerCount,
       req.body.gameCount);
     handleGameQueryResult(res, result);
@@ -67,7 +67,7 @@ router.post('/', (req, res) => {
 
 // Joins to an existing game
 router.post('/:id/join', (req, res) => {
-  validateUser(req).then(() => {
+  authorize(req).then(() => {
     const game = getAndValidateGame(req, res, GameState.NOT_STARTED);
     if (game != null) {
       const result = gameService.joinGame(game, req.body.playerName);

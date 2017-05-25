@@ -1,12 +1,22 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
+const mongoose = require('mongoose');
 const app = require('../../app');
+const dbService = require('../../services/databaseService');
 
 const expect = chai.expect;
 
 chai.use(chaiHttp);
 
 describe('/api/auth', () => {
+  before(() => {
+    if (mongoose.connection.readyState === 0) {
+      dbService.connect();
+    }
+    dbService.clear();
+    dbService.initDev();
+  });
+
   it('Unsuccessfull login', (done) => {
     chai.request(app)
       .post('/api/auth/login')
@@ -27,6 +37,60 @@ describe('/api/auth', () => {
         expect(res).to.have.status(200);
         expect(res).to.be.json; // eslint-disable-line no-unused-expressions
         expect(res.body).to.have.property('token');
+        done();
+      });
+  });
+
+  it('Unsuccessfull register: invalid username', (done) => {
+    chai.request(app)
+      .post('/api/auth/register')
+      .send({ username: '', password: 'password', email: 'email@slavegame.net' })
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res).to.be.json; // eslint-disable-line no-unused-expressions
+        done();
+      });
+  });
+
+  it('Unsuccessfull register: invalid password', (done) => {
+    chai.request(app)
+      .post('/api/auth/register')
+      .send({ username: 'username', password: '', email: 'email@slavegame.net' })
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res).to.be.json; // eslint-disable-line no-unused-expressions
+        done();
+      });
+  });
+
+  it('Unsuccessfull register: invalid email', (done) => {
+    chai.request(app)
+      .post('/api/auth/register')
+      .send({ username: 'username', password: 'password', email: 'email' })
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res).to.be.json; // eslint-disable-line no-unused-expressions
+        done();
+      });
+  });
+
+  it('Unsuccessfull register: username reserved', (done) => {
+    chai.request(app)
+      .post('/api/auth/register')
+      .send({ username: 'admin', password: 'admin', email: 'admin@slavegame.net' })
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res).to.be.json; // eslint-disable-line no-unused-expressions
+        done();
+      });
+  });
+
+  it('Successfull register', (done) => {
+    chai.request(app)
+      .post('/api/auth/register')
+      .send({ username: 'username', password: 'password', email: 'email@slavegame.net' })
+      .end((err, res) => {
+        expect(res).to.have.status(200);
         done();
       });
   });

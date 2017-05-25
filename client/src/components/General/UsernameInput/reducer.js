@@ -9,7 +9,7 @@ const initialState = {
 };
 
 const isValid = (validationPending, available, username) => !validationPending && available &&
-  !(username == null || username.length < gv.minPlayerNameLength || username.length > gv.maxPlayerNameLength);
+  !(username == null || username.length < gv.minUsernameLength || username.length > gv.maxUsernameLength);
 
 const usernameReducer = handleActions({
   [usernameInputChanged]: (state, action) => Object.assign({}, state, {

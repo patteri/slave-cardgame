@@ -2,22 +2,28 @@ const mongoose = require('mongoose');
 const crypto = require('crypto');
 const User = require('../datamodels/user');
 
+let connection = null;
+
 class DatabaseService {
 
   // Connects to the database
   static connect() {
-    mongoose.Promise = Promise;
-    const location = process.env.DB_LOCATION || 'mongodb://localhost/slave-dev';
-    mongoose.connect(location);
+    if (connection == null) {
+      mongoose.Promise = Promise;
+      const location = process.env.DB_LOCATION || 'mongodb://localhost/slave-dev';
+      connection = mongoose.connect(location);
 
-    mongoose.connection.on('error', (err) => {
-      console.error('Mongoose connection error: ', err); // eslint-disable-line no-console
-    });
+      mongoose.connection.on('error', (err) => {
+        console.error('Mongoose connection error: ', err); // eslint-disable-line no-console
+      });
+    }
   }
 
   // Closes the database connection
   static disconnect() {
-    mongoose.disconnect();
+    if (connection) {
+      connection.disconnect();
+    }
   }
 
   // Initializes development data
@@ -33,7 +39,7 @@ class DatabaseService {
   // Clears all contents of the database
   static clear() {
     if (process.env.NODE_ENV !== 'production') {
-      User.remove();
+      User.remove().exec();
     }
   }
 }

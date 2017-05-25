@@ -14,10 +14,6 @@ describe('AuthService', () => {
     dbService.initDev();
   });
 
-  after(() => {
-    dbService.disconnect();
-  });
-
   it('FindUserByToken: invalid JWT token', () => {
     const auth = authService.findUserByToken('invalid_token');
     expect(auth).to.be.null; // eslint-disable-line no-unused-expressions
@@ -52,6 +48,15 @@ describe('AuthService', () => {
       expect(user).to.not.be.null; // eslint-disable-line no-unused-expressions
       expect(user.username).to.equal('admin');
       done();
+    });
+  });
+
+  it('Successfull registration', (done) => {
+    authService.register('user', 'password', 'user@slavegame.net').then(() => {
+      authService.findUserByCredentials('user', 'password').then((user) => {
+        expect(user).to.not.be.null; // eslint-disable-line no-unused-expressions
+        done();
+      });
     });
   });
 });

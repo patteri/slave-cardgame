@@ -13,7 +13,8 @@
     "lodash": "^4.17.4",
     "mongoose": "^4.9.10",
     "morgan": "^1.8.1",
-    "socket.io": "^1.7.3"
+    "socket.io": "^1.7.3",
+    "validator": "^7.0.0"
   },
   "scripts": {
     "start": "concurrently \"npm run server\" \"npm run client\"",
