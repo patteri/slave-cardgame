@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { GameValidation as gv } from '../../../shared/constants';
 
 const UsernameInput = props => (
-  <FormGroup controlId="playerName">
+  <FormGroup controlId={props.controlId}>
     <ControlLabel>Player name</ControlLabel>
     {props.isReserved &&
       <Alert bsStyle="danger" className="input-alert">
@@ -24,6 +24,7 @@ const UsernameInput = props => (
 );
 
 UsernameInput.PropTypes = {
+  controlId: PropTypes.string.isRequired,
   username: PropTypes.string.isRequired,
   isReserved: PropTypes.bool.isRequired
 };

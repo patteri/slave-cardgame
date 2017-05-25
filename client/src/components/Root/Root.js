@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { Grid, Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
+import RegisterModal from '../Register';
 import LoginModal from '../Login';
 import ErrorModal from '../Errors/ErrorModal';
 
@@ -10,11 +11,26 @@ class Root extends Component {
     super(props);
 
     this.state = {
+      showRegisterModal: false,
       showLoginModal: false
     };
 
+    this.showRegisterModal = this.showRegisterModal.bind(this);
+    this.hideRegisterModal = this.hideRegisterModal.bind(this);
     this.showLoginModal = this.showLoginModal.bind(this);
     this.hideLoginModal = this.hideLoginModal.bind(this);
+  }
+
+  showRegisterModal() {
+    this.setState({
+      showRegisterModal: true
+    });
+  }
+
+  hideRegisterModal() {
+    this.setState({
+      showRegisterModal: false
+    });
   }
 
   showLoginModal() {
@@ -49,17 +65,23 @@ class Root extends Component {
               </LinkContainer>
             </Nav>
             <Nav pullRight>
+              {this.props.username == null &&
+                <NavItem eventKey="3" onClick={this.showRegisterModal}>
+                  <span className="glyphicon glyphicon-pencil menu-glyphicon" />
+                  <span>Register</span>
+                </NavItem>
+              }
               {this.props.username &&
-                <NavDropdown eventKey="3" title={this.props.username} id="nav-dropdown">
-                  <MenuItem eventKey="3.1" onClick={this.props.onLogout}>
-                    <span className="glyphicon glyphicon-log-in logging-glyphicon" />
+                <NavDropdown eventKey="4" title={this.props.username} id="nav-dropdown">
+                  <MenuItem eventKey="4.1" onClick={this.props.onLogout}>
+                    <span className="glyphicon glyphicon-log-in menu-glyphicon" />
                     <span>Logout</span>
                   </MenuItem>
                 </NavDropdown>
               }
               {this.props.username == null &&
-                <NavItem eventKey="4" onClick={this.showLoginModal}>
-                  <span className="glyphicon glyphicon-log-in logging-glyphicon" />
+                <NavItem eventKey="5" onClick={this.showLoginModal}>
+                  <span className="glyphicon glyphicon-log-in menu-glyphicon" />
                   <span>Login</span>
                 </NavItem>
               }
@@ -68,6 +90,7 @@ class Root extends Component {
         </Navbar>
         <Grid className="fill">
           <ErrorModal />
+          <RegisterModal show={this.state.showRegisterModal} onHide={this.hideRegisterModal} />
           <LoginModal show={this.state.showLoginModal} onHide={this.hideLoginModal} />
           {this.props.children}
         </Grid>

@@ -4,7 +4,6 @@ import UsernameInput from './UsernameInput';
 import { usernameInputChanged } from './actions';
 import { openErrorModal } from '../../Errors/actions';
 import api from '../../../api/api';
-import './style.css';
 
 const mapStateToProps = state => state.username;
 

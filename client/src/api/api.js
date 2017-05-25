@@ -5,6 +5,7 @@ setHttpInterceptors();
 
 const authApi = {
   login: data => axios.post('/api/auth/login', data),
+  register: data => axios.post('/api/auth/register', data),
   usernameAvailable: username => axios.get(`/api/auth/usernameAvailable?username=${username}`)
 };
 

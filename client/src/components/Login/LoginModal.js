@@ -24,12 +24,12 @@ class LoginModal extends Component {
             {showError &&
               <FormGroup>
                 <Alert bsStyle="danger" onDismiss={this.props.onHideLoginError}>
-                  <p>Invalid username or password</p>
+                  <p>Invalid player name or password</p>
                 </Alert>
               </FormGroup>
             }
-            <FormGroup controlId="username">
-              <ControlLabel>Username</ControlLabel>
+            <FormGroup controlId="loginPlayername">
+              <ControlLabel>Player name</ControlLabel>
               <FormControl
                 type="text"
                 value={username}
@@ -37,7 +37,7 @@ class LoginModal extends Component {
                 onChange={e => this.props.onUsernameChanged(e.target.value)}
               />
             </FormGroup>
-            <FormGroup controlId="playerName">
+            <FormGroup controlId="loginPassword">
               <ControlLabel>Password</ControlLabel>
               <FormControl
                 type="password"

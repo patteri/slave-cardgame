@@ -1,0 +1,13 @@
+.Registration-successful {
+  height: 64px;
+}
+
+.Registration-successful img, .Registration-successful h4 {
+  float: left;
+}
+
+.Registration-successful h4 {
+  margin-left: 12px;
+  height: 46px;
+  line-height: 46px;
+}

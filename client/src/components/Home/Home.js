@@ -105,7 +105,7 @@ class Home extends Component {
                 />
               </FormGroup>
               {!isAuthenticated &&
-                <UsernameInput />
+                <UsernameInput controlId="playerName" />
               }
               <FormGroup>
                 <FormGroup>

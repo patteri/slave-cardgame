@@ -8,6 +8,7 @@ import {
   loginError,
   hideLoginError,
   login } from './actions';
+import { initialize as initUsernameInput } from '../General/UsernameInput/actions';
 import { openErrorModal } from '../Errors/actions';
 import api from '../../api/api';
 
@@ -32,6 +33,7 @@ const mapDispatchToProps = dispatch => ({
       }).then((response) => {
         dispatch(loginSuccess());
         dispatch(login({ username: state.username, token: response.data.token }));
+        dispatch(initUsernameInput());
         onClose();
       }).catch((error) => {
         if (error.response && error.response.status === 401) {

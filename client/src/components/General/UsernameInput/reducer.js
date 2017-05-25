@@ -1,6 +1,9 @@
 import { handleActions } from 'redux-actions';
 import { GameValidation as gv } from '../../../shared/constants';
-import { usernameInputChanged } from './actions';
+import {
+  initialize,
+  usernameInputChanged
+} from './actions';
 
 const initialState = {
   username: '',
@@ -12,6 +15,7 @@ const isValid = (validationPending, available, username) => !validationPending &
   !(username == null || username.length < gv.minUsernameLength || username.length > gv.maxUsernameLength);
 
 const usernameReducer = handleActions({
+  [initialize]: () => initialState,
   [usernameInputChanged]: (state, action) => Object.assign({}, state, {
     username: action.payload.username,
     isValid: isValid(action.payload.validationPending, action.payload.available, action.payload.username),

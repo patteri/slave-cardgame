@@ -11,7 +11,7 @@ const SocketInfo = {
 const GameValidation = {
   minUsernameLength: 1,
   maxUsernameLength: 12,
-  minPasswordLength: 5,
+  minPasswordLength: 8,
   maxPasswordLength: 99,
   minPlayerCount: 4,
   maxPlayerCount: 8,
