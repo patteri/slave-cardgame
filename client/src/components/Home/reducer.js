@@ -4,17 +4,14 @@ import {
   openGamesChanged,
   playerCountChanged,
   cpuPlayerCountChanged,
-  gameCountChanged,
-  playerNameChanged
+  gameCountChanged
 } from './actions';
 
 const initialState = {
   openGames: [],
   playerCount: 4,
   cpuPlayerCount: 0,
-  gameCount: 10,
-  playerName: '',
-  isButtonDisabled: true
+  gameCount: 10
 };
 
 const homeReducer = handleActions({
@@ -45,14 +42,6 @@ const homeReducer = handleActions({
       number : state.gameCount;
     return Object.assign({}, state, {
       gameCount: count
-    });
-  },
-  [playerNameChanged]: (state, action) => {
-    let isButtonDisabled = (action.payload == null || action.payload.length < gv.minPlayerNameLength ||
-      action.payload.length > gv.maxPlayerNameLength);
-    return Object.assign({}, state, {
-      playerName: action.payload,
-      isButtonDisabled: isButtonDisabled
     });
   }
 }, initialState);

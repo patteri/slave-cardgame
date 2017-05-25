@@ -1,11 +1,14 @@
 import React, { Component, PropTypes } from 'react';
 import { Row, Col, FormGroup, ControlLabel, FormControl, Button } from 'react-bootstrap';
-import { GameValidation as gv } from '../../shared/constants';
+import UsernameInput from '../General/UsernameInput';
 
 class Join extends Component {
 
-  componentDidMount() {
+  componentWillMount() {
     this.props.onGameIdChanged(this.props.params.id);
+    if (this.props.isAuthenticated) {
+      this.props.onJoinGame();
+    }
   }
 
   joinGame(e) {
@@ -14,7 +17,7 @@ class Join extends Component {
   }
 
   render() {
-    const { gameId, playerName, isButtonDisabled } = this.props;
+    const { gameId, isButtonDisabled, isValid } = this.props;
 
     return (
       <div className="Join">
@@ -30,19 +33,10 @@ class Join extends Component {
                   onChange={e => this.props.onGameIdChanged(e.target.value)}
                 />
               </FormGroup>
-              <FormGroup controlId="playerName">
-                <ControlLabel>Player name</ControlLabel>
-                <FormControl
-                  type="text"
-                  value={playerName}
-                  required
-                  maxLength={gv.maxPlayerNameLength}
-                  onChange={e => this.props.onPlayerNameChanged(e.target.value)}
-                />
-              </FormGroup>
+              <UsernameInput />
               <FormGroup>
                 <FormGroup>
-                  <Button type="submit" disabled={isButtonDisabled}>Join game</Button>
+                  <Button type="submit" disabled={isButtonDisabled || !isValid}>Join game</Button>
                 </FormGroup>
               </FormGroup>
             </form>
@@ -56,8 +50,9 @@ class Join extends Component {
 
 Join.PropTypes = {
   gameId: PropTypes.string.isRequired,
-  playerName: PropTypes.string.isRequired,
-  isButtonDisabled: PropTypes.bool.isRequired
+  isButtonDisabled: PropTypes.bool.isRequired,
+  isValid: PropTypes.bool.isRequired,
+  isAuthenticated: PropTypes.bool.isRequired
 };
 
 export default Join;

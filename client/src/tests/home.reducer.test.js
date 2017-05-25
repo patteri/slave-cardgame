@@ -3,8 +3,7 @@ import homeReducer from '../components/Home/reducer';
 import {
   playerCountChanged,
   cpuPlayerCountChanged,
-  gameCountChanged,
-  playerNameChanged } from '../components/Home/actions';
+  gameCountChanged } from '../components/Home/actions';
 
 describe('Home reducer', () => {
   it('Successful playerCountChanged', () => {
@@ -51,24 +50,5 @@ describe('Home reducer', () => {
     const initialState = homeReducer(undefined, { type: '' });
     const reducer = homeReducer(initialState, gameCountChanged(0));
     expect(reducer.gameCount).to.equal(initialState.gameCount);
-  });
-
-  it('Successful playerNameChanged', () => {
-    const initialState = homeReducer(undefined, { type: '' });
-    const reducer = homeReducer(initialState, playerNameChanged('test'));
-    expect(reducer.playerName).to.equal('test');
-    expect(reducer.isButtonDisabled).to.equal(false);
-  });
-
-  it('Invalid playerNameChanged: no characters', () => {
-    const initialState = homeReducer(undefined, { type: '' });
-    const reducer = homeReducer(initialState, playerNameChanged(''));
-    expect(reducer.isButtonDisabled).to.equal(true);
-  });
-
-  it('Invalid playerNameChanged: too many characters', () => {
-    const initialState = homeReducer(undefined, { type: '' });
-    const reducer = homeReducer(initialState, playerNameChanged('1234567890abc'));
-    expect(reducer.isButtonDisabled).to.equal(true);
   });
 });

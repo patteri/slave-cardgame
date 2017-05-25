@@ -4,7 +4,8 @@ import setHttpInterceptors from './interceptors';
 setHttpInterceptors();
 
 const authApi = {
-  login: data => axios.post('/api/auth/login', data)
+  login: data => axios.post('/api/auth/login', data),
+  usernameAvailable: username => axios.get(`/api/auth/usernameAvailable?username=${username}`)
 };
 
 const gameApi = {

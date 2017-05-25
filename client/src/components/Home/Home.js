@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react';
-import { browserHistory } from 'react-router';
-import { Row, Col, Table, FormGroup, ControlLabel, FormControl, Button } from 'react-bootstrap';
+import { Row, Col, Table, FormGroup, ControlLabel, Button } from 'react-bootstrap';
 import io from 'socket.io-client';
 import NumericSelector from './NumericSelector';
+import UsernameInput from '../General/UsernameInput';
 import { SocketInfo, GameValidation as gv } from '../../shared/constants';
 
 class Home extends Component {
@@ -11,7 +11,6 @@ class Home extends Component {
     super(props);
 
     this._socket = null;
-    this.joinGame = this.joinGame.bind(this);
   }
 
   componentWillMount() {
@@ -33,17 +32,13 @@ class Home extends Component {
     }
   }
 
-  joinGame(id) {
-    browserHistory.push(`/join/${id}`);
-  }
-
   createGame(e) {
     e.preventDefault();
     this.props.onCreateGame();
   }
 
   render() {
-    const { openGames, playerCount, cpuPlayerCount, gameCount, playerName, isButtonDisabled } = this.props;
+    const { openGames, playerCount, cpuPlayerCount, gameCount, isValid, isAuthenticated } = this.props;
 
     return (
       <div className="Home">
@@ -62,7 +57,7 @@ class Home extends Component {
                 </thead>
                 <tbody>
                   {openGames.map((item, index) =>
-                    <tr key={index} className="clickable" onClick={() => this.joinGame(item.id)}>
+                    <tr key={index} className="clickable" onClick={() => this.props.onJoinGame(item.id)}>
                       <td>
                         {item.joinedHumanPlayers + item.joinedCpuPlayers} / {item.playerCount} ({item.joinedCpuPlayers})
                       </td>
@@ -109,19 +104,12 @@ class Home extends Component {
                   onValueChanged={this.props.onGameCountChanged}
                 />
               </FormGroup>
-              <FormGroup controlId="playerName">
-                <ControlLabel>Player name</ControlLabel>
-                <FormControl
-                  type="text"
-                  value={playerName}
-                  required
-                  maxLength={gv.maxPlayerNameLength}
-                  onChange={e => this.props.onPlayerNameChanged(e.target.value)}
-                />
-              </FormGroup>
+              {!isAuthenticated &&
+                <UsernameInput />
+              }
               <FormGroup>
                 <FormGroup>
-                  <Button type="submit" disabled={isButtonDisabled}>Create game</Button>
+                  <Button type="submit" disabled={!isAuthenticated && !isValid}>Create game</Button>
                 </FormGroup>
               </FormGroup>
             </form>
@@ -134,10 +122,12 @@ class Home extends Component {
 }
 
 Home.PropTypes = {
+  openGames: PropTypes.array.isRequired,
   playerCount: PropTypes.number.isRequired,
   cpuPlayerCount: PropTypes.number.isRequired,
-  playerName: PropTypes.string.isRequired,
-  isButtonDisabled: PropTypes.bool.isRequired
+  gameCount: PropTypes.number.isRequired,
+  isValid: PropTypes.bool.isRequired,
+  isAuthenticated: PropTypes.bool.isRequired
 };
 
 export default Home;
