@@ -9,12 +9,15 @@ const expect = chai.expect;
 chai.use(chaiHttp);
 
 describe('/api/auth', () => {
-  before(() => {
+  before((done) => {
     if (mongoose.connection.readyState === 0) {
       dbService.connect();
     }
-    dbService.clear();
-    dbService.initDev();
+    dbService.clear()
+      .then(() => dbService.initDev())
+      .then(() => {
+        done();
+      });
   });
 
   it('Unsuccessfull login', (done) => {

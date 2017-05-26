@@ -10,8 +10,9 @@ const app = express();
 
 dbService.connect();
 if (process.env.NODE_ENV !== 'production') {
-  dbService.clear();
-  dbService.initDev();
+  dbService.clear().then(() => {
+    dbService.initDev();
+  });
 }
 
 app.use(bodyParser.json());

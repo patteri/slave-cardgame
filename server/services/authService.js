@@ -1,6 +1,7 @@
 const jwt = require('jwt-simple');
 const crypto = require('crypto');
 const User = require('../datamodels/user');
+const UserStatistics = require('../datamodels/userStatistics');
 const { GameValidation } = require('../../client/src/shared/constants');
 
 const JwtSecret = process.env.JWT_SECRET || 'dev_jwt_secret';
@@ -54,9 +55,14 @@ class AuthService {
     const user = new User({
       username: username,
       password: crypto.createHash('sha256').update(password).digest('hex'),
-      email: email
+      email: email,
+      active: true
     });
-    return user.save();
+    const userStatistics = new UserStatistics({
+      username: username
+    });
+
+    return userStatistics.save().then(() => user.save());
   }
 
   static validateUsername(username) {

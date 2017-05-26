@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
-const crypto = require('crypto');
 const User = require('../datamodels/user');
+const UserStatistics = require('../datamodels/userStatistics');
+const authService = require('./authService');
 
 let connection = null;
 
@@ -11,7 +12,7 @@ class DatabaseService {
     if (connection == null) {
       mongoose.Promise = Promise;
       const location = process.env.DB_LOCATION || 'mongodb://localhost/slave-dev';
-      connection = mongoose.connect(location);
+      connection = mongoose.connect(location, { config: { autoIndex: false } });
 
       mongoose.connection.on('error', (err) => {
         console.error('Mongoose connection error: ', err); // eslint-disable-line no-console
@@ -28,19 +29,15 @@ class DatabaseService {
 
   // Initializes development data
   static initDev() {
-    const user = new User({
-      username: 'admin',
-      email: 'admin@slavegame.net',
-      password: crypto.createHash('sha256').update('admin').digest('hex')
-    });
-    user.save();
+    return authService.register('admin', 'admin', 'admin@slavegame.net');
   }
 
   // Clears all contents of the database
   static clear() {
     if (process.env.NODE_ENV !== 'production') {
-      User.remove().exec();
+      return User.remove().exec().then(() => UserStatistics.remove().exec());
     }
+    return Promise.resolve();
   }
 }
 

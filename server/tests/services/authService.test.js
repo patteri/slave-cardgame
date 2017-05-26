@@ -6,12 +6,15 @@ const authService = require('../../services/authService');
 const expect = chai.expect;
 
 describe('AuthService', () => {
-  before(() => {
+  before((done) => {
     if (mongoose.connection.readyState === 0) {
       dbService.connect();
     }
-    dbService.clear();
-    dbService.initDev();
+    dbService.clear()
+      .then(() => dbService.initDev())
+      .then(() => {
+        done();
+      });
   });
 
   it('FindUserByToken: invalid JWT token', () => {

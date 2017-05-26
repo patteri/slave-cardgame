@@ -6,6 +6,7 @@ const CpuPlayer = require('./cpuPlayer');
 const HumanPlayer = require('./humanPlayer');
 const tokenGenerator = require('../helpers/tokenGenerator');
 const socketService = require('../services/socketService');
+const statisticsService = require('../services/statisticsService');
 const CardHelper = require('../../client/src/shared/cardHelper');
 const {
   GameState,
@@ -188,6 +189,11 @@ class Game {
     if (this.state === GameState.CARD_EXCHANGE && cpuPlayer.cardsForExchange == null) {
       this.setCardsForExchange(cpuPlayer.id, cpuPlayer.selectCardsForExchange());
     }
+
+    // Record interruption
+    statisticsService.recordGame(player.name, this._players.length, this._players.length).then(() => {
+      statisticsService.recordTournament(player.name, this._players.length, this._players.length, true);
+    });
   }
 
   dealCards() {
@@ -339,7 +345,7 @@ class Game {
     socketService.emitToRoom('game', this.id, 'gameUpdated', { game: this.toJSON() });
   }
 
-  notifyForGameEnd() {
+  calculateResultsAndNotify(finished = false) {
     let currentResults = this._players.map(player => ({
       name: player.name,
       isCpu: player instanceof CpuPlayer,
@@ -359,6 +365,15 @@ class Game {
       previousPoints = player.points;
     });
 
+    currentResults.filter((result => !result.isCpu)).forEach((result) => {
+      statisticsService.recordGame(result.name, result.position, this._players.length).then(() => {
+        if (finished) {
+          const oResult = overallResults.find(item => item.name === result.name);
+          statisticsService.recordTournament(result.name, oResult.position, this._players.length);
+        }
+      });
+    });
+
     socketService.emitToRoom('game', this.id, 'gameEnded', {
       game: this.toJSON(),
       results: {
@@ -374,7 +389,7 @@ class Game {
     this._currentGameIndex += 1;
 
     if (this._currentGameIndex < this._gameCount) {
-      this.notifyForGameEnd();
+      this.calculateResultsAndNotify();
 
       if (this.getHumanPlayers().length > 1) {
         // Start tracking inactivity
@@ -427,7 +442,7 @@ class Game {
     }
     else {
       this._state = GameState.ENDED;
-      this.notifyForGameEnd();
+      this.calculateResultsAndNotify(true);
       this.eventEmitter.emit('gameEnded', this);
     }
   }
