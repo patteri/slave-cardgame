@@ -51,7 +51,7 @@ class Root extends Component {
         <Navbar collapseOnSelect>
           <Navbar.Header>
             <Navbar.Brand>
-              <span>Slave</span>
+              <img src="/images/brand.png" alt="Brand" />
             </Navbar.Brand>
             <Navbar.Toggle />
           </Navbar.Header>
