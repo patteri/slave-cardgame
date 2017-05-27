@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const User = require('../datamodels/user');
 const UserStatistics = require('../datamodels/userStatistics');
-const authService = require('./authService');
+const { initDevData } = require('../datamodels/initialData');
 
 let connection = null;
 
@@ -29,7 +29,7 @@ class DatabaseService {
 
   // Initializes development data
   static initDev() {
-    return authService.register('admin', 'admin', 'admin@slavegame.net');
+    return initDevData();
   }
 
   // Clears all contents of the database

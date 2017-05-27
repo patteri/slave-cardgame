@@ -25,6 +25,14 @@ const TimerValues = {
   inactivityWarningTime: 15000
 };
 
+const StatProperties = [
+  'averageGamePoints',
+  'averageTournamentPoints',
+  'totalGames',
+  'longestWinningStreak',
+  'longestLooseStreak'
+];
+
 const MaxChatMessageLength = 200;
 
 exports.GameState = GameState;
@@ -35,3 +43,4 @@ exports.SocketInfo = SocketInfo;
 exports.GameValidation = GameValidation;
 exports.TimerValues = TimerValues;
 exports.MaxChatMessageLength = MaxChatMessageLength;
+exports.StatProperties = StatProperties;

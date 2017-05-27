@@ -18,7 +18,12 @@ const gameApi = {
   cardsForExchange: (gameId, data) => axios.post(`/api/game/${gameId}/cardsForExchange`, data)
 };
 
+const statsApi = {
+  getStats: properties => axios.get(`/api/stats?properties=${properties.join(',')}`)
+};
+
 export default {
   auth: authApi,
-  game: gameApi
+  game: gameApi,
+  stats: statsApi
 };

@@ -53,6 +53,10 @@ class StatisticsService {
     });
   }
 
+  static listByProperty(property) {
+    return UserStatistics.find({}, [ 'username', property ]).sort({ [property]: -1 }).limit(10).exec();
+  }
+
 }
 
 module.exports = StatisticsService;

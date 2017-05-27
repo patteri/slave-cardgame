@@ -76,4 +76,25 @@ describe('StatisticsService', () => {
       done();
     });
   });
+
+  it('List by property', (done) => {
+    statisticsService.listByProperty('totalGames').then((stats) => {
+      expect(stats.length).to.equal(4);
+      expect(stats[0]).to.have.property('username');
+      expect(stats[0]).to.have.property('totalGames');
+      expect(stats[0].username).to.equal('player 3');
+      expect(stats[1].username).to.equal('player 2');
+      expect(stats[2].username).to.equal('player 1');
+
+      return statisticsService.listByProperty('averageGamePoints');
+    }).then((stats) => {
+      expect(stats[0]).to.have.property('username');
+      expect(stats[0]).to.have.property('averageGamePoints');
+      expect(stats[0].username).to.equal('player 1');
+      expect(stats[1].username).to.equal('player 2');
+      expect(stats[2].username).to.equal('player 3');
+
+      done();
+    });
+  });
 });

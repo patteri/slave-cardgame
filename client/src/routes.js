@@ -6,7 +6,7 @@ import Root from './components/Root';
 import Home from './components/Home';
 import Join from './components/Join';
 import Game from './components/Game';
-import Highscores from './components/Highscores';
+import Stats from './components/Stats';
 
 const Routes = props => (
   <Provider store={props.store}>
@@ -15,7 +15,7 @@ const Routes = props => (
       <Route path="/" component={Root}>
         <Route path="home" component={Home} />
         <Route path="join/:id" component={Join} />
-        <Route path="highscores" component={Highscores} />
+        <Route path="stats" component={Stats} />
       </Route>
       <Route path="game" component={Game} />
       <Redirect from="/*" to="home" />

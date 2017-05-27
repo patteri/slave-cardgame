@@ -60,8 +60,8 @@ class Root extends Component {
               <LinkContainer to="/home">
                 <NavItem eventKey="1">Play</NavItem>
               </LinkContainer>
-              <LinkContainer to="/highscores">
-                <NavItem eventKey="2">Highscores</NavItem>
+              <LinkContainer to="/stats">
+                <NavItem eventKey="2">Stats</NavItem>
               </LinkContainer>
             </Nav>
             <Nav pullRight>
