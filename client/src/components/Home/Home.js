@@ -53,6 +53,7 @@ class Home extends Component {
                     <th>Joined players (CPUs)</th>
                     <th>Games</th>
                     <th>Created by player</th>
+                    <th />
                   </tr>
                 </thead>
                 <tbody>
@@ -63,6 +64,7 @@ class Home extends Component {
                       </td>
                       <td>{item.gameCount}</td>
                       <td>{item.createdBy}</td>
+                      <td><span className="glyphicon glyphicon-share-alt" /></td>
                     </tr>
                   )}
                   {openGames.length === 0 &&

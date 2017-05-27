@@ -20,7 +20,7 @@ const GameValidation = {
 };
 
 const TimerValues = {
-  hitInactivityMaxPeriod: 45000,
+  hitInactivityMaxPeriod: 60000,
   cardExchangeInactivityMaxPeriod: 60000,
   inactivityWarningTime: 15000
 };

@@ -22,19 +22,24 @@ class Player extends Component {
   }
 
   selectCard(card) {
-    if (this.props.exchangeRule == null || this.props.exchangeRule.exchangeType === CardExchangeType.FREE) {
-      let selectedCards = this.props.selectedCards.slice();
+    const props = this.props;
+    // Cards can be selected only if game is running or cards are free to select for exchange
+    if (props.exchangeRule == null || props.exchangeRule.exchangeType === CardExchangeType.FREE) {
+      let selectedCards = props.selectedCards.slice();
       let index = this.getIndexOfSelected(card);
       if (index === -1) {
-        if (this.props.exchangeRule == null && selectedCards.length > 0 && selectedCards[0].value !== card.value) {
+        if (props.exchangeRule == null && selectedCards.length > 0 && selectedCards[0].value !== card.value) {
           selectedCards = [];
+        }
+        else if (props.exchangeRule != null && selectedCards.length > props.exchangeRule.exchangeCount - 1) {
+          selectedCards.splice(0, 1);
         }
         selectedCards.push(card);
       }
       else {
         selectedCards.splice(index, 1);
       }
-      this.props.onCardsChange(selectedCards);
+      props.onCardsChange(selectedCards);
     }
   }
 

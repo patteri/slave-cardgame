@@ -5,7 +5,7 @@ const socketService = require('../services/socketService');
 const authService = require('../services/authService');
 const { GameState, GameValidation, MaxChatMessageLength } = require('../../client/src/shared/constants');
 
-const RemoveAfterDisconnectionPeriod = 30000;
+const RemoveAfterDisconnectionPeriod = 45000;
 
 class GameService {
 
