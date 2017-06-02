@@ -10,15 +10,23 @@ const TokenValidityTime = 7; // Validity time in days
 class AuthService {
 
   // Finds a user by the specified token and returns the user
-  // On error, returns null
   static findUserByToken(token) {
-    try {
-      const decoded = jwt.decode(token, JwtSecret);
-      return decoded.expireDate > Date.now() ? User.findOne({ username: decoded.username }).exec() : null;
-    }
-    catch (err) {
-      return null;
-    }
+    return new Promise((resolve, reject) => {
+      try {
+        const decoded = jwt.decode(token, JwtSecret);
+        if (decoded.expireDate > Date.now()) {
+          User.findOne({ username: decoded.username }).exec().then((user) => {
+            resolve(user);
+          });
+        }
+        else {
+          reject();
+        }
+      }
+      catch (err) {
+        reject();
+      }
+    });
   }
 
   // Finds a user by the specified user name and password

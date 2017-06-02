@@ -17,9 +17,11 @@ describe('AuthService', () => {
       });
   });
 
-  it('FindUserByToken: invalid JWT token', () => {
-    const auth = authService.findUserByToken('invalid_token');
-    expect(auth).to.be.null; // eslint-disable-line no-unused-expressions
+  it('FindUserByToken: invalid JWT token', (done) => {
+    authService.findUserByToken('invalid_token').then(() => {
+    }).catch(() => {
+      done();
+    });
   });
 
   it('FindUserByToken: invalid user in a valid JWT token', (done) => {

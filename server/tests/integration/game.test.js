@@ -31,6 +31,29 @@ describe('/api/game', () => {
       });
   });
 
+  it('Invalid game creation (invalid token)', (done) => {
+    chai.request(app)
+      .post('/api/game')
+      .send({ playerName: 'admin', playerCount: 4, cpuPlayerCount: 3, gameCount: 1, access_token: 'invalid_token' })
+      .end((err, res) => {
+        expect(res).to.have.status(401);
+        expect(res).to.be.json; // eslint-disable-line no-unused-expressions
+        done();
+      });
+  });
+
+  it('Invalid game creation (different username than token indicates)', (done) => {
+    let authToken = authService.generateAuthToken({ username: 'player 1' });
+    chai.request(app)
+      .post('/api/game')
+      .send({ playerName: 'admin', playerCount: 4, cpuPlayerCount: 3, gameCount: 1, access_token: authToken })
+      .end((err, res) => {
+        expect(res).to.have.status(401);
+        expect(res).to.be.json; // eslint-disable-line no-unused-expressions
+        done();
+      });
+  });
+
   it('Successful game creation', (done) => {
     chai.request(app)
       .post('/api/game')

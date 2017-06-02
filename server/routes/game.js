@@ -11,19 +11,18 @@ const authorize = req => new Promise((resolve, reject) => {
       if (user) {
         const token = authService.parseTokenFromReq(req);
         if (token) {
-          const userByToken = authService.findUserByToken(token);
-          if (userByToken) {
-            return userByToken.then((user) => {
-              if (user && user.username === req.body.playerName) {
-                resolve();
-              }
-              reject();
-            });
-          }
+          return authService.findUserByToken(token);
         }
         return reject();
       }
       return resolve();
+    }).then((user) => {
+      if (user && user.username === req.body.playerName) {
+        return resolve();
+      }
+      return reject();
+    }).catch(() => {
+      reject();
     });
   }
   return reject();
