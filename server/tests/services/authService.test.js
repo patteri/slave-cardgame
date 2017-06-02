@@ -11,6 +11,7 @@ describe('AuthService', () => {
       dbService.connect();
     }
     dbService.clear()
+      .then(() => dbService.init())
       .then(() => dbService.initDev())
       .then(() => {
         done();
@@ -62,6 +63,13 @@ describe('AuthService', () => {
         expect(user).to.not.be.null; // eslint-disable-line no-unused-expressions
         done();
       });
+    });
+  });
+
+  it('Cannot login as a computer', (done) => {
+    authService.findUserByCredentials('Computer 1', 'password').then((user) => {
+      expect(user).to.be.null; // eslint-disable-line no-unused-expressions
+      done();
     });
   });
 });

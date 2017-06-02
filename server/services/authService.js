@@ -15,7 +15,7 @@ class AuthService {
       try {
         const decoded = jwt.decode(token, JwtSecret);
         if (decoded.expireDate > Date.now()) {
-          User.findOne({ username: decoded.username }).exec().then((user) => {
+          User.findOne({ username: decoded.username, active: true }).exec().then((user) => {
             resolve(user);
           });
         }
@@ -32,7 +32,7 @@ class AuthService {
   // Finds a user by the specified user name and password
   static findUserByCredentials(username, password) {
     const encrypted = crypto.createHash('sha256').update(password).digest('hex');
-    return User.findOne({ username: username, password: encrypted }).exec();
+    return User.findOne({ username: username, password: encrypted, active: true }).exec();
   }
 
   // Finds a user by the specified user name

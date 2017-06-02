@@ -1,5 +1,19 @@
+const User = require('./user');
 const UserStatistics = require('./userStatistics');
 const authService = require('../services/authService');
+
+exports.initData = () => {
+  const cpus = [];
+  for (let i = 1; i <= 10; ++i) {
+    cpus.push(new User({
+      username: `Computer ${i}`,
+      password: 'password',
+      email: 'email',
+      active: false
+    }));
+  }
+  return User.insertMany(cpus);
+};
 
 exports.initDevData = () =>
   authService.register('admin', 'admin', 'admin@slavegame.net')

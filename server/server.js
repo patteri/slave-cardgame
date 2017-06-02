@@ -1,26 +1,39 @@
 const app = require('./app');
 const debug = require('debug')('server');
 const http = require('http');
+const dbService = require('./services/databaseService');
 const socketService = require('./services/socketService');
 const gameService = require('./services/gameService');
 
-// Get port from environment and store in Express.
+// Get port from environment and store in Express
 const port = normalizePort(process.env.PORT || '3001');
 app.set('port', port);
 
-// Create HTTP server.
+// Create HTTP server
 const server = http.createServer(app);
+
+// Initialize database
+dbService.connect();
+
+if (process.env.NODE_ENV === 'dev') {
+  dbService.clear()
+    .then(() => dbService.init())
+    .then(() => dbService.initDev());
+}
+else {
+  dbService.init();
+}
 
 // Initialize websockets
 socketService.initialize(server);
 gameService.socketsInitialized();
 
-// Listen on provided port, on all network interfaces.
+// Listen on provided port, on all network interfaces
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
-// Normalize a port into a number, string, or false.
+// Normalize a port into a number, string, or false
 function normalizePort(val) {
   let port = parseInt(val, 10);
 
@@ -37,7 +50,7 @@ function normalizePort(val) {
   return false;
 }
 
-// Event listener for HTTP server "error" event.
+// Event listener for HTTP server "error" event
 function onError(error) {
   if (error.syscall !== 'listen') {
     throw error;
@@ -62,8 +75,7 @@ function onError(error) {
   }
 }
 
-
-// Event listener for HTTP server "listening" event.
+// Event listener for HTTP server "listening" event
 function onListening() {
   let addr = server.address();
   let bind = typeof addr === 'string'

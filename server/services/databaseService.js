@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
+const AppInfo = require('../datamodels/appInfo');
 const User = require('../datamodels/user');
 const UserStatistics = require('../datamodels/userStatistics');
-const { initDevData } = require('../datamodels/initialData');
+const { initData, initDevData } = require('../datamodels/initialData');
 
 let connection = null;
 
@@ -27,6 +28,23 @@ class DatabaseService {
     }
   }
 
+  // Initializes the database
+  static init() {
+    return new Promise((resolve) => {
+      AppInfo.findOne({}).exec().then((appInfo) => {
+        if (appInfo == null) {
+          return initData().then(() => {
+            const appInfo = new AppInfo({
+              databaseInitialized: true
+            });
+            return appInfo.save();
+          }).then(() => resolve());
+        }
+        return resolve();
+      });
+    });
+  }
+
   // Initializes development data
   static initDev() {
     return initDevData();
@@ -35,7 +53,9 @@ class DatabaseService {
   // Clears all contents of the database
   static clear() {
     if (process.env.NODE_ENV !== 'production') {
-      return User.remove().exec().then(() => UserStatistics.remove().exec());
+      return User.remove().exec()
+        .then(() => UserStatistics.remove().exec())
+        .then(() => AppInfo.remove().exec());
     }
     return Promise.resolve();
   }

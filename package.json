@@ -17,7 +17,8 @@
     "validator": "^7.0.0"
   },
   "scripts": {
-    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "start": "concurrently \"npm run server-dev\" \"npm run client\"",
+    "server-dev": "set NODE_ENV=dev&& node server/server.js",
     "server": "node server/server.js",
     "client": "node start-client.js",
     "lint": "eslint .",
