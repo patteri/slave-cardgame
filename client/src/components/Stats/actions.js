@@ -1,3 +1,4 @@
 import { createAction } from 'redux-actions';
 
-export const statsLoaded = createAction('STATS_LOADED'); // eslint-disable-line import/prefer-default-export
+export const statsLoaded = createAction('STATS_LOADED');
+export const userStatsLoaded = createAction('USER_STATS_LOADED');

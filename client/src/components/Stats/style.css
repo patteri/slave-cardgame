@@ -6,3 +6,19 @@
   background-color: white;
   color: #333;
 }
+
+.StatList .Stats-table > tbody > tr > td {
+  padding: 4px 8px;
+}
+
+.StatList .Stats-table .btn {
+  padding: 0;
+}
+
+.Player-stats-modal .title-glyphicon {
+  margin-right: 6px;
+}
+
+.Player-stats-modal .Stats-table > tbody > tr > td {
+  padding: 4px 8px;
+}

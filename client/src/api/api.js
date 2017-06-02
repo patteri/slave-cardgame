@@ -19,7 +19,8 @@ const gameApi = {
 };
 
 const statsApi = {
-  getStats: properties => axios.get(`/api/stats?properties=${properties.join(',')}`)
+  getStats: properties => axios.get(`/api/stats?properties=${properties.join(',')}`),
+  getByUsername: username => axios.get(`/api/stats/${username}`)
 };
 
 export default {

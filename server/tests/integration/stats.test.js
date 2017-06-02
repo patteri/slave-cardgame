@@ -57,4 +57,35 @@ describe('/api/stats', () => {
         done();
       });
   });
+
+  it('Get by non-existing username', (done) => {
+    chai.request(app)
+      .get('/api/stats/non-existing')
+      .end((err, res) => {
+        expect(res).to.have.status(404);
+        expect(res).to.be.json; // eslint-disable-line no-unused-expressions
+        done();
+      });
+  });
+
+  it('Get by username', (done) => {
+    chai.request(app)
+      .get('/api/stats/player%201')
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.have.property('username');
+        expect(res.body).to.have.property('totalGames');
+        expect(res.body).to.have.property('averageGamePoints');
+        expect(res.body).to.have.property('totalGameWins');
+        expect(res.body).to.have.property('totalGameLooses');
+        expect(res.body).to.have.property('totalTournaments');
+        expect(res.body).to.have.property('averageTournamentPoints');
+        expect(res.body).to.have.property('totalInterrupts');
+        expect(res.body).to.have.property('currentWinningStreak');
+        expect(res.body).to.have.property('longestWinningStreak');
+        expect(res.body).to.have.property('currentLooseStreak');
+        expect(res.body).to.have.property('longestLooseStreak');
+        done();
+      });
+  });
 });

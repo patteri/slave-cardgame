@@ -57,6 +57,10 @@ class StatisticsService {
     return UserStatistics.find({}, [ 'username', property ]).sort({ [property]: -1 }).limit(10).exec();
   }
 
+  static getByUsername(username) {
+    return UserStatistics.findOne({ username: username }).exec();
+  }
+
 }
 
 module.exports = StatisticsService;

@@ -97,4 +97,21 @@ describe('StatisticsService', () => {
       done();
     });
   });
+
+  it('Get by non-existing username', (done) => {
+    statisticsService.getByUsername('non-existing').then((stats) => {
+      expect(stats).to.be.null; // eslint-disable-line no-unused-expressions
+      done();
+    });
+  });
+
+  it('Get by username', (done) => {
+    statisticsService.getByUsername('player 1').then((stats) => {
+      expect(stats).not.to.be.null; // eslint-disable-line no-unused-expressions
+      expect(stats.username).to.equal('player 1');
+      expect(stats.totalGames).to.equal(100);
+      expect(stats.totalTournaments).to.equal(10);
+      done();
+    });
+  });
 });

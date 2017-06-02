@@ -29,6 +29,7 @@ const StatProperties = [
   'averageGamePoints',
   'averageTournamentPoints',
   'totalGames',
+  'totalTournaments',
   'longestWinningStreak',
   'longestLooseStreak'
 ];

@@ -1,13 +1,20 @@
 import { handleActions } from 'redux-actions';
-import { statsLoaded } from './actions';
+import {
+  statsLoaded,
+  userStatsLoaded
+} from './actions';
 
 const initialState = {
-  stats: {}
+  stats: {},
+  userStats: {}
 };
 
 const statsReducer = handleActions({
   [statsLoaded]: (state, action) => Object.assign({}, state, {
     stats: action.payload
+  }),
+  [userStatsLoaded]: (state, action) => Object.assign({}, state, {
+    userStats: action.payload
   })
 }, initialState);
 

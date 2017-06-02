@@ -8,6 +8,7 @@ exports.initDevData = () =>
         new UserStatistics({
           username: 'player 1',
           totalGames: 100,
+          totalTournaments: 10,
           averageGamePoints: 0.9,
           averageTournamentPoints: 0.821,
           longestWinningStreak: 7,
@@ -16,6 +17,7 @@ exports.initDevData = () =>
         new UserStatistics({
           username: 'player 2',
           totalGames: 101,
+          totalTournaments: 10,
           averageGamePoints: 0.8,
           averageTournamentPoints: 0.6,
           longestWinningStreak: 5,
@@ -24,6 +26,7 @@ exports.initDevData = () =>
         new UserStatistics({
           username: 'player 3',
           totalGames: 102,
+          totalTournaments: 11,
           averageGamePoints: 0.7,
           averageTournamentPoints: 0.695,
           longestWinningStreak: 6,

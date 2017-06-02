@@ -21,4 +21,29 @@ router.get('/', (req, res) => {
   });
 });
 
+router.get('/:username', (req, res) => {
+  const username = req.params.username || '';
+  statisticsService.getByUsername(username).then((result) => {
+    if (result) {
+      res.json(_.pick(result, [
+        'username',
+        'totalGames',
+        'averageGamePoints',
+        'totalGameWins',
+        'totalGameLooses',
+        'totalTournaments',
+        'averageTournamentPoints',
+        'totalInterrupts',
+        'currentWinningStreak',
+        'longestWinningStreak',
+        'currentLooseStreak',
+        'longestLooseStreak'
+      ]));
+    }
+    else {
+      res.status(404).json({ error: 'Not found' });
+    }
+  });
+});
+
 module.exports = router;
