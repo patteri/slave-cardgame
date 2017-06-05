@@ -21,7 +21,7 @@ class Join extends Component {
 
     return (
       <div className="Join">
-        <h2>Join a game!</h2>
+        <h2 className="Slave-header">Join a game!</h2>
         <Row className="Home-game-form">
           <Col md={4} sm={6} mdOffset={4} smOffset={3}>
             <form onSubmit={e => this.joinGame(e)}>

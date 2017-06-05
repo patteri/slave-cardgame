@@ -7,6 +7,7 @@ import Home from './components/Home';
 import Join from './components/Join';
 import Game from './components/Game';
 import Stats from './components/Stats';
+import Rules from './components/Rules';
 
 const Routes = props => (
   <Provider store={props.store}>
@@ -16,6 +17,7 @@ const Routes = props => (
         <Route path="home" component={Home} />
         <Route path="join/:id" component={Join} />
         <Route path="stats" component={Stats} />
+        <Route path="rules" component={Rules} />
       </Route>
       <Route path="game" component={Game} />
       <Redirect from="/*" to="home" />

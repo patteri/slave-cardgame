@@ -63,24 +63,27 @@ class Root extends Component {
               <LinkContainer to="/stats">
                 <NavItem eventKey="2">Stats</NavItem>
               </LinkContainer>
+              <LinkContainer to="/rules">
+                <NavItem eventKey="3">Rules</NavItem>
+              </LinkContainer>
             </Nav>
             <Nav pullRight>
               {this.props.username == null &&
-                <NavItem eventKey="3" onClick={this.showRegisterModal}>
+                <NavItem eventKey="4" onClick={this.showRegisterModal}>
                   <span className="glyphicon glyphicon-pencil menu-glyphicon" />
                   <span>Register</span>
                 </NavItem>
               }
               {this.props.username &&
-                <NavDropdown eventKey="4" title={this.props.username} id="nav-dropdown">
-                  <MenuItem eventKey="4.1" onClick={this.props.onLogout}>
+                <NavDropdown eventKey="5" title={this.props.username} id="nav-dropdown">
+                  <MenuItem eventKey="5.1" onClick={this.props.onLogout}>
                     <span className="glyphicon glyphicon-log-in menu-glyphicon" />
                     <span>Logout</span>
                   </MenuItem>
                 </NavDropdown>
               }
               {this.props.username == null &&
-                <NavItem eventKey="5" onClick={this.showLoginModal}>
+                <NavItem eventKey="6" onClick={this.showLoginModal}>
                   <span className="glyphicon glyphicon-log-in menu-glyphicon" />
                   <span>Login</span>
                 </NavItem>

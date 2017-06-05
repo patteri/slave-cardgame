@@ -42,7 +42,7 @@ class Home extends Component {
 
     return (
       <div className="Home">
-        <h2 className="Home-header">Welcome to play Slave!</h2>
+        <h2 className="Slave-header">Welcome to play Slave!</h2>
         <Row className="Home-container">
           <Col md={5} sm={6} mdOffset={1}>
             <h4>Join a game</h4>

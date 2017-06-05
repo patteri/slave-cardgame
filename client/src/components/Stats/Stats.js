@@ -52,7 +52,7 @@ class Stats extends Component {
           onHide={this.hidePlayerStatsModal}
           stats={userStats}
         />
-        <h2>Game statistics</h2>
+        <h2 className="Slave-header">Game statistics</h2>
         <Row>
           {statProperties.map(property => (
             <Col key={property.prop} md={4} sm={6}>
