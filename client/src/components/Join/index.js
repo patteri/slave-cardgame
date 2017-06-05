@@ -20,7 +20,10 @@ const joinGame = (dispatch, gameId, playerName) => {
     dispatch(gameStarted(response.data));
     browserHistory.push('/game');
   }).catch((error) => {
-    if (error.response && error.response.status === 403) {
+    if (error.response && error.response.status === 401) {
+      dispatch(openErrorModal('Your credentials have expired. Please, login.'));
+    }
+    else if (error.response && error.response.status === 403) {
       dispatch(openErrorModal('The game is full.'));
     }
     else if (error.response && error.response.status === 404) {

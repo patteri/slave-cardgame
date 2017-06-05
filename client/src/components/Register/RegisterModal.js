@@ -18,7 +18,13 @@ class RegisterModal extends Component {
     const { show, onHide, password, email, showPasswordError, showEmailError, isButtonDisabled, registrationSuccessful,
       isValid } = this.props;
     return (
-      <Modal className="Slave-modal" show={show} backdrop={'static'} onEnter={() => this.onEnter()}>
+      <Modal
+        className="Slave-modal"
+        show={show}
+        onHide={() => this.props.onClose(onHide)}
+        backdrop={'static'}
+        onEnter={() => this.onEnter()}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Register</Modal.Title>
         </Modal.Header>

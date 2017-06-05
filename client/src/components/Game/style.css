@@ -1,5 +1,6 @@
 .Game {
   text-align: center;
+  margin-top: 5px;
 }
 
 .Game-player-name {
@@ -14,6 +15,12 @@
 .Game-player-name.turn {
   font-weight: bold;
   outline: 2px solid white;
+  animation: slide 1.5s linear infinite alternate;
+}
+
+@keyframes slide {
+  0%   { outline: 2px solid white; }
+  100% { outline: 2px solid #777; }
 }
 
 .OutOfGame {
@@ -103,6 +110,10 @@
 }
 
 @media(max-width:767px) {
+  .Game {
+    margin-top: 0;
+  }
+
   .Game-player-name {
     font-size: 0.9em;
   }

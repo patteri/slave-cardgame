@@ -44,8 +44,13 @@ const mapDispatchToProps = dispatch => ({
       }).then((response) => {
         dispatch(gameStarted(response.data));
         browserHistory.push('/game');
-      }).catch(() => {
-        dispatch(openErrorModal('An unknown error occurred.'));
+      }).catch((error) => {
+        if (error.response && error.response.status === 401) {
+          dispatch(openErrorModal('Your credentials have expired. Please, login.'));
+        }
+        else {
+          dispatch(openErrorModal('An unknown error occurred.'));
+        }
       });
     });
   },

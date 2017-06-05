@@ -15,7 +15,7 @@ class LoginModal extends Component {
   render() {
     const { show, onHide, username, password, showError, isButtonDisabled } = this.props;
     return (
-      <Modal className="Slave-modal" show={show} backdrop={'static'} onEnter={() => this.onEnter()}>
+      <Modal className="Slave-modal" show={show} onHide={onHide} backdrop={'static'} onEnter={() => this.onEnter()}>
         <Modal.Header closeButton>
           <Modal.Title>Login</Modal.Title>
         </Modal.Header>

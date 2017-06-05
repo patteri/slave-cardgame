@@ -10,7 +10,10 @@ const StatList = ({ header, stats, isPercent, onShowPlayerStats }) => (
       <tbody>
         {stats && stats.map((item, index) =>
           <tr key={index}>
-            <td className="col-xs-8">
+            <td className="col-xs-1">
+              {index + 1}.
+            </td>
+            <td className="col-xs-7">
               <Button bsStyle="link" onClick={() => onShowPlayerStats(item.name)}>{item.name}</Button>
             </td>
             <td className="col-xs-4">
