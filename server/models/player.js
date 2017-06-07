@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const tokenGenerator = require('../helpers/tokenGenerator');
+const authService = require('../services/authService');
 const Card = require('../../client/src/shared/card');
 const { PlayerHitState } = require('../../client/src/shared/constants');
 
@@ -8,7 +8,7 @@ class Player {
   // Parameters:
   // name: the name of the player
   constructor(name) {
-    this._id = tokenGenerator.generateToken();
+    this._id = authService.generateRandomToken(64);
     this._name = name;
     this._hand = [];
     this._position = 0;

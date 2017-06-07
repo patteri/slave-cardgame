@@ -72,4 +72,14 @@ describe('AuthService', () => {
       done();
     });
   });
+
+  it('Generate random token', () => {
+    let result = authService.generateRandomToken(16);
+    expect(result).to.not.be.null; // eslint-disable-line no-unused-expressions
+    expect(result.length).to.equal(16);
+    result = authService.generateRandomToken(17);
+    expect(result.length).to.equal(16);
+    result = authService.generateRandomToken(18);
+    expect(result.length).to.equal(18);
+  });
 });

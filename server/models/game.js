@@ -4,7 +4,7 @@ const Deck = require('./deck');
 const Card = require('../../client/src/shared/card');
 const CpuPlayer = require('./cpuPlayer');
 const HumanPlayer = require('./humanPlayer');
-const tokenGenerator = require('../helpers/tokenGenerator');
+const authService = require('../services/authService');
 const socketService = require('../services/socketService');
 const statisticsService = require('../services/statisticsService');
 const CardHelper = require('../../client/src/shared/cardHelper');
@@ -31,7 +31,7 @@ class Game {
       throw new Error('Invalid player count');
     }
 
-    this._id = tokenGenerator.generateToken();
+    this._id = authService.generateRandomToken(8);
     this._playerCount = playerCount;
     this._gameCount = gameCount;
     this._currentGameIndex = 0;

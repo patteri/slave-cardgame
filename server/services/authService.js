@@ -51,6 +51,12 @@ class AuthService {
     }, JwtSecret);
   }
 
+  // Generates a random token containing hex characters
+  // length: length of the token. Must be even number, otherwise the result length is length - 1.
+  static generateRandomToken(length) {
+    return crypto.randomBytes(Math.floor(length / 2)).toString('hex');
+  }
+
   // Parses auth token from the request
   static parseTokenFromReq(req) {
     return (req.body && req.body.access_token) || (req.query && req.query.access_token) ||
