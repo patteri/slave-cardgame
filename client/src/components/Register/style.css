@@ -1,13 +1,16 @@
+.Register-container {
+  margin-top: 15px;
+}
+
 .Registration-successful {
   height: 64px;
 }
 
-.Registration-successful img, .Registration-successful h4 {
+.Registration-successful img, .Registration-successful .Text-area {
+  text-align: left;
   float: left;
 }
 
-.Registration-successful h4 {
+.Registration-successful .Text-area {
   margin-left: 12px;
-  height: 46px;
-  line-height: 46px;
 }

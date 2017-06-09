@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
-import LoginModal from './LoginModal';
+import { browserHistory } from 'react-router';
+import Login from './Login';
 import {
   initialize,
   usernameChanged,
@@ -11,6 +12,7 @@ import {
 import { initialize as initUsernameInput } from '../General/UsernameInput/actions';
 import { openErrorModal } from '../Errors/actions';
 import api from '../../api/api';
+import './style.css';
 
 const mapStateToProps = state => state.login;
 
@@ -24,7 +26,7 @@ const mapDispatchToProps = dispatch => ({
   onPasswordChanged(password) {
     dispatch(passwordChanged(password));
   },
-  onLogin(onClose) {
+  onLogin() {
     dispatch((dispatch, getState) => {
       let state = getState().login;
       api.auth.login({
@@ -34,7 +36,7 @@ const mapDispatchToProps = dispatch => ({
         dispatch(loginSuccess());
         dispatch(login({ username: state.username, token: response.data.token }));
         dispatch(initUsernameInput());
-        onClose();
+        browserHistory.push('/home');
       }).catch((error) => {
         if (error.response && error.response.status === 401) {
           dispatch(loginError());
@@ -53,4 +55,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(LoginModal);
+)(Login);

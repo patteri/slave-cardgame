@@ -5,7 +5,6 @@ import { gameIdChanged } from './actions';
 import { gameStarted } from '../Game/actions';
 import { openErrorModal } from '../Errors/actions';
 import api from '../../api/api';
-import './style.css';
 
 const mapStateToProps = state => Object.assign({},
   state.join,

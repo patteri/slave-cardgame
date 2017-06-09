@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
-import RegisterModal from './RegisterModal';
+import { browserHistory } from 'react-router';
+import Register from './Register';
 import {
   initialize,
   passwordChanged,
@@ -40,13 +41,13 @@ const mapDispatchToProps = dispatch => ({
       });
     });
   },
-  onClose(onHide) {
+  onClose() {
     dispatch(initUsernameInput());
-    onHide();
+    browserHistory.push('/home');
   }
 });
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(RegisterModal);
+)(Register);
