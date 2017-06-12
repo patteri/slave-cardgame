@@ -79,7 +79,7 @@ class Game extends Component {
 
   componentWillUnmount() {
     if (this.state.socketConnected) {
-      this.removeSocketListeners();
+      this.state.socket.close();
 
       if (this.props.gameId) {
         this.props.onQuitGame();
@@ -102,13 +102,8 @@ class Game extends Component {
     this.setState({
       socketConnected: false
     });
-    this.removeSocketListeners();
+    this.state.socket.close();
     browserHistory.push('/home');
-  }
-
-  removeSocketListeners() {
-    // Only removing of 'disconnect' event is required
-    this.state.socket.removeAllListeners('disconnect');
   }
 
   gameEnded(data) {
@@ -117,8 +112,9 @@ class Game extends Component {
     this.timers.resultsModalOpen = setTimeout(() => {
       this.props.toggleResultsModal(true);
 
-      // Auto-close modal on inactivity warning
-      if (this.props.results.gameNumber < this.props.results.totalGameCount) {
+      // Auto-close modal on inactivity warning if not single player game or last game
+      if (this.props.otherPlayers.filter(player => !player.isCpu).length > 0 &&
+        this.props.results.gameNumber < this.props.results.totalGameCount) {
         this.timers.resultsModalClose = setTimeout((gameNumber) => {
           if (this.state.resultsClosedForGame == null || this.state.resultsClosedForGame < gameNumber) {
             this.hideResultsModal();

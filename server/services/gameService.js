@@ -5,7 +5,8 @@ const socketService = require('../services/socketService');
 const authService = require('../services/authService');
 const { GameState, GameValidation, MaxChatMessageLength } = require('../../client/src/shared/constants');
 
-const RemoveAfterDisconnectionPeriod = 45000;
+const RemoveAfterDiscPeriod = 45000; // Time after a disconnected player is removed
+const RemoveAfterDiscPeriodSinglePlr = 600000; // Time after a disconnected player is removed in single player game
 
 class GameService {
 
@@ -55,19 +56,24 @@ class GameService {
       });
       socket.on('disconnect', () => {
         // If game hasn't started or is ended, player can be removed immediately
-        // If game is ongoing, wait for RemoveAfterDisconnectionPeriod for reconnection until remove
+        // If game is ongoing, wait for RemoveAfterDiscPeriod for reconnection until remove
         if (socket.game && socket.player) {
           if (socket.game.state === GameState.NOT_STARTED || socket.game.state === GameState.ENDED) {
             this.removePlayerFromGame(socket.game, socket.player);
           }
           else {
             socket.player.connected = false;
-            setTimeout((player, game) => {
-              // Ensure that the client hasn't reconnected and disconnected again after the timer was started
-              if (!player.connected && (Date.now() - player.connectionTime) > RemoveAfterDisconnectionPeriod) {
+            const period = socket.game.getHumanPlayers().length > 1 ? RemoveAfterDiscPeriod :
+              RemoveAfterDiscPeriodSinglePlr;
+            setTimeout((player, game, period) => {
+              // Ensure that the client hasn't:
+              // 1. quited the game (by calling quit API)
+              // 2. reconnected and disconnected again after the timer was started
+              if (player.socket && !player.connected &&
+                (Date.now() - player.connectionTime) > period) {
                 this.removePlayerFromGame(game, player);
               }
-            }, RemoveAfterDisconnectionPeriod, socket.player, socket.game);
+            }, period, socket.player, socket.game, period);
           }
         }
       });
