@@ -43,7 +43,7 @@ describe('/api/game', () => {
   });
 
   it('Invalid game creation (different username than token indicates)', (done) => {
-    let authToken = authService.generateAuthToken({ username: 'player 1' });
+    let authToken = authService.generateAuthToken({ username: 'player 1' }).token;
     chai.request(app)
       .post('/api/game')
       .send({ playerName: 'admin', playerCount: 4, cpuPlayerCount: 3, gameCount: 1, access_token: authToken })
@@ -91,7 +91,7 @@ describe('/api/game', () => {
   });
 
   it('Successful game creation with auth', (done) => {
-    let authToken = authService.generateAuthToken({ username: 'admin' });
+    let authToken = authService.generateAuthToken({ username: 'admin' }).token;
     chai.request(app)
       .post('/api/game')
       .send({ playerName: 'admin', playerCount: 4, cpuPlayerCount: 3, gameCount: 1, access_token: authToken })
@@ -162,7 +162,7 @@ describe('/api/game', () => {
 
   it('Successful game join with auth', (done) => {
     let game = gameService.createGame('Human', 4, 2, 1).game;
-    let authToken = authService.generateAuthToken({ username: 'admin' });
+    let authToken = authService.generateAuthToken({ username: 'admin' }).token;
 
     chai.request(app)
       .post(`/api/game/${game.id}/join`)

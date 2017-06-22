@@ -45,10 +45,13 @@ class AuthService {
   static generateAuthToken(user) {
     const date = new Date();
     const expires = date.setDate(date.getDate() + TokenValidityTime);
-    return jwt.encode({
-      username: user.username,
-      expireDate: expires
-    }, JwtSecret);
+    return {
+      token: jwt.encode({
+        username: user.username,
+        expireDate: expires
+      }, JwtSecret),
+      expires: expires
+    };
   }
 
   // Generates a random token containing hex characters

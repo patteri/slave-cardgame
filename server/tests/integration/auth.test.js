@@ -40,6 +40,7 @@ describe('/api/auth', () => {
         expect(res).to.have.status(200);
         expect(res).to.be.json; // eslint-disable-line no-unused-expressions
         expect(res.body).to.have.property('token');
+        expect(res.body).to.have.property('expires');
         done();
       });
   });

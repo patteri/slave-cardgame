@@ -26,7 +26,7 @@ describe('AuthService', () => {
   });
 
   it('FindUserByToken: invalid user in a valid JWT token', (done) => {
-    const token = authService.generateAuthToken({ username: 'not_existing' });
+    const token = authService.generateAuthToken({ username: 'not_existing' }).token;
     authService.findUserByToken(token).then((user) => {
       expect(user).to.be.null; // eslint-disable-line no-unused-expressions
       done();
@@ -34,7 +34,7 @@ describe('AuthService', () => {
   });
 
   it('FindUserByToken: successfull', (done) => {
-    const token = authService.generateAuthToken({ username: 'admin' });
+    const token = authService.generateAuthToken({ username: 'admin' }).token;
     authService.findUserByToken(token).then((user) => {
       expect(user).to.not.be.null; // eslint-disable-line no-unused-expressions
       expect(user.username).to.equal('admin');

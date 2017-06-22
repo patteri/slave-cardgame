@@ -6,18 +6,17 @@ import {
 
 const initialState = {
   username: null,
-  token: null
+  token: null,
+  expires: null
 };
 
 const authReducer = handleActions({
   [login]: (state, action) => Object.assign({}, state, {
     username: action.payload.username,
-    token: action.payload.token
+    token: action.payload.token,
+    expires: action.payload.expires
   }),
-  [logout]: state => Object.assign({}, state, {
-    username: null,
-    token: null
-  })
+  [logout]: () => Object.assign({}, initialState)
 }, initialState);
 
 export default authReducer;

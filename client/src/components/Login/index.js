@@ -34,7 +34,7 @@ const mapDispatchToProps = dispatch => ({
         password: state.password
       }).then((response) => {
         dispatch(loginSuccess());
-        dispatch(login({ username: state.username, token: response.data.token }));
+        dispatch(login({ username: state.username, token: response.data.token, expires: response.data.expires }));
         dispatch(initUsernameInput());
         browserHistory.push('/home');
       }).catch((error) => {

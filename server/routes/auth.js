@@ -9,7 +9,7 @@ router.post('/login', (req, res) => {
   const password = req.body.password || '';
   authService.findUserByCredentials(username, password).then((user) => {
     if (user) {
-      res.json({ token: authService.generateAuthToken(user) });
+      res.json(authService.generateAuthToken(user));
     }
     else {
       res.status(401).json({ error: 'Invalid credentials' });
