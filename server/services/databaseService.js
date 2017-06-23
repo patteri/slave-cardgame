@@ -13,7 +13,10 @@ class DatabaseService {
     if (connection == null) {
       mongoose.Promise = Promise;
       const location = process.env.DB_LOCATION || 'mongodb://localhost/slave-dev';
-      connection = mongoose.connect(location, { config: { autoIndex: false } });
+      connection = mongoose.connect(location, {
+        config: { autoIndex: false },
+        server: { reconnectTries: Number.MAX_VALUE, reconnectInterval: 10000 }
+      });
 
       mongoose.connection.on('error', (err) => {
         console.error('Mongoose connection error: ', err); // eslint-disable-line no-console
