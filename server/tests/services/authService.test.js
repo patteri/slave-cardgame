@@ -73,6 +73,44 @@ describe('AuthService', () => {
     });
   });
 
+  it('Order password renewal: invalid email', (done) => {
+    authService.orderPasswordRenewal('not_found').then(() => {
+    }).catch(() => {
+      done();
+    });
+  });
+
+  it('Order password renewal: successfull', (done) => {
+    authService.orderPasswordRenewal('admin@slavegame.net').then(() => {
+      done();
+    });
+  });
+
+  it('Change password: invalid user', (done) => {
+    const token = authService.generateForgotPasswordToken('not_existing').token;
+    authService.changePassword(token, 'newpassword').then(() => {
+    }).catch(() => {
+      done();
+    });
+  });
+
+  it('Change password: invalid token', (done) => {
+    authService.changePassword('invalid_token', 'newpassword').then(() => {
+    }).catch(() => {
+      done();
+    });
+  });
+
+  it('Change password: successfull', (done) => {
+    const token = authService.generateForgotPasswordToken('admin').token;
+    authService.changePassword(token, 'newpassword')
+      .then(() => authService.findUserByCredentials('admin', 'newpassword'))
+      .then((user) => {
+        expect(user).to.not.be.null; // eslint-disable-line no-unused-expressions
+        done();
+      });
+  });
+
   it('Generate random token', () => {
     let result = authService.generateRandomToken(16);
     expect(result).to.not.be.null; // eslint-disable-line no-unused-expressions
