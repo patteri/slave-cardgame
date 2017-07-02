@@ -1,8 +1,9 @@
 import React, { Component, PropTypes } from 'react';
-import { Link } from 'react-router';
-import { Row, Col, Button, FormGroup, ControlLabel, FormControl, Alert } from 'react-bootstrap';
+import { Row, Col, Button, FormGroup } from 'react-bootstrap';
 import UsernameInput from '../General/UsernameInput';
-import { GameValidation as gv } from '../../shared/constants';
+import PasswordInput from '../General/PasswordlInput';
+import EmailInput from '../General/EmailInput';
+import SuccessBox from '../General/SuccessBox';
 
 class Register extends Component {
 
@@ -16,8 +17,7 @@ class Register extends Component {
   }
 
   render() {
-    const { password, email, showPasswordError, showEmailError, isButtonDisabled, registrationSuccessful,
-      isValid } = this.props;
+    const { isButtonDisabled, registrationSuccessful, isValid } = this.props;
     return (
       <div className="Register">
         <h2 className="Slave-header">Register a player account</h2>
@@ -26,35 +26,8 @@ class Register extends Component {
             {!registrationSuccessful &&
               <form onSubmit={e => this.register(e)}>
                 <UsernameInput controlId="" />
-                <FormGroup>
-                  <ControlLabel>Password</ControlLabel>
-                  {showPasswordError &&
-                  <Alert bsStyle="danger" className="input-alert">
-                    {`Password must be at least ${gv.minPasswordLength} characters long`}
-                  </Alert>
-                  }
-                  <FormControl
-                    type="password"
-                    value={password}
-                    required
-                    maxLength={gv.maxPasswordLength}
-                    onChange={e => this.props.onPasswordChanged(e.target.value)}
-                  />
-                </FormGroup>
-                <FormGroup>
-                  <ControlLabel>Email</ControlLabel>
-                  {showEmailError &&
-                  <Alert bsStyle="danger" className="input-alert">
-                    Incorrect email address
-                  </Alert>
-                  }
-                  <FormControl
-                    type="email"
-                    value={email}
-                    required
-                    onChange={e => this.props.onEmailChanged(e.target.value)}
-                  />
-                </FormGroup>
+                <PasswordInput onPasswordChanged={this.props.onPasswordChanged} />
+                <EmailInput onEmailChanged={this.props.onEmailChanged} />
                 <FormGroup>
                   <FormGroup>
                     <Button type="submit" disabled={isButtonDisabled || !isValid}>Register</Button>
@@ -63,15 +36,12 @@ class Register extends Component {
               </form>
             }
             {registrationSuccessful &&
-              <div>
-                <div className="Registration-successful">
-                  <img src="/images/ok.png" alt="Ok" />
-                  <div className="Text-area">
-                    <h4>The registration was successful!</h4>
-                    <p>You may now <Link to="login">login</Link>.</p>
-                  </div>
-                </div>
-              </div>
+              <SuccessBox
+                header="The registration was successful!"
+                text="You may now "
+                linkText="login"
+                link="login"
+              />
             }
           </Col>
         </Row>
@@ -82,10 +52,6 @@ class Register extends Component {
 }
 
 Register.PropTypes = {
-  password: PropTypes.string.isRequired,
-  email: PropTypes.string.isRequired,
-  showPasswordError: PropTypes.bool.isRequired,
-  showEmailError: PropTypes.bool.isRequired,
   isButtonDisabled: PropTypes.bool.isRequired,
   registrationSuccessful: PropTypes.bool.isRequired,
   isValid: PropTypes.bool.isRequired

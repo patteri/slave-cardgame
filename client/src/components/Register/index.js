@@ -21,11 +21,11 @@ const mapDispatchToProps = dispatch => ({
     dispatch(initialize());
     dispatch(initUsernameInput());
   },
-  onPasswordChanged(password) {
-    dispatch(passwordChanged(password));
+  onPasswordChanged(value) {
+    dispatch(passwordChanged(value));
   },
-  onEmailChanged(email) {
-    dispatch(emailChanged(email));
+  onEmailChanged(value) {
+    dispatch(emailChanged(value));
   },
   onRegister() {
     dispatch((dispatch, getState) => {
