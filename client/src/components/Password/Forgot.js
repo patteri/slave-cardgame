@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Row, Col, Button, FormGroup, Alert } from 'react-bootstrap';
 import EmailInput from '../General/EmailInput';
-import SuccessBox from '../General/SuccessBox';
+import StatusBox from '../General/StatusBox';
 import api from '../../api/api';
 import store from '../../store';
 import { openErrorModal } from '../Errors/actions';
@@ -73,7 +73,8 @@ class Forgot extends Component {
               </div>
             }
             {this.state.resetSuccess === true &&
-              <SuccessBox
+              <StatusBox
+                status="success"
                 header="The password renewal email was sent!"
                 text="Go to the "
                 linkText="front page"

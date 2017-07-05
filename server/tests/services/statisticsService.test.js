@@ -94,6 +94,12 @@ describe('StatisticsService', () => {
       expect(stats[1].username).to.equal('player 2');
       expect(stats[2].username).to.equal('player 3');
 
+      return statisticsService.listByProperty('averageGamePoints', 2);
+    }).then((stats) => {
+      expect(stats.length).to.equal(2);
+      expect(stats[0].username).to.equal('player 1');
+      expect(stats[1].username).to.equal('player 2');
+
       done();
     });
   });

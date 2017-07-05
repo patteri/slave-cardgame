@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import Root from './components/Root';
 import Home from './components/Home';
 import Register from './components/Register';
+import Activate from './components/Register/Activate';
 import Login from './components/Login';
 import Forgot from './components/Password/Forgot';
 import Renew from './components/Password/Renew';
@@ -20,6 +21,7 @@ const Routes = props => (
       <Route path="/" component={Root}>
         <Route path="home" component={Home} />
         <Route path="register" component={Register} />
+        <Route path="activate/:token" component={Activate} />
         <Route path="login" component={Login} />
         <Route path="forgot" component={Forgot} />
         <Route path="renew/:token" component={Renew} />

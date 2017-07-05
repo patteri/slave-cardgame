@@ -100,6 +100,42 @@ describe('/api/auth', () => {
       });
   });
 
+  it('Unsuccessfull activation: invalid token', (done) => {
+    chai.request(app)
+      .post('/api/auth/activate')
+      .send({ token: 'invalid' })
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res).to.be.json; // eslint-disable-line no-unused-expressions
+        done();
+      });
+  });
+
+  it('Unsuccessfull activation: already active', (done) => {
+    const token = authService.generateAccountActivationToken('admin').token;
+    chai.request(app)
+      .post('/api/auth/activate')
+      .send({ token: token })
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res).to.be.json; // eslint-disable-line no-unused-expressions
+        done();
+      });
+  });
+
+  it('Successfull activation', (done) => {
+    authService.register('user', 'password', 'user@slavegame.net').then(() => {
+      const token = authService.generateAccountActivationToken('user').token;
+      chai.request(app)
+        .post('/api/auth/activate')
+        .send({ token: token })
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          done();
+        });
+    });
+  });
+
   it('Unsuccessfull forgot: invalid email', (done) => {
     chai.request(app)
       .post('/api/auth/forgot')

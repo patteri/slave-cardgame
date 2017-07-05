@@ -58,7 +58,7 @@ describe('AuthService', () => {
   });
 
   it('Successfull registration', (done) => {
-    authService.register('user', 'password', 'user@slavegame.net').then(() => {
+    authService.register('user', 'password', 'user@slavegame.net', true).then(() => {
       authService.findUserByCredentials('user', 'password').then((user) => {
         expect(user).to.not.be.null; // eslint-disable-line no-unused-expressions
         done();
@@ -66,11 +66,41 @@ describe('AuthService', () => {
     });
   });
 
-  it('Cannot login as a computer', (done) => {
-    authService.findUserByCredentials('Computer 1', 'password').then((user) => {
-      expect(user).to.be.null; // eslint-disable-line no-unused-expressions
+  it('Cannot login if user not activated', (done) => {
+    authService.register('user2', 'password', 'user2@slavegame.net').then(() => {
+      authService.findUserByCredentials('user2', 'password').then((user) => {
+        expect(user).to.be.null; // eslint-disable-line no-unused-expressions
+        done();
+      });
+    });
+  });
+
+  it('Activate: invalid user', (done) => {
+    const token = authService.generateAccountActivationToken('not_existing').token;
+    authService.activate(token).then(() => {
+    }).catch(() => {
       done();
     });
+  });
+
+  it('Activate: invalid token', (done) => {
+    authService.activate('invalid_token').then(() => {
+    }).catch(() => {
+      done();
+    });
+  });
+
+  it('Activate: successfull', (done) => {
+    authService.register('user3', 'password', 'user3@slavegame.net')
+      .then(() => {
+        const token = authService.generateAccountActivationToken('user3').token;
+        return authService.activate(token);
+      })
+      .then(() => authService.findUserByCredentials('user3', 'password'))
+      .then((user) => {
+        expect(user).to.not.be.null; // eslint-disable-line no-unused-expressions
+        done();
+      });
   });
 
   it('Order password renewal: invalid email', (done) => {

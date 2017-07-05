@@ -7,6 +7,7 @@ const EmailService = require('./emailService');
 
 const JwtSecret = process.env.JWT_SECRET || 'dev_jwt_secret';
 const AuthTokenValidityTime = 7; // Auth token validity time in days
+const AccountActivationTokenValidityTime = 1; // Account activation token validity time in days
 const ForgotTokenValidityTime = 1; // Forgot password token validity time in days
 
 class AuthService {
@@ -77,18 +78,52 @@ class AuthService {
 
   // Registers the user
   // Note: doesn't validate the input parameters so it must be validated before calling the method
-  static register(username, password, email) {
+  static register(username, password, email, activate = false) {
     const user = new User({
       username: username,
       password: AuthService.getPwdHash(password),
       email: email,
-      active: true
+      active: activate
     });
     const userStatistics = new UserStatistics({
       username: username
     });
 
-    return userStatistics.save().then(() => user.save());
+    return userStatistics.save()
+      .then(() => user.save())
+      .then(() => {
+        if (!activate) {
+          const token = AuthService.generateAccountActivationToken(user.username).token;
+          EmailService.sendAccountActivationEmail(user.email, user.username, token);
+        }
+        return Promise.resolve();
+      });
+  }
+
+  // Activates the account of a user specified by the token
+  static activate(token) {
+    return new Promise((resolve, reject) => {
+      try {
+        const decoded = jwt.decode(token, JwtSecret);
+        if (decoded.expireDate > Date.now()) {
+          return User.findOne({ username: decoded.username, active: false }).then((user) => {
+            if (user) {
+              user.active = true;
+              return user.save().then(() => resolve());
+            }
+            return reject();
+          });
+        }
+      }
+      catch (err) { // eslint-ignore-line no-empty
+      }
+      return reject();
+    });
+  }
+
+  // Generates the account activation token for the specified username
+  static generateAccountActivationToken(username) {
+    return AuthService.getUserToken(username, AccountActivationTokenValidityTime);
   }
 
   // Generates the forgot password token for the specified username
@@ -99,7 +134,7 @@ class AuthService {
   // Orders password renewal email for accounts registered with the specified email address
   static orderPasswordRenewal(email) {
     return new Promise((resolve, reject) => {
-      User.find({ email: email }).then((users) => {
+      User.find({ email: email, active: true }).then((users) => {
         if (users && users.length > 0) {
           users.forEach((user) => {
             const token = AuthService.generateForgotPasswordToken(user.username).token;
@@ -119,7 +154,7 @@ class AuthService {
       try {
         const decoded = jwt.decode(token, JwtSecret);
         if (decoded.expireDate > Date.now()) {
-          return User.findOne({ username: decoded.username }).then((user) => {
+          return User.findOne({ username: decoded.username, active: true }).then((user) => {
             if (user) {
               user.password = AuthService.getPwdHash(password);
               return user.save().then(() => resolve());

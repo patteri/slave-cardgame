@@ -39,7 +39,7 @@ describe('/api/stats', () => {
         expect(res.body).to.have.property('totalGames');
         expect(res.body).to.have.property('averageGamePoints');
         expect(res.body.totalGames).to.be.an('array');
-        expect(res.body.totalGames.length).to.equal(4);
+        expect(res.body.totalGames.length).to.equal(3);
         expect(res.body.totalGames[0]).to.have.property('name');
         expect(res.body.totalGames[0]).to.have.property('value');
         done();

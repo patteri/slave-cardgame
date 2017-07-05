@@ -3,7 +3,7 @@ import { Row, Col, Button, FormGroup } from 'react-bootstrap';
 import UsernameInput from '../General/UsernameInput';
 import PasswordInput from '../General/PasswordlInput';
 import EmailInput from '../General/EmailInput';
-import SuccessBox from '../General/SuccessBox';
+import StatusBox from '../General/StatusBox';
 
 class Register extends Component {
 
@@ -36,11 +36,12 @@ class Register extends Component {
               </form>
             }
             {registrationSuccessful &&
-              <SuccessBox
+              <StatusBox
+                status="success"
                 header="The registration was successful!"
-                text="You may now "
-                linkText="login"
-                link="login"
+                text="An activation link was sent to your email. Go to the "
+                linkText="front page"
+                link="home"
               />
             }
           </Col>

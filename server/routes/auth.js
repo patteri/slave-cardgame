@@ -39,6 +39,15 @@ router.post('/register', (req, res) => {
   }
 });
 
+router.post('/activate', (req, res) => {
+  const token = req.body.token || '';
+  authService.activate(token).then(() => {
+    res.sendStatus(200);
+  }).catch(() => {
+    res.status(400).json({ error: 'The token is invalid' });
+  });
+});
+
 router.post('/forgot', (req, res) => {
   const email = req.body.email || '';
   authService.orderPasswordRenewal(email).then(() => {

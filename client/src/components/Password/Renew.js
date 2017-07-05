@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Row, Col, Button, FormGroup, Alert } from 'react-bootstrap';
 import PasswordInput from '../General/PasswordlInput';
-import SuccessBox from '../General/SuccessBox';
+import StatusBox from '../General/StatusBox';
 import api from '../../api/api';
 import store from '../../store';
 import { openErrorModal } from '../Errors/actions';
@@ -73,7 +73,8 @@ class Renew extends Component {
               </div>
             }
             {this.state.renewSuccess === true &&
-              <SuccessBox
+              <StatusBox
+                status="success"
                 header="The password was changed!"
                 text="You may now "
                 linkText="login"
