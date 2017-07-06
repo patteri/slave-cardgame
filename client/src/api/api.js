@@ -22,7 +22,10 @@ const gameApi = {
 };
 
 const statsApi = {
-  getStats: properties => axios.get(`/api/stats?properties=${properties.join(',')}`),
+  getStats: (properties, limit) => {
+    const limitParam = limit ? `&limit=${limit}` : '';
+    return axios.get(`/api/stats?properties=${properties.join(',')}${limitParam}`);
+  },
   getByUsername: username => axios.get(`/api/stats/${username}`)
 };
 

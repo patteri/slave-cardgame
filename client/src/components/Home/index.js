@@ -6,7 +6,8 @@ import {
   openGamesChanged,
   playerCountChanged,
   cpuPlayerCountChanged,
-  gameCountChanged
+  gameCountChanged,
+  statsLoaded
 } from './actions';
 import { gameStarted } from '../Game/actions';
 import { openErrorModal } from '../Errors/actions';
@@ -20,6 +21,11 @@ const mapStateToProps = state => Object.assign({},
 );
 
 const mapDispatchToProps = dispatch => ({
+  onLoad() {
+    api.stats.getStats([ 'averageGamePoints' ], 5).then((response) => {
+      dispatch(statsLoaded(response.data));
+    });
+  },
   onOpenGamesChanged(data) {
     dispatch(openGamesChanged(data));
   },

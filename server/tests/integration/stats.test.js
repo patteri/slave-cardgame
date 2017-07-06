@@ -58,6 +58,17 @@ describe('/api/stats', () => {
       });
   });
 
+  it('Limit', (done) => {
+    chai.request(app)
+      .get('/api/stats?properties=totalGames&limit=2')
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body.totalGames).to.be.an('array');
+        expect(res.body.totalGames.length).to.equal(2);
+        done();
+      });
+  });
+
   it('Get by non-existing username', (done) => {
     chai.request(app)
       .get('/api/stats/non-existing')

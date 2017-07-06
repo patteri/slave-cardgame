@@ -3,6 +3,7 @@ import { Row, Col, Table, FormGroup, ControlLabel, Button } from 'react-bootstra
 import io from 'socket.io-client';
 import NumericSelector from './NumericSelector';
 import UsernameInput from '../General/UsernameInput';
+import Leaderboard from './Leaderboard';
 import { SocketInfo, GameValidation as gv } from '../../shared/constants';
 
 class Home extends Component {
@@ -24,6 +25,8 @@ class Home extends Component {
 
     // Game room events
     this._socket.on('openGamesChanged', this.props.onOpenGamesChanged);
+
+    this.props.onLoad();
   }
 
   componentWillUnmount() {
@@ -38,7 +41,7 @@ class Home extends Component {
   }
 
   render() {
-    const { openGames, playerCount, cpuPlayerCount, gameCount, isValid, isAuthenticated } = this.props;
+    const { openGames, playerCount, cpuPlayerCount, gameCount, isValid, isAuthenticated, stats } = this.props;
 
     return (
       <div className="Home">
@@ -69,14 +72,15 @@ class Home extends Component {
                   )}
                   {openGames.length === 0 &&
                     <tr>
-                      <td colSpan="3">No open games at the moment. Why wouldn&apos;t you create one?</td>
+                      <td colSpan="4">No open games at the moment. Why wouldn&apos;t you create one?</td>
                     </tr>
                   }
                 </tbody>
               </Table>
             </div>
+            <Leaderboard stats={stats} sm={12} xsHidden />
           </Col>
-          <Col md={4} sm={6} mdOffset={1}>
+          <Col className="Create-game-area" md={4} sm={6} mdOffset={1}>
             <h4>Create a game</h4>
             <form onSubmit={e => this.createGame(e)}>
               <FormGroup controlId="numberOfPlayers">
@@ -109,14 +113,13 @@ class Home extends Component {
               {!isAuthenticated &&
                 <UsernameInput controlId="playerName" />
               }
-              <FormGroup>
-                <FormGroup>
-                  <Button type="submit" disabled={!isAuthenticated && !isValid}>Create game</Button>
-                </FormGroup>
+              <FormGroup className="Bottom-FormGroup">
+                <Button type="submit" disabled={!isAuthenticated && !isValid}>Create game</Button>
               </FormGroup>
             </form>
           </Col>
         </Row>
+        <Leaderboard stats={stats} xs={12} smHidden mdHidden lgHidden />
       </div>
     );
   }
@@ -129,7 +132,8 @@ Home.PropTypes = {
   cpuPlayerCount: PropTypes.number.isRequired,
   gameCount: PropTypes.number.isRequired,
   isValid: PropTypes.bool.isRequired,
-  isAuthenticated: PropTypes.bool.isRequired
+  isAuthenticated: PropTypes.bool.isRequired,
+  stats: PropTypes.object.isRequired
 };
 
 export default Home;

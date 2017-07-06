@@ -54,12 +54,18 @@ class Stats extends Component {
         />
         <h2 className="Slave-header">Game statistics</h2>
         <Row>
+          <Col xs={12}>
+            <p>Register an account and make it to the top!</p>
+          </Col>
+        </Row>
+        <Row>
           {statProperties.map(property => (
             <Col key={property.prop} md={4} sm={6}>
               <StatList
                 header={property.header}
                 stats={stats[property.prop]}
                 isPercent={property.isPercent}
+                showDetails
                 onShowPlayerStats={this.showPlayerStatsModal}
               />
             </Col>

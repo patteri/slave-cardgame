@@ -7,8 +7,11 @@ const router = express.Router();
 
 router.get('/', (req, res) => {
   const query = req.query.properties || '';
+  let limit = Number.parseInt(req.query.limit, 10);
+  limit = Number.isInteger(limit) ? limit : undefined;
   const properties = _.intersection(query.split(','), StatProperties);
-  Promise.all(properties.map(prop => statisticsService.listByProperty(prop))).then((results) => {
+
+  Promise.all(properties.map(prop => statisticsService.listByProperty(prop, limit))).then((results) => {
     const result = {};
     results.forEach((prop, index) => {
       const property = properties[index];

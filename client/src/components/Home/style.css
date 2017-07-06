@@ -20,3 +20,28 @@
 .Open-games-table .clickable {
   cursor: pointer;
 }
+
+.Bottom-FormGroup {
+  margin-bottom: 0;
+}
+
+.Leaderboard table {
+  margin-bottom: 10px;
+}
+
+.Leaderboard .Stats-link {
+  display: block;
+  text-align: left;
+}
+
+@media(min-width:768px) {
+  .Leaderboard {
+    margin-top: 18px;
+  }
+}
+
+@media(max-width:767px) {
+  .Create-game-area, .Leaderboard {
+    margin-top: 10px;
+  }
+}
