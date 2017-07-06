@@ -31,7 +31,7 @@ describe('/api/game/:id/hit', () => {
       });
   });
 
-  it('successfull hit', (done) => {
+  it('successful hit', (done) => {
     const game = gameService.createGame('Human', 4, 3, 1, false).game;
 
     chai.request(app)

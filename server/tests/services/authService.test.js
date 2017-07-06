@@ -33,7 +33,7 @@ describe('AuthService', () => {
     });
   });
 
-  it('FindUserByToken: successfull', (done) => {
+  it('FindUserByToken: successful', (done) => {
     const token = authService.generateAuthToken({ username: 'admin' }).token;
     authService.findUserByToken(token).then((user) => {
       expect(user).to.not.be.null; // eslint-disable-line no-unused-expressions
@@ -49,7 +49,7 @@ describe('AuthService', () => {
     });
   });
 
-  it('FindUserByCredentials: successfull', (done) => {
+  it('FindUserByCredentials: successful', (done) => {
     authService.findUserByCredentials('admin', 'admin').then((user) => {
       expect(user).to.not.be.null; // eslint-disable-line no-unused-expressions
       expect(user.username).to.equal('admin');
@@ -57,7 +57,7 @@ describe('AuthService', () => {
     });
   });
 
-  it('Successfull registration', (done) => {
+  it('Successful registration', (done) => {
     authService.register('user', 'password', 'user@slavegame.net', true).then(() => {
       authService.findUserByCredentials('user', 'password').then((user) => {
         expect(user).to.not.be.null; // eslint-disable-line no-unused-expressions
@@ -90,7 +90,7 @@ describe('AuthService', () => {
     });
   });
 
-  it('Activate: successfull', (done) => {
+  it('Activate: successful', (done) => {
     authService.register('user3', 'password', 'user3@slavegame.net')
       .then(() => {
         const token = authService.generateAccountActivationToken('user3').token;
@@ -110,7 +110,7 @@ describe('AuthService', () => {
     });
   });
 
-  it('Order password renewal: successfull', (done) => {
+  it('Order password renewal: successful', (done) => {
     authService.orderPasswordRenewal('admin@slavegame.net').then(() => {
       done();
     });
@@ -131,7 +131,7 @@ describe('AuthService', () => {
     });
   });
 
-  it('Change password: successfull', (done) => {
+  it('Change password: successful', (done) => {
     const token = authService.generateForgotPasswordToken('admin').token;
     authService.changePassword(token, 'newpassword')
       .then(() => authService.findUserByCredentials('admin', 'newpassword'))

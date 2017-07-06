@@ -21,7 +21,7 @@ describe('/api/auth', () => {
       });
   });
 
-  it('Unsuccessfull login', (done) => {
+  it('Unsuccessful login', (done) => {
     chai.request(app)
       .post('/api/auth/login')
       .send({ username: 'admin', password: 'invalid_password' })
@@ -32,7 +32,7 @@ describe('/api/auth', () => {
       });
   });
 
-  it('Successfull login', (done) => {
+  it('Successful login', (done) => {
     chai.request(app)
       .post('/api/auth/login')
       .send({ username: 'admin', password: 'admin' })
@@ -46,7 +46,7 @@ describe('/api/auth', () => {
       });
   });
 
-  it('Unsuccessfull register: invalid username', (done) => {
+  it('Unsuccessful register: invalid username', (done) => {
     chai.request(app)
       .post('/api/auth/register')
       .send({ username: '', password: 'password', email: 'email@slavegame.net' })
@@ -57,7 +57,7 @@ describe('/api/auth', () => {
       });
   });
 
-  it('Unsuccessfull register: invalid password', (done) => {
+  it('Unsuccessful register: invalid password', (done) => {
     chai.request(app)
       .post('/api/auth/register')
       .send({ username: 'username', password: '', email: 'email@slavegame.net' })
@@ -68,7 +68,7 @@ describe('/api/auth', () => {
       });
   });
 
-  it('Unsuccessfull register: invalid email', (done) => {
+  it('Unsuccessful register: invalid email', (done) => {
     chai.request(app)
       .post('/api/auth/register')
       .send({ username: 'username', password: 'password', email: 'email' })
@@ -79,7 +79,7 @@ describe('/api/auth', () => {
       });
   });
 
-  it('Unsuccessfull register: username reserved', (done) => {
+  it('Unsuccessful register: username reserved', (done) => {
     chai.request(app)
       .post('/api/auth/register')
       .send({ username: 'admin', password: 'admin', email: 'admin@slavegame.net' })
@@ -90,7 +90,7 @@ describe('/api/auth', () => {
       });
   });
 
-  it('Successfull register', (done) => {
+  it('Successful register', (done) => {
     chai.request(app)
       .post('/api/auth/register')
       .send({ username: 'username', password: 'password', email: 'email@slavegame.net' })
@@ -100,7 +100,7 @@ describe('/api/auth', () => {
       });
   });
 
-  it('Unsuccessfull activation: invalid token', (done) => {
+  it('Unsuccessful activation: invalid token', (done) => {
     chai.request(app)
       .post('/api/auth/activate')
       .send({ token: 'invalid' })
@@ -111,7 +111,7 @@ describe('/api/auth', () => {
       });
   });
 
-  it('Unsuccessfull activation: already active', (done) => {
+  it('Unsuccessful activation: already active', (done) => {
     const token = authService.generateAccountActivationToken('admin').token;
     chai.request(app)
       .post('/api/auth/activate')
@@ -123,7 +123,7 @@ describe('/api/auth', () => {
       });
   });
 
-  it('Successfull activation', (done) => {
+  it('Successful activation', (done) => {
     authService.register('user', 'password', 'user@slavegame.net').then(() => {
       const token = authService.generateAccountActivationToken('user').token;
       chai.request(app)
@@ -136,7 +136,7 @@ describe('/api/auth', () => {
     });
   });
 
-  it('Unsuccessfull forgot: invalid email', (done) => {
+  it('Unsuccessful forgot: invalid email', (done) => {
     chai.request(app)
       .post('/api/auth/forgot')
       .send({ email: 'not_found' })
@@ -147,7 +147,7 @@ describe('/api/auth', () => {
       });
   });
 
-  it('Successfull forgot', (done) => {
+  it('Successful forgot', (done) => {
     chai.request(app)
       .post('/api/auth/forgot')
       .send({ email: 'admin@slavegame.net' })
@@ -157,7 +157,7 @@ describe('/api/auth', () => {
       });
   });
 
-  it('Unsuccessfull password renew: invalid password', (done) => {
+  it('Unsuccessful password renew: invalid password', (done) => {
     const token = authService.generateForgotPasswordToken('admin').token;
     chai.request(app)
       .post('/api/auth/renew')
@@ -169,7 +169,7 @@ describe('/api/auth', () => {
       });
   });
 
-  it('Unsuccessfull password renew: invalid token', (done) => {
+  it('Unsuccessful password renew: invalid token', (done) => {
     chai.request(app)
       .post('/api/auth/renew')
       .send({ token: 'invalid_token', password: 'pwd' })
@@ -180,7 +180,7 @@ describe('/api/auth', () => {
       });
   });
 
-  it('Successfull password renew', (done) => {
+  it('Successful password renew', (done) => {
     const token = authService.generateForgotPasswordToken('admin').token;
     chai.request(app)
       .post('/api/auth/renew')
