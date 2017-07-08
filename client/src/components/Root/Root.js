@@ -1,14 +1,19 @@
 import React, { PropTypes } from 'react';
+import { browserHistory } from 'react-router';
 import { Grid, Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import ErrorModal from '../Errors/ErrorModal';
+
+const navigateHome = () => {
+  browserHistory.push('/home');
+};
 
 const Root = props => (
   <div className="Root">
     <Navbar collapseOnSelect>
       <Navbar.Header>
         <Navbar.Brand>
-          <img src="/images/brand.png" alt="Brand" />
+          <img src="/images/brand.png" alt="Brand" onClick={navigateHome} />
         </Navbar.Brand>
         <Navbar.Toggle />
       </Navbar.Header>

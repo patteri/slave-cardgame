@@ -44,4 +44,8 @@
   .Create-game-area, .Leaderboard {
     margin-top: 10px;
   }
+
+  .Leaderboard {
+    margin-bottom: 15px;
+  }
 }

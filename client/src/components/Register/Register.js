@@ -27,7 +27,7 @@ class Register extends Component {
               <form onSubmit={e => this.register(e)}>
                 <UsernameInput controlId="" />
                 <PasswordInput onPasswordChanged={this.props.onPasswordChanged} />
-                <EmailInput onEmailChanged={this.props.onEmailChanged} />
+                <EmailInput onEmailChanged={this.props.onEmailChanged} showVisibilityText />
                 <FormGroup>
                   <FormGroup>
                     <Button type="submit" disabled={isButtonDisabled || !isValid}>Register</Button>
@@ -41,7 +41,7 @@ class Register extends Component {
                 header="The registration was successful!"
                 text="An activation link was sent to your email. Go to the "
                 linkText="front page"
-                link="home"
+                link="/home"
               />
             }
           </Col>

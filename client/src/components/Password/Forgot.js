@@ -78,7 +78,7 @@ class Forgot extends Component {
                 header="The password renewal email was sent!"
                 text="Go to the "
                 linkText="front page"
-                link="home"
+                link="/home"
               />
             }
           </Col>

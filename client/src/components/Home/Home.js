@@ -111,7 +111,7 @@ class Home extends Component {
                 />
               </FormGroup>
               {!isAuthenticated &&
-                <UsernameInput controlId="playerName" />
+                <UsernameInput controlId="playerName" showRegistrationText />
               }
               <FormGroup className="Bottom-FormGroup">
                 <Button type="submit" disabled={!isAuthenticated && !isValid}>Create game</Button>

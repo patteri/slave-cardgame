@@ -13,7 +13,7 @@ const Leaderboard = ({ stats, ...props }) => (
         showDetails={false}
       />
       <div className="Stats-link">
-        <Link to="stats">Show more</Link>
+        <Link to="/stats">Show more</Link>
       </div>
     </Col>
   </Row>

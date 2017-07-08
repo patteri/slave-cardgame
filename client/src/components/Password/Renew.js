@@ -78,7 +78,7 @@ class Renew extends Component {
                 header="The password was changed!"
                 text="You may now "
                 linkText="login"
-                link="login"
+                link="/login"
               />
             }
           </Col>

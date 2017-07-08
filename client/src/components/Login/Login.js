@@ -54,7 +54,7 @@ class Login extends Component {
             </form>
             <p className="Forgot">
               Did you forget your player name or password?<br />
-              <Link to={'forgot'}>Reset password</Link>
+              <Link to="/forgot">Reset password</Link>
             </p>
           </Col>
         </Row>

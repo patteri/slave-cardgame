@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { FormGroup, ControlLabel, FormControl, Alert } from 'react-bootstrap';
+import classNames from 'classnames';
 import validator from 'validator';
 
 class EmailInput extends Component {
@@ -26,23 +27,35 @@ class EmailInput extends Component {
     return (
       <FormGroup>
         <ControlLabel>Email</ControlLabel>
+        {this.props.showVisibilityText &&
+          <FormControl.Static className="Field-additional-text">
+            Required in registration process. Not visible for other users.
+          </FormControl.Static>
+        }
         {this.state.email !== '' && !this.state.isValid &&
           <Alert bsStyle="danger" className="input-alert">
-            Incorrect email address
+            Invalid email address
           </Alert>
         }
-        <FormControl
-          type="email"
-          value={this.state.email}
-          required
-          onChange={e => this.onEmailChanged(e.target.value)}
-        />
+        <div className={classNames({ 'has-error': this.state.email !== '' && !this.state.isValid })}>
+          <FormControl
+            type="email"
+            value={this.state.email}
+            required
+            onChange={e => this.onEmailChanged(e.target.value)}
+          />
+        </div>
       </FormGroup>
     );
   }
 }
 
+EmailInput.defaultValues = {
+  showVisibilityText: false
+};
+
 EmailInput.PropTypes = {
+  showVisibilityText: PropTypes.bool,
   onEmailChanged: PropTypes.func.isRequired
 };
 

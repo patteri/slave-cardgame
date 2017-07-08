@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { FormGroup, ControlLabel, FormControl, Alert } from 'react-bootstrap';
+import classNames from 'classnames';
 import { GameValidation as gv } from '../../shared/constants';
 
 class PasswordInput extends Component {
@@ -32,13 +33,15 @@ class PasswordInput extends Component {
             {`Password must be at least ${gv.minPasswordLength} characters long`}
           </Alert>
         }
-        <FormControl
-          type="password"
-          value={this.state.password}
-          required
-          maxLength={gv.maxPasswordLength}
-          onChange={e => this.onPasswordChanged(e.target.value)}
-        />
+        <div className={classNames({ 'has-error': this.state.password !== '' && !this.state.isValid })}>
+          <FormControl
+            type="password"
+            value={this.state.password}
+            required
+            maxLength={gv.maxPasswordLength}
+            onChange={e => this.onPasswordChanged(e.target.value)}
+          />
+        </div>
       </FormGroup>
     );
   }
