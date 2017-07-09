@@ -9,11 +9,14 @@ describe('Auth reducer', () => {
     const initialState = authReducer(undefined, { type: '' });
     expect(initialState.username).to.be.null; // eslint-disable-line no-unused-expressions
     expect(initialState.token).to.be.null; // eslint-disable-line no-unused-expressions
-    let reducer = authReducer(initialState, login({ username: 'username', token: 'token' }));
+    const date = Date.now();
+    let reducer = authReducer(initialState, login({ username: 'username', token: 'token', expires: date }));
     expect(reducer.username).to.equal('username');
     expect(reducer.token).to.equal('token');
+    expect(reducer.expires).to.equal(date);
     reducer = authReducer(reducer, logout());
     expect(initialState.username).to.be.null; // eslint-disable-line no-unused-expressions
     expect(initialState.token).to.be.null; // eslint-disable-line no-unused-expressions
+    expect(initialState.expires).to.be.null; // eslint-disable-line no-unused-expressions
   });
 });

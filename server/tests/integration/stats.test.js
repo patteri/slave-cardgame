@@ -39,7 +39,7 @@ describe('/api/stats', () => {
         expect(res.body).to.have.property('totalGames');
         expect(res.body).to.have.property('averageGamePoints');
         expect(res.body.totalGames).to.be.an('array');
-        expect(res.body.totalGames.length).to.equal(4);
+        expect(res.body.totalGames.length).to.equal(3);
         expect(res.body.totalGames[0]).to.have.property('name');
         expect(res.body.totalGames[0]).to.have.property('value');
         done();
@@ -54,6 +54,17 @@ describe('/api/stats', () => {
         expect(Object.getOwnPropertyNames(res.body).length).to.equal(2);
         expect(res.body).to.have.property('totalGames');
         expect(res.body).to.have.property('averageGamePoints');
+        done();
+      });
+  });
+
+  it('Limit', (done) => {
+    chai.request(app)
+      .get('/api/stats?properties=totalGames&limit=2')
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body.totalGames).to.be.an('array');
+        expect(res.body.totalGames.length).to.equal(2);
         done();
       });
   });

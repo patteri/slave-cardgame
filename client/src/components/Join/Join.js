@@ -33,7 +33,7 @@ class Join extends Component {
                   onChange={e => this.props.onGameIdChanged(e.target.value)}
                 />
               </FormGroup>
-              <UsernameInput controlId="playerName" />
+              <UsernameInput controlId="playerName" showRegistrationText />
               <FormGroup>
                 <FormGroup>
                   <Button type="submit" disabled={isButtonDisabled || !isValid}>Join game</Button>

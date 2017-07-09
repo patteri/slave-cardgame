@@ -26,15 +26,15 @@ describe('AuthService', () => {
   });
 
   it('FindUserByToken: invalid user in a valid JWT token', (done) => {
-    const token = authService.generateAuthToken({ username: 'not_existing' });
+    const token = authService.generateAuthToken({ username: 'not_existing' }).token;
     authService.findUserByToken(token).then((user) => {
       expect(user).to.be.null; // eslint-disable-line no-unused-expressions
       done();
     });
   });
 
-  it('FindUserByToken: successfull', (done) => {
-    const token = authService.generateAuthToken({ username: 'admin' });
+  it('FindUserByToken: successful', (done) => {
+    const token = authService.generateAuthToken({ username: 'admin' }).token;
     authService.findUserByToken(token).then((user) => {
       expect(user).to.not.be.null; // eslint-disable-line no-unused-expressions
       expect(user.username).to.equal('admin');
@@ -49,7 +49,7 @@ describe('AuthService', () => {
     });
   });
 
-  it('FindUserByCredentials: successfull', (done) => {
+  it('FindUserByCredentials: successful', (done) => {
     authService.findUserByCredentials('admin', 'admin').then((user) => {
       expect(user).to.not.be.null; // eslint-disable-line no-unused-expressions
       expect(user.username).to.equal('admin');
@@ -57,8 +57,8 @@ describe('AuthService', () => {
     });
   });
 
-  it('Successfull registration', (done) => {
-    authService.register('user', 'password', 'user@slavegame.net').then(() => {
+  it('Successful registration', (done) => {
+    authService.register('user', 'password', 'user@slavegame.net', true).then(() => {
       authService.findUserByCredentials('user', 'password').then((user) => {
         expect(user).to.not.be.null; // eslint-disable-line no-unused-expressions
         done();
@@ -66,11 +66,79 @@ describe('AuthService', () => {
     });
   });
 
-  it('Cannot login as a computer', (done) => {
-    authService.findUserByCredentials('Computer 1', 'password').then((user) => {
-      expect(user).to.be.null; // eslint-disable-line no-unused-expressions
+  it('Cannot login if user not activated', (done) => {
+    authService.register('user2', 'password', 'user2@slavegame.net').then(() => {
+      authService.findUserByCredentials('user2', 'password').then((user) => {
+        expect(user).to.be.null; // eslint-disable-line no-unused-expressions
+        done();
+      });
+    });
+  });
+
+  it('Activate: invalid user', (done) => {
+    const token = authService.generateAccountActivationToken('not_existing').token;
+    authService.activate(token).then(() => {
+    }).catch(() => {
       done();
     });
+  });
+
+  it('Activate: invalid token', (done) => {
+    authService.activate('invalid_token').then(() => {
+    }).catch(() => {
+      done();
+    });
+  });
+
+  it('Activate: successful', (done) => {
+    authService.register('user3', 'password', 'user3@slavegame.net')
+      .then(() => {
+        const token = authService.generateAccountActivationToken('user3').token;
+        return authService.activate(token);
+      })
+      .then(() => authService.findUserByCredentials('user3', 'password'))
+      .then((user) => {
+        expect(user).to.not.be.null; // eslint-disable-line no-unused-expressions
+        done();
+      });
+  });
+
+  it('Order password renewal: invalid email', (done) => {
+    authService.orderPasswordRenewal('not_found').then(() => {
+    }).catch(() => {
+      done();
+    });
+  });
+
+  it('Order password renewal: successful', (done) => {
+    authService.orderPasswordRenewal('admin@slavegame.net').then(() => {
+      done();
+    });
+  });
+
+  it('Change password: invalid user', (done) => {
+    const token = authService.generateForgotPasswordToken('not_existing').token;
+    authService.changePassword(token, 'newpassword').then(() => {
+    }).catch(() => {
+      done();
+    });
+  });
+
+  it('Change password: invalid token', (done) => {
+    authService.changePassword('invalid_token', 'newpassword').then(() => {
+    }).catch(() => {
+      done();
+    });
+  });
+
+  it('Change password: successful', (done) => {
+    const token = authService.generateForgotPasswordToken('admin').token;
+    authService.changePassword(token, 'newpassword')
+      .then(() => authService.findUserByCredentials('admin', 'newpassword'))
+      .then((user) => {
+        expect(user).to.not.be.null; // eslint-disable-line no-unused-expressions
+        done();
+      });
   });
 
   it('Generate random token', () => {

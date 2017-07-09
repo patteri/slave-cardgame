@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { browserHistory } from 'react-router';
-import { Grid, Col, ControlLabel, FormControl } from 'react-bootstrap';
+import { Grid, Row, Col, ControlLabel, FormControl } from 'react-bootstrap';
 import io from 'socket.io-client';
 import ErrorModal from '../Errors/ErrorModal';
 import OtherPlayers from './OtherPlayers';
@@ -159,13 +159,20 @@ class Game extends Component {
         <OtherPlayers playerCount={playerCount} players={otherPlayers} />
         <div className="Game-table">
           {gameState === GameState.NOT_STARTED &&
-            <div>
-              <Col componentClass={ControlLabel} sm={6} md={3} mdOffset={3}>
-                Share this link to your friends, so they can join the game!
-              </Col>
-              <Col sm={6} md={3}>
-                <FormControl type="text" value={this.state.joinUrl} readOnly onFocus={this.handleJoinUrlFocus} />
-              </Col>
+            <div className="Not-started-info">
+              <Row>
+                <Col componentClass={ControlLabel} sm={6} md={3} mdOffset={3}>
+                  Joined players: {otherPlayers.length + 1} / {playerCount}
+                </Col>
+              </Row>
+              <Row>
+                <Col componentClass={ControlLabel} sm={6} md={3} mdOffset={3}>
+                  Direct link for joining the game:
+                </Col>
+                <Col sm={6} md={3}>
+                  <FormControl type="text" value={this.state.joinUrl} readOnly onFocus={this.handleJoinUrlFocus} />
+                </Col>
+              </Row>
             </div>
           }
           {gameState !== GameState.NOT_STARTED &&

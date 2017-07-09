@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Row, Col, Button, FormGroup, ControlLabel, FormControl, Alert } from 'react-bootstrap';
+import { Link } from 'react-router';
 
 class Login extends Component {
 
@@ -51,6 +52,10 @@ class Login extends Component {
                 </FormGroup>
               </FormGroup>
             </form>
+            <p className="Forgot">
+              Did you forget your player name or password?<br />
+              <Link to="/forgot">Reset password</Link>
+            </p>
           </Col>
         </Row>
       </div>

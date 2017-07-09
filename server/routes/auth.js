@@ -9,7 +9,7 @@ router.post('/login', (req, res) => {
   const password = req.body.password || '';
   authService.findUserByCredentials(username, password).then((user) => {
     if (user) {
-      res.json({ token: authService.generateAuthToken(user) });
+      res.json(authService.generateAuthToken(user));
     }
     else {
       res.status(401).json({ error: 'Invalid credentials' });
@@ -36,6 +36,40 @@ router.post('/register', (req, res) => {
   }
   else {
     res.status(400).json({ error: 'The request is invalid' });
+  }
+});
+
+router.post('/activate', (req, res) => {
+  const token = req.body.token || '';
+  authService.activate(token).then(() => {
+    res.sendStatus(200);
+  }).catch(() => {
+    res.status(400).json({ error: 'The token is invalid' });
+  });
+});
+
+router.post('/forgot', (req, res) => {
+  const email = req.body.email || '';
+  authService.orderPasswordRenewal(email).then(() => {
+    res.sendStatus(200);
+  }).catch(() => {
+    res.status(400).json({ error: 'The user wasn\'t recognized' });
+  });
+});
+
+router.post('/renew', (req, res) => {
+  const token = req.body.token || '';
+  const password = req.body.password || '';
+
+  if (authService.validatePassword(password)) {
+    authService.changePassword(token, password).then(() => {
+      res.sendStatus(200);
+    }).catch(() => {
+      res.status(400).json({ error: 'The token is invalid' });
+    });
+  }
+  else {
+    res.status(400).json({ error: 'The password is invalid' });
   }
 });
 

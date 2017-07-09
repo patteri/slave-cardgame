@@ -4,14 +4,16 @@ import {
   openGamesChanged,
   playerCountChanged,
   cpuPlayerCountChanged,
-  gameCountChanged
+  gameCountChanged,
+  statsLoaded
 } from './actions';
 
 const initialState = {
   openGames: [],
   playerCount: 4,
   cpuPlayerCount: 0,
-  gameCount: 10
+  gameCount: 10,
+  stats: {}
 };
 
 const homeReducer = handleActions({
@@ -43,7 +45,10 @@ const homeReducer = handleActions({
     return Object.assign({}, state, {
       gameCount: count
     });
-  }
+  },
+  [statsLoaded]: (state, action) => Object.assign({}, state, {
+    stats: action.payload
+  })
 }, initialState);
 
 export default homeReducer;

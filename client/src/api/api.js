@@ -6,6 +6,9 @@ setHttpInterceptors();
 const authApi = {
   login: data => axios.post('/api/auth/login', data),
   register: data => axios.post('/api/auth/register', data),
+  activate: data => axios.post('/api/auth/activate', data),
+  forgot: data => axios.post('/api/auth/forgot', data),
+  renew: data => axios.post('/api/auth/renew', data),
   usernameAvailable: username => axios.get(`/api/auth/usernameAvailable?username=${username}`)
 };
 
@@ -19,7 +22,10 @@ const gameApi = {
 };
 
 const statsApi = {
-  getStats: properties => axios.get(`/api/stats?properties=${properties.join(',')}`),
+  getStats: (properties, limit) => {
+    const limitParam = limit ? `&limit=${limit}` : '';
+    return axios.get(`/api/stats?properties=${properties.join(',')}${limitParam}`);
+  },
   getByUsername: username => axios.get(`/api/stats/${username}`)
 };
 

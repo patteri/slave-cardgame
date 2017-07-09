@@ -1,6 +1,4 @@
 import { handleActions } from 'redux-actions';
-import validator from 'validator';
-import { GameValidation as gv } from '../../shared/constants';
 import {
   initialize,
   passwordChanged,
@@ -10,31 +8,26 @@ import {
 
 const initialState = {
   password: '',
+  isPasswordValid: false,
   email: '',
-  showPasswordError: false,
-  showEmailError: false,
+  isEmailValid: false,
   isButtonDisabled: true,
   registrationSuccessful: false
 };
 
-const validatePassword = password => !(password == null || password.length < gv.minPasswordLength ||
-password.length > gv.maxPasswordLength);
-
-const validateEmail = email => validator.isEmail(email);
-
-const isButtonDisabled = (password, email) => !validatePassword(password) || !validateEmail(email);
+const isButtonDisabled = (validPassword, validEmail) => !validPassword || !validEmail;
 
 const registerReducer = handleActions({
   [initialize]: () => initialState,
   [passwordChanged]: (state, action) => Object.assign({}, state, {
-    password: action.payload,
-    showPasswordError: !validatePassword(action.payload),
-    isButtonDisabled: isButtonDisabled(action.payload, state.email)
+    password: action.payload.password,
+    isPasswordValid: action.payload.isValid,
+    isButtonDisabled: isButtonDisabled(action.payload.isValid, state.isEmailValid)
   }),
   [emailChanged]: (state, action) => Object.assign({}, state, {
-    email: action.payload,
-    showEmailError: !validateEmail(action.payload),
-    isButtonDisabled: isButtonDisabled(state.password, action.payload)
+    email: action.payload.email,
+    isEmailValid: action.payload.isValid,
+    isButtonDisabled: isButtonDisabled(state.isPasswordValid, action.payload.isValid)
   }),
   [registrationSuccessful]: state => Object.assign({}, state, {
     registrationSuccessful: true

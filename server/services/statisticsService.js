@@ -1,5 +1,7 @@
 const UserStatistics = require('../datamodels/userStatistics');
 
+const StatsRecordMaxLimit = 10;
+
 class StatisticsService {
 
   static recordGame(username, position, playerCount) {
@@ -53,8 +55,9 @@ class StatisticsService {
     });
   }
 
-  static listByProperty(property) {
-    return UserStatistics.find({}, [ 'username', property ]).sort({ [property]: -1 }).limit(10).exec();
+  static listByProperty(property, limit = StatsRecordMaxLimit) {
+    return UserStatistics.find({ totalGames: { $gt: 0 } }, [ 'username', property ]).sort({ [property]: -1 })
+      .limit(limit).exec();
   }
 
   static getByUsername(username) {

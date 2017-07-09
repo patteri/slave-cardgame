@@ -30,7 +30,7 @@ describe('/api/game/:id/cardExchange', () => {
       });
   });
 
-  it('successfull query', (done) => {
+  it('successful query', (done) => {
     const game = gameService.createGame('Human', 4, 3, 2, false).game;
     game._players[0].position = 1;
     game._players[1].position = 2;

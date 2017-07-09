@@ -14,6 +14,11 @@ const getStateToPersistToSessionStorage = state => ({
 
 const persistedState = Object.assign(loadState(localStorage) || {}, loadState(sessionStorage) || {});
 
+// Check token expiration
+if (persistedState.auth && persistedState.auth.expires && persistedState.auth.expires < Date.now()) {
+  delete persistedState.auth;
+}
+
 const store = createStore(
   rootReducer,
   persistedState,
