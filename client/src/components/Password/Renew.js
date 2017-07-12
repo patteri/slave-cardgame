@@ -34,7 +34,7 @@ class Renew extends Component {
 
   submit(e) {
     e.preventDefault();
-    api.auth.renew({ token: this.props.params.token, password: this.state.password }).then(() => {
+    api.auth.renew({ access_token: this.props.params.token, password: this.state.password }).then(() => {
       this.setState({ renewSuccess: true });
     }).catch((error) => {
       if (error.response && error.response.status === 400) {

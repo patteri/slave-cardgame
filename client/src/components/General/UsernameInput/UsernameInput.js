@@ -7,7 +7,9 @@ import '../style.css';
 
 const UsernameInput = props => (
   <FormGroup controlId={props.controlId}>
-    <ControlLabel>Player name</ControlLabel>
+    {props.showHeader &&
+      <ControlLabel>Player name</ControlLabel>
+    }
     {props.showRegistrationText &&
       <FormControl.Static className="Field-additional-text">
         Improve experience by <Link to="/register">registering</Link> your player name!
@@ -31,11 +33,13 @@ const UsernameInput = props => (
 );
 
 UsernameInput.defaultProps = {
+  showHeader: true,
   showRegistrationText: false
 };
 
 UsernameInput.PropTypes = {
   controlId: PropTypes.string.isRequired,
+  showHeader: PropTypes.bool,
   showRegistrationText: PropTypes.bool,
   username: PropTypes.string.isRequired,
   isReserved: PropTypes.bool.isRequired

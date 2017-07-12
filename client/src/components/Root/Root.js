@@ -40,7 +40,13 @@ const Root = props => (
           }
           {props.username &&
             <NavDropdown eventKey="5" title={props.username} id="nav-dropdown">
-              <MenuItem eventKey="5.1" onClick={props.onLogout}>
+              <LinkContainer to="/profile">
+                <MenuItem eventKey="5.1">
+                  <span className="glyphicon glyphicon-user menu-glyphicon" />
+                  <span>Profile</span>
+                </MenuItem>
+              </LinkContainer>
+              <MenuItem eventKey="5.2" onClick={props.onLogout}>
                 <span className="glyphicon glyphicon-log-in menu-glyphicon" />
                 <span>Logout</span>
               </MenuItem>

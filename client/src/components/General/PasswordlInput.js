@@ -27,7 +27,9 @@ class PasswordInput extends Component {
   render() {
     return (
       <FormGroup>
-        <ControlLabel>Password</ControlLabel>
+        {this.props.showHeader &&
+          <ControlLabel>Password</ControlLabel>
+        }
         {this.state.password !== '' && !this.state.isValid &&
           <Alert bsStyle="danger" className="input-alert">
             {`Password must be at least ${gv.minPasswordLength} characters long`}
@@ -47,7 +49,12 @@ class PasswordInput extends Component {
   }
 }
 
+PasswordInput.defaultProps = {
+  showHeader: true
+};
+
 PasswordInput.PropTypes = {
+  showHeader: PropTypes.bool,
   onPasswordChanged: PropTypes.func.isRequired
 };
 

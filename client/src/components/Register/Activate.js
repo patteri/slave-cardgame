@@ -16,7 +16,7 @@ class Activate extends Component {
   }
 
   componentWillMount() {
-    api.auth.activate({ token: this.props.params.token }).then(() => {
+    api.auth.activate({ access_token: this.props.params.token }).then(() => {
       this.setState({ activationSuccess: true });
     }).catch((error) => {
       if (error.response && error.response.status === 400) {

@@ -1,0 +1,72 @@
+.Profile h3 {
+  margin-top: 10px;
+}
+
+.Profile .Account .row {
+  min-height: 34px;
+  margin-top: 15px;
+}
+
+.Profile .Account span {
+  padding-top: 8px;
+}
+
+.Profile .Account label {
+  padding-top: 6px;
+}
+
+.Profile .Account .form-group {
+  margin-bottom: 0;
+}
+
+.Profile-actions {
+  padding: 0;
+  font-size: 16px;
+}
+
+.Profile-actions .Profile-action {
+  cursor: pointer;
+}
+
+.Profile-actions .Profile-action.Edit {
+  color: #DDD;
+}
+
+.Profile-actions .Profile-action.Cancel {
+  color: orange;
+}
+
+.Profile-actions .Profile-action.Ok {
+  color: lightgreen;
+}
+
+.Profile-actions .Profile-action.Ok.invalid {
+  color: #DDD;
+}
+
+.Profile-actions .Profile-action:nth-child(2) {
+  margin-left: 10px;
+}
+
+.Profile .Account .Successful {
+  margin-bottom: 0;
+}
+
+.Profile .Remove-account {
+  border-top: 1px solid white;
+}
+
+.Profile .Remove-account button {
+  margin-top: 15px;
+}
+
+.Profile .Stats-table {
+  background-color: white;
+  color: #333;
+}
+
+@media(max-width:767px) {
+  .Statistics {
+    margin-top: 15px;
+  }
+}

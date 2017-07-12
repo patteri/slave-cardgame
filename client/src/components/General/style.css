@@ -11,3 +11,7 @@
 .Status-box .Right-column {
   text-align: left;
 }
+
+.Confirm-modal .modal-footer .btn + .btn {
+  margin-left: 10px;
+}
