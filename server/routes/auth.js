@@ -40,8 +40,17 @@ router.post('/register', (req, res) => {
 });
 
 router.post('/activate', (req, res) => {
-  const token = req.body.token || '';
+  const token = authService.parseTokenFromReq(req) || '';
   authService.activate(token).then(() => {
+    res.sendStatus(200);
+  }).catch(() => {
+    res.status(400).json({ error: 'The token is invalid' });
+  });
+});
+
+router.post('/remove', (req, res) => {
+  const token = authService.parseTokenFromReq(req) || '';
+  authService.remove(token).then(() => {
     res.sendStatus(200);
   }).catch(() => {
     res.status(400).json({ error: 'The token is invalid' });
@@ -58,7 +67,7 @@ router.post('/forgot', (req, res) => {
 });
 
 router.post('/renew', (req, res) => {
-  const token = req.body.token || '';
+  const token = authService.parseTokenFromReq(req) || '';
   const password = req.body.password || '';
 
   if (authService.validatePassword(password)) {
@@ -70,6 +79,29 @@ router.post('/renew', (req, res) => {
   }
   else {
     res.status(400).json({ error: 'The password is invalid' });
+  }
+});
+
+router.post('/username', (req, res) => {
+  const token = authService.parseTokenFromReq(req) || '';
+  const username = req.body.username || '';
+
+  if (authService.validateUsername(username)) {
+    authService.findUserByUsername(username).then((existing) => {
+      if (existing == null) {
+        authService.changeUsername(token, username).then((user) => {
+          res.json(authService.generateAuthToken(user));
+        }).catch(() => {
+          res.status(400).json({ error: 'The token is invalid' });
+        });
+      }
+      else {
+        res.status(400).json({ error: 'The username is reserved' });
+      }
+    });
+  }
+  else {
+    res.status(400).json({ error: 'The username is invalid' });
   }
 });
 

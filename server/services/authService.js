@@ -29,21 +29,22 @@ class AuthService {
   }
 
   // Finds a user by the specified token and returns the user
-  static findUserByToken(token) {
+  static findUserByToken(token, isActive = true) {
     return new Promise((resolve, reject) => {
       try {
         const decoded = jwt.decode(token, JwtSecret);
         if (decoded.expireDate > Date.now()) {
-          User.findOne({ username: decoded.username, active: true }).exec().then((user) => {
-            resolve(user);
+          return User.findOne({ username: decoded.username, active: isActive }).exec().then((user) => {
+            if (user) {
+              return resolve(user);
+            }
+            return reject();
           });
         }
-        else {
-          reject();
-        }
+        return reject();
       }
       catch (err) {
-        reject();
+        return reject();
       }
     });
   }
@@ -102,23 +103,20 @@ class AuthService {
 
   // Activates the account of a user specified by the token
   static activate(token) {
-    return new Promise((resolve, reject) => {
-      try {
-        const decoded = jwt.decode(token, JwtSecret);
-        if (decoded.expireDate > Date.now()) {
-          return User.findOne({ username: decoded.username, active: false }).then((user) => {
-            if (user) {
-              user.active = true;
-              return user.save().then(() => resolve());
-            }
-            return reject();
-          });
-        }
-      }
-      catch (err) { // eslint-ignore-line no-empty
-      }
-      return reject();
-    });
+    return AuthService.findUserByToken(token, false)
+      .then((user) => {
+        user.active = true;
+        return user.save();
+      });
+  }
+
+  // Removes the account of a user specified by the token
+  static remove(token) {
+    return AuthService.findUserByToken(token)
+      .then((user) => { // eslint-disable-line arrow-body-style
+        return UserStatistics.remove({ username: user.username })
+          .then(() => user.remove());
+      });
   }
 
   // Generates the account activation token for the specified username
@@ -150,23 +148,23 @@ class AuthService {
   // Changes the password of a user specified by the token
   // Note: doesn't validate the password so it must be validated before calling the method
   static changePassword(token, password) {
-    return new Promise((resolve, reject) => {
-      try {
-        const decoded = jwt.decode(token, JwtSecret);
-        if (decoded.expireDate > Date.now()) {
-          return User.findOne({ username: decoded.username, active: true }).then((user) => {
-            if (user) {
-              user.password = AuthService.getPwdHash(password);
-              return user.save().then(() => resolve());
-            }
-            return reject();
-          });
-        }
-      }
-      catch (err) { // eslint-ignore-line no-empty
-      }
-      return reject();
-    });
+    return AuthService.findUserByToken(token)
+      .then((user) => {
+        user.password = AuthService.getPwdHash(password);
+        return user.save();
+      });
+  }
+
+  // Changes the username of a user specified by the token
+  // Note: doesn't validate the username so it must be validated before calling the method
+  static changeUsername(token, username) {
+    return AuthService.findUserByToken(token)
+      .then((user) => { // eslint-disable-line arrow-body-style
+        return UserStatistics.update({ username: user.username }, { $set: { username: username } }).then(() => {
+          user.username = username;
+          return user.save();
+        });
+      });
   }
 
   static validateUsername(username) {

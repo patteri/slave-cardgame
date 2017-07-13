@@ -103,7 +103,7 @@ describe('/api/auth', () => {
   it('Unsuccessful activation: invalid token', (done) => {
     chai.request(app)
       .post('/api/auth/activate')
-      .send({ token: 'invalid' })
+      .send({ access_token: 'invalid' })
       .end((err, res) => {
         expect(res).to.have.status(400);
         expect(res).to.be.json; // eslint-disable-line no-unused-expressions
@@ -115,7 +115,7 @@ describe('/api/auth', () => {
     const token = authService.generateAccountActivationToken('admin').token;
     chai.request(app)
       .post('/api/auth/activate')
-      .send({ token: token })
+      .send({ access_token: token })
       .end((err, res) => {
         expect(res).to.have.status(400);
         expect(res).to.be.json; // eslint-disable-line no-unused-expressions
@@ -128,11 +128,37 @@ describe('/api/auth', () => {
       const token = authService.generateAccountActivationToken('user').token;
       chai.request(app)
         .post('/api/auth/activate')
-        .send({ token: token })
+        .send({ access_token: token })
         .end((err, res) => {
           expect(res).to.have.status(200);
           done();
         });
+    });
+  });
+
+  it('Unsuccessful remove: invalid token', (done) => {
+    chai.request(app)
+      .post('/api/auth/remove')
+      .send({ access_token: 'invalid' })
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res).to.be.json; // eslint-disable-line no-unused-expressions
+        done();
+      });
+  });
+
+  it('Successful remove', (done) => {
+    authService.register('user2', 'password', 'user2@slavegame.net').then(() => {
+      const token = authService.generateAuthToken({ username: 'user2' }).token;
+      authService.activate(token).then(() => {
+        chai.request(app)
+          .post('/api/auth/remove')
+          .send({ access_token: token })
+          .end((err, res) => {
+            expect(res).to.have.status(200);
+            done();
+          });
+      });
     });
   });
 
@@ -161,7 +187,7 @@ describe('/api/auth', () => {
     const token = authService.generateForgotPasswordToken('admin').token;
     chai.request(app)
       .post('/api/auth/renew')
-      .send({ token: token, password: 'pwd' })
+      .send({ access_token: token, password: 'pwd' })
       .end((err, res) => {
         expect(res).to.have.status(400);
         expect(res).to.be.json; // eslint-disable-line no-unused-expressions
@@ -172,7 +198,7 @@ describe('/api/auth', () => {
   it('Unsuccessful password renew: invalid token', (done) => {
     chai.request(app)
       .post('/api/auth/renew')
-      .send({ token: 'invalid_token', password: 'pwd' })
+      .send({ access_token: 'invalid_token', password: 'pwd' })
       .end((err, res) => {
         expect(res).to.have.status(400);
         expect(res).to.be.json; // eslint-disable-line no-unused-expressions
@@ -184,10 +210,64 @@ describe('/api/auth', () => {
     const token = authService.generateForgotPasswordToken('admin').token;
     chai.request(app)
       .post('/api/auth/renew')
-      .send({ token: token, password: 'password' })
+      .send({ access_token: token, password: 'password' })
       .end((err, res) => {
         expect(res).to.have.status(200);
         done();
+      });
+  });
+
+  it('Unsuccessful username change: invalid username', (done) => {
+    const token = authService.generateAuthToken({ username: 'admin' }).token;
+    chai.request(app)
+      .post('/api/auth/username')
+      .send({ access_token: token, username: 'this_is_too_long' })
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res).to.be.json; // eslint-disable-line no-unused-expressions
+        done();
+      });
+  });
+
+  it('Unsuccessful username change: invalid token', (done) => {
+    chai.request(app)
+      .post('/api/auth/username')
+      .send({ access_token: 'invalid_token', username: 'newusername' })
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res).to.be.json; // eslint-disable-line no-unused-expressions
+        done();
+      });
+  });
+
+  it('Unsuccessful username change: username reserved', (done) => {
+    const token = authService.generateAuthToken({ username: 'admin' }).token;
+    chai.request(app)
+      .post('/api/auth/username')
+      .send({ access_token: token, username: 'admin' })
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res).to.be.json; // eslint-disable-line no-unused-expressions
+        done();
+      });
+  });
+
+  it('Successful username change', (done) => {
+    const token = authService.generateAuthToken({ username: 'user' }).token;
+    chai.request(app)
+      .post('/api/auth/username')
+      .send({ access_token: token, username: 'user2' })
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json; // eslint-disable-line no-unused-expressions
+        expect(res.body).to.have.property('token');
+        expect(res.body).to.have.property('expires');
+        // Ensure that the returned token is valid
+        authService.findUserByToken(res.body.token).then((user) => {
+          expect(user).to.not.be.null; // eslint-disable-line no-unused-expressions
+          expect(user.username).to.equal('user2');
+          done();
+        });
       });
   });
 

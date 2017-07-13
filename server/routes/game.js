@@ -17,7 +17,7 @@ const authorize = req => new Promise((resolve, reject) => {
       }
       return resolve();
     }).then((user) => {
-      if (user && user.username === req.body.playerName) {
+      if (user.username === req.body.playerName) {
         return resolve();
       }
       return reject();

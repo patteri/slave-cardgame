@@ -2,6 +2,7 @@ const chai = require('chai');
 const mongoose = require('mongoose');
 const dbService = require('../../services/databaseService');
 const authService = require('../../services/authService');
+const statisticsService = require('../../services/statisticsService');
 
 const expect = chai.expect;
 
@@ -27,8 +28,8 @@ describe('AuthService', () => {
 
   it('FindUserByToken: invalid user in a valid JWT token', (done) => {
     const token = authService.generateAuthToken({ username: 'not_existing' }).token;
-    authService.findUserByToken(token).then((user) => {
-      expect(user).to.be.null; // eslint-disable-line no-unused-expressions
+    authService.findUserByToken(token).then(() => {
+    }).catch(() => {
       done();
     });
   });
@@ -103,6 +104,25 @@ describe('AuthService', () => {
       });
   });
 
+  it('Remove: invalid token', (done) => {
+    authService.remove('invalid_token').then(() => {
+    }).catch(() => {
+      done();
+    });
+  });
+
+  it('Remove: successful', (done) => {
+    authService.register('user4', 'password', 'user4@slavegame.net', true).then(() => {
+      const token = authService.generateAuthToken({ username: 'user4' }).token;
+      authService.remove(token)
+        .then(() => authService.findUserByCredentials('user4', 'password'))
+        .then((user) => {
+          expect(user).to.be.null; // eslint-disable-line no-unused-expressions
+          done();
+        });
+    });
+  });
+
   it('Order password renewal: invalid email', (done) => {
     authService.orderPasswordRenewal('not_found').then(() => {
     }).catch(() => {
@@ -137,6 +157,40 @@ describe('AuthService', () => {
       .then(() => authService.findUserByCredentials('admin', 'newpassword'))
       .then((user) => {
         expect(user).to.not.be.null; // eslint-disable-line no-unused-expressions
+        done();
+      });
+  });
+
+  it('Change username: invalid user', (done) => {
+    const token = authService.generateAuthToken({ username: 'not_existing' }).token;
+    authService.changeUsername(token, 'newusername').then(() => {
+    }).catch(() => {
+      done();
+    });
+  });
+
+  it('Change username: invalid token', (done) => {
+    authService.changeUsername('invalid_token', 'newusername').then(() => {
+    }).catch(() => {
+      done();
+    });
+  });
+
+  it('Change username: successful', (done) => {
+    const token = authService.generateAuthToken({ username: 'admin' }).token;
+    authService.changeUsername(token, 'newusername')
+      .then((user) => {
+        expect(user).to.not.be.null; // eslint-disable-line no-unused-expressions
+        expect(user.username).to.equal('newusername');
+        return authService.findUserByCredentials('newusername', 'newpassword');
+      })
+      .then((user) => {
+        expect(user).to.not.be.null; // eslint-disable-line no-unused-expressions
+        expect(user.username).to.equal('newusername');
+        return statisticsService.getByUsername('newusername');
+      }).then((stats) => {
+        expect(stats).to.not.be.null; // eslint-disable-line no-unused-expressions
+        expect(stats.username).to.equal('newusername');
         done();
       });
   });
