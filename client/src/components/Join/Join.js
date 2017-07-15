@@ -17,7 +17,7 @@ class Join extends Component {
   }
 
   render() {
-    const { gameId, isButtonDisabled, isValid } = this.props;
+    const { gameId, isButtonDisabled, username } = this.props;
 
     return (
       <div className="Join">
@@ -33,10 +33,15 @@ class Join extends Component {
                   onChange={e => this.props.onGameIdChanged(e.target.value)}
                 />
               </FormGroup>
-              <UsernameInput controlId="playerName" showRegistrationText />
+              <UsernameInput
+                initialValue={username}
+                controlId="playerName"
+                showRegistrationText
+                onUsernameChanged={this.props.onUsernameChanged}
+              />
               <FormGroup>
                 <FormGroup>
-                  <Button type="submit" disabled={isButtonDisabled || !isValid}>Join game</Button>
+                  <Button type="submit" disabled={isButtonDisabled}>Join game</Button>
                 </FormGroup>
               </FormGroup>
             </form>
@@ -50,8 +55,8 @@ class Join extends Component {
 
 Join.PropTypes = {
   gameId: PropTypes.string.isRequired,
+  username: PropTypes.string.isRequired,
   isButtonDisabled: PropTypes.bool.isRequired,
-  isValid: PropTypes.bool.isRequired,
   isAuthenticated: PropTypes.bool.isRequired
 };
 

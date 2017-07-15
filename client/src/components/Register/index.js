@@ -3,23 +3,23 @@ import { browserHistory } from 'react-router';
 import Register from './Register';
 import {
   initialize,
+  usernameChanged,
   passwordChanged,
   emailChanged,
   registrationSuccessful
 } from './actions';
-import { initialize as initUsernameInput } from '../General/UsernameInput/actions';
 import { openErrorModal } from '../Errors/actions';
 import api from '../../api/api';
 import './style.css';
 
-const mapStateToProps = state => Object.assign({},
-  state.register,
-  state.username);
+const mapStateToProps = state => state.register;
 
 const mapDispatchToProps = dispatch => ({
   initialize() {
     dispatch(initialize());
-    dispatch(initUsernameInput());
+  },
+  onUsernameChanged(value) {
+    dispatch(usernameChanged(value));
   },
   onPasswordChanged(value) {
     dispatch(passwordChanged(value));
@@ -31,7 +31,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch((dispatch, getState) => {
       let state = getState();
       api.auth.register({
-        username: state.username.username,
+        username: state.register.username,
         password: state.register.password,
         email: state.register.email
       }).then(() => {
@@ -42,7 +42,6 @@ const mapDispatchToProps = dispatch => ({
     });
   },
   onClose() {
-    dispatch(initUsernameInput());
     browserHistory.push('/home');
   }
 });

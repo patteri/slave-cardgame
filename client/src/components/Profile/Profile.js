@@ -44,7 +44,7 @@ class Profile extends Component {
   }
 
   submitUsername() {
-    if (this.props.isValid) {
+    if (this.props.isUsernameValid) {
       this.props.onSubmitUsername();
       this.toggleEditUsername();
     }
@@ -101,7 +101,12 @@ class Profile extends Component {
                   <FormControl.Static>{username}</FormControl.Static>
                 }
                 {this.state.editUsername &&
-                  <UsernameInput showHeader={false} controlId="" />
+                  <UsernameInput
+                    initialValue={username}
+                    showHeader={false}
+                    controlId=""
+                    onUsernameChanged={this.props.onUsernameChanged}
+                  />
                 }
               </Col>
               <Col className="Profile-actions" xs={2}>
@@ -121,7 +126,7 @@ class Profile extends Component {
                     />
                     <span
                       className={classNames('glyphicon', 'glyphicon-ok', 'Profile-action', 'Ok',
-                        { invalid: !this.props.isValid })}
+                        { invalid: !this.props.isUsernameValid })}
                       title="Save"
                       onClick={this.submitUsername}
                     />
@@ -196,7 +201,7 @@ class Profile extends Component {
 
 Profile.Proptypes = {
   username: PropTypes.string.isRequired,
-  isValid: PropTypes.bool.isRequired,
+  isUsernameValid: PropTypes.bool.isRequired,
   isPasswordValid: PropTypes.bool.isRequired,
   showUsernameSuccess: PropTypes.bool.isRequired,
   showPasswordSuccess: PropTypes.bool.isRequired,

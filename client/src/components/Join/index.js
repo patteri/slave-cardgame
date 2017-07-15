@@ -1,14 +1,16 @@
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
 import Join from './Join';
-import { gameIdChanged } from './actions';
+import {
+  gameIdChanged,
+  usernameChanged
+} from './actions';
 import { gameStarted } from '../Game/actions';
 import { openErrorModal } from '../Errors/actions';
 import api from '../../api/api';
 
 const mapStateToProps = state => Object.assign({},
   state.join,
-  state.username,
   { isAuthenticated: state.auth.username != null }
 );
 
@@ -41,9 +43,12 @@ const mapDispatchToProps = dispatch => ({
   onJoinGame() {
     dispatch((dispatch, getState) => {
       const state = getState();
-      const playerName = state.auth.username ? state.auth.username : state.username.username.trim();
+      const playerName = state.auth.username ? state.auth.username : state.join.username.trim();
       joinGame(dispatch, state.join.gameId, playerName);
     });
+  },
+  onUsernameChanged(value) {
+    dispatch(usernameChanged(value));
   }
 });
 

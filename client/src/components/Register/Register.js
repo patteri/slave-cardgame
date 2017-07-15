@@ -17,7 +17,7 @@ class Register extends Component {
   }
 
   render() {
-    const { isButtonDisabled, registrationSuccessful, isValid } = this.props;
+    const { isButtonDisabled, registrationSuccessful } = this.props;
     return (
       <div className="Register">
         <h2 className="Slave-header">Register a player account</h2>
@@ -25,12 +25,12 @@ class Register extends Component {
           <Col md={4} sm={6} mdOffset={4} smOffset={3}>
             {!registrationSuccessful &&
               <form onSubmit={e => this.register(e)}>
-                <UsernameInput controlId="" />
+                <UsernameInput controlId="" onUsernameChanged={this.props.onUsernameChanged} />
                 <PasswordInput onPasswordChanged={this.props.onPasswordChanged} />
                 <EmailInput onEmailChanged={this.props.onEmailChanged} showVisibilityText />
                 <FormGroup>
                   <FormGroup>
-                    <Button type="submit" disabled={isButtonDisabled || !isValid}>Register</Button>
+                    <Button type="submit" disabled={isButtonDisabled}>Register</Button>
                   </FormGroup>
                 </FormGroup>
               </form>
@@ -54,8 +54,7 @@ class Register extends Component {
 
 Register.PropTypes = {
   isButtonDisabled: PropTypes.bool.isRequired,
-  registrationSuccessful: PropTypes.bool.isRequired,
-  isValid: PropTypes.bool.isRequired
+  registrationSuccessful: PropTypes.bool.isRequired
 };
 
 export default Register;

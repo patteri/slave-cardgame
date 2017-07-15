@@ -41,7 +41,7 @@ class Home extends Component {
   }
 
   render() {
-    const { openGames, playerCount, cpuPlayerCount, gameCount, isValid, isAuthenticated, stats } = this.props;
+    const { openGames, playerCount, cpuPlayerCount, gameCount, username, isValid, isAuthenticated, stats } = this.props;
 
     return (
       <div className="Home">
@@ -111,7 +111,12 @@ class Home extends Component {
                 />
               </FormGroup>
               {!isAuthenticated &&
-                <UsernameInput controlId="playerName" showRegistrationText />
+                <UsernameInput
+                  initialValue={username}
+                  controlId="playerName"
+                  showRegistrationText
+                  onUsernameChanged={this.props.onUsernameChanged}
+                />
               }
               <FormGroup className="Bottom-FormGroup">
                 <Button type="submit" disabled={!isAuthenticated && !isValid}>Create game</Button>
@@ -131,6 +136,7 @@ Home.PropTypes = {
   playerCount: PropTypes.number.isRequired,
   cpuPlayerCount: PropTypes.number.isRequired,
   gameCount: PropTypes.number.isRequired,
+  username: PropTypes.string.isRequired,
   isValid: PropTypes.bool.isRequired,
   isAuthenticated: PropTypes.bool.isRequired,
   stats: PropTypes.object.isRequired

@@ -3,7 +3,9 @@ import homeReducer from '../components/Home/reducer';
 import {
   playerCountChanged,
   cpuPlayerCountChanged,
-  gameCountChanged } from '../components/Home/actions';
+  gameCountChanged,
+  usernameChanged
+} from '../components/Home/actions';
 
 describe('Home reducer', () => {
   it('Successful playerCountChanged', () => {
@@ -50,5 +52,12 @@ describe('Home reducer', () => {
     const initialState = homeReducer(undefined, { type: '' });
     const reducer = homeReducer(initialState, gameCountChanged(0));
     expect(reducer.gameCount).to.equal(initialState.gameCount);
+  });
+
+  it('Successful usernameChanged', () => {
+    const initialState = homeReducer(undefined, { type: '' });
+    const reducer = homeReducer(initialState, usernameChanged({ username: 'player', isValid: true }));
+    expect(reducer.username).to.equal('player');
+    expect(reducer.isValid).to.equal(true);
   });
 });

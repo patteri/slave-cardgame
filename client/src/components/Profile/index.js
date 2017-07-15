@@ -1,12 +1,12 @@
 import { connect } from 'react-redux';
 import Profile from './Profile';
 import {
+  usernameChanged,
   passwordChanged,
   showUsernameSuccess,
   showPasswordSuccess,
   statsLoaded
 } from './actions';
-import { setInitial } from '../General/UsernameInput/actions';
 import {
   login,
   logout
@@ -15,15 +15,13 @@ import { openErrorModal } from '../Errors/actions';
 import api from '../../api/api';
 import './style.css';
 
-const mapStateToProps = state => Object.assign({},
-  state.profile,
-  state.username);
+const mapStateToProps = state => state.profile;
 
 const mapDispatchToProps = dispatch => ({
   initialize() {
     dispatch((dispatch, getState) => {
       const username = getState().auth.username;
-      dispatch(setInitial(username));
+      dispatch(usernameChanged({ username: username, isValid: false }));
       api.stats.getByUsername(username).then((response) => {
         dispatch(statsLoaded(response.data));
       }).catch(() => {
@@ -31,14 +29,17 @@ const mapDispatchToProps = dispatch => ({
       });
     });
   },
+  onUsernameChanged(value) {
+    dispatch(usernameChanged(value));
+  },
   onPasswordChanged(value) {
     dispatch(passwordChanged(value));
   },
   onSubmitUsername() {
     dispatch((dispatch, getState) => {
-      const props = getState().username;
-      api.auth.changeUsername({ username: props.username }).then((response) => {
-        dispatch(login({ username: props.username, token: response.data.token, expires: response.data.expires }));
+      const username = getState().profile.username;
+      api.auth.changeUsername({ username: username }).then((response) => {
+        dispatch(login({ username: username, token: response.data.token, expires: response.data.expires }));
         dispatch(showUsernameSuccess(true));
       }).catch(() => {
         dispatch(openErrorModal('An unknown error occurred.'));

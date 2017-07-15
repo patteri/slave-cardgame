@@ -7,6 +7,7 @@ import {
   playerCountChanged,
   cpuPlayerCountChanged,
   gameCountChanged,
+  usernameChanged,
   statsLoaded
 } from './actions';
 import { gameStarted } from '../Game/actions';
@@ -16,7 +17,6 @@ import './style.css';
 
 const mapStateToProps = state => Object.assign({},
   state.home,
-  state.username,
   { isAuthenticated: state.auth.username != null }
 );
 
@@ -38,10 +38,13 @@ const mapDispatchToProps = dispatch => ({
   onGameCountChanged(count) {
     dispatch(gameCountChanged(count));
   },
+  onUsernameChanged(value) {
+    dispatch(usernameChanged(value));
+  },
   onCreateGame() {
     dispatch((dispatch, getState) => {
       const state = getState();
-      const playerName = state.auth.username ? state.auth.username : state.username.username.trim();
+      const playerName = state.auth.username ? state.auth.username : state.home.username.trim();
       api.game.createGame({
         playerName: playerName,
         playerCount: state.home.playerCount,

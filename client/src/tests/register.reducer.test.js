@@ -1,14 +1,23 @@
 import { expect } from 'chai';
 import registerReducer from '../components/Register/reducer';
 import {
+  usernameChanged,
   passwordChanged,
-  emailChanged } from '../components/Register/actions';
+  emailChanged
+} from '../components/Register/actions';
 
 describe('Register reducer', () => {
-  it('Setting password and email', () => {
+  it('Setting password, email and username', () => {
     const initialState = registerReducer(undefined, { type: '' });
     expect(initialState.isButtonDisabled).to.equal(true);
-    let reducer = registerReducer(initialState, passwordChanged({
+    let reducer = registerReducer(initialState, usernameChanged({
+      username: 'player',
+      isValid: true
+    }));
+    expect(reducer.username).to.equal('player');
+    expect(reducer.isUsernameValid).to.equal(true);
+    expect(reducer.isButtonDisabled).to.equal(true);
+    reducer = registerReducer(reducer, passwordChanged({
       password: '12345678',
       isValid: true
     }));
@@ -22,6 +31,15 @@ describe('Register reducer', () => {
     expect(reducer.email).to.equal('user@slavegame.net');
     expect(reducer.isEmailValid).to.equal(true);
     expect(reducer.isButtonDisabled).to.equal(false);
+  });
+
+  it('Invalid username', () => {
+    const initialState = registerReducer(undefined, { type: '' });
+    let reducer = registerReducer(initialState, usernameChanged({
+      password: 'invalid',
+      isValid: false
+    }));
+    expect(reducer.isUsernameValid).to.equal(false);
   });
 
   it('Invalid password', () => {

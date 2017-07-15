@@ -1,5 +1,6 @@
 import { createAction } from 'redux-actions';
 
+export const usernameChanged = createAction('PROFILE_USERNAME_CHANGED');
 export const passwordChanged = createAction('PROFILE_PASSWORD_CHANGED');
 export const showUsernameSuccess = createAction('SHOW_USERNAME_SUCCESS');
 export const showPasswordSuccess = createAction('SHOW_PASSWORD_SUCCESS');
