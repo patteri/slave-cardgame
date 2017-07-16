@@ -4,10 +4,7 @@ const CardHelper = require('../../client/src/shared/cardHelper');
 const { CardExchangeType } = require('../../client/src/shared/constants');
 const _ = require('lodash');
 
-const AIInterval = 1000;
-
 const DefaultConfiguration = {
-  aiInterval: AIInterval, // Interval used for thinking the next hit
   applyHitDecisionLogic: true, // Flag indicating whether the special hit decision logic is used
   minCardGroupCount: 4, // Minimum number of card groups when hit decision logic is applied
   minOpponentCardCount: 4, // Minimum number of opponent cards when hit decision logic is applied
@@ -70,17 +67,6 @@ class CpuPlayer extends Player {
 
   get eventEmitter() {
     return this._eventEmitter;
-  }
-
-  playTurn(game) {
-    setTimeout((game) => {
-      game.playTurn(this.getNextCardsToPlay(
-        game.previousHit.cards,
-        game.isRevolution(),
-        game.table,
-        game.getPlayersInGame().length === game.playerCount)
-      );
-    }, this._conf.aiInterval, game);
   }
 
   randomizeComment(comments, probability) {

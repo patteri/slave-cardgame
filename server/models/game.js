@@ -15,8 +15,9 @@ const {
   CardExchangeType,
   TimerValues } = require('../../client/src/shared/constants');
 
+const AIInterval = 1000;
 const StartCpuGameInterval = 1000;
-const StartNewRoundInterval = 5000;
+const StartNewRoundInterval = 4000;
 
 const PlayingDirection = { CLOCKWISE: 'Clockwise', COUTERCLOCKWISE: 'Counterclockwise' };
 
@@ -259,8 +260,15 @@ class Game {
 
   startCpuGame() {
     // Don't play CPU turns automatically when testing
-    if (process.env.NODE_ENV !== 'test') {
-      this._turn.playTurn(this);
+    if (process.env.NODE_ENV !== 'test' && this._turn instanceof CpuPlayer) {
+      setTimeout(() => {
+        const cardsToPlay = this._turn.getNextCardsToPlay(
+          this.previousHit.cards,
+          this.isRevolution(),
+          this.table,
+          this.getPlayersInGame().length === this.playerCount);
+        this.playTurn(cardsToPlay);
+      }, AIInterval);
     }
   }
 

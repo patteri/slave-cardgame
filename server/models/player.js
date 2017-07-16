@@ -114,7 +114,7 @@ class Player {
     this._lastActivityTime = time;
   }
 
-  playTurn(game) { // eslint-disable-line no-unused-vars
+  getNextCardsToPlay(previousHit, isRevolution, tableCards, allPlayersInGame) { // eslint-disable-line no-unused-vars
     // Overwrite this method in subclass for specialized logic
   }
 

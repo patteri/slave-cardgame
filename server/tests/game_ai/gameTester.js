@@ -18,7 +18,6 @@ const PlayerCount = 4;
 
 // The AI parameters to to test
 const firstPlayerConf = {
-  aiInterval: 0,
   applyHitDecisionLogic: true,
   minCardGroupCount: 4,
   minOpponentCardCount: 4,
@@ -29,7 +28,6 @@ const firstPlayerConf = {
 
 // AI parameters for the rest of the players
 const otherPlayersConf = {
-  aiInterval: 0,
   applyHitDecisionLogic: false,
   minCardGroupCount: 4,
   minOpponentCardCount: 1,

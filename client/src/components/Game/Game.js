@@ -185,7 +185,7 @@ class Game extends Component {
             </div>
           }
         </div>
-        {helpText && <p>{helpText}</p>}
+        {helpText}
         {player.player &&
           <Player {...player} onHit={this.props.onCardsHit} onCardsChange={this.props.onCardSelectionChange} />
         }
@@ -201,7 +201,7 @@ Game.propTypes = {
   isRevolution: PropTypes.bool,
   player: PropTypes.object,
   results: PropTypes.object,
-  helpText: PropTypes.string
+  helpText: PropTypes.object
 };
 
 export default Game;

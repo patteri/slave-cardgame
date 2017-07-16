@@ -1,3 +1,4 @@
+import React from 'react';
 import { handleActions } from 'redux-actions';
 import playerReducer from './playerReducer';
 import {
@@ -46,27 +47,34 @@ const getOtherPlayers = (players, playerIndex) => {
   return results;
 };
 
+// Use this only with CardExchangeTypes FREE and BEST
+const getHelpTextCardPart = (exchangeType, cardCount) => {
+  const cards = cardCount === 1 ? 'card' : 'cards';
+  return exchangeType === CardExchangeType.FREE ? `freely chosen ${cards}` : `best ${cards}`;
+};
+
 const getHelpTextForExchange = (exchangeRule) => {
   switch (exchangeRule.exchangeType) {
     case CardExchangeType.FREE:
-      return `Give ${exchangeRule.exchangeCount} freely chosen cards to player '${exchangeRule.toPlayer.name}'`;
     case CardExchangeType.BEST:
-      return `Give ${exchangeRule.exchangeCount} best card(s) to player '${exchangeRule.toPlayer.name}'`;
+      return (<p><strong>Give {exchangeRule.exchangeCount} </strong>{getHelpTextCardPart(exchangeRule.exchangeType,
+        exchangeRule.exchangeCount)} to player {exchangeRule.toPlayer.name}</p>);
     case CardExchangeType.NONE:
     default:
-      return 'You don\'t change cards in this round';
+      return <p>You don&apos;t change cards in this round</p>;
   }
 };
 
 const getHelpTextAfterExchange = (exchangedCards) => {
-  let text = `Player '${exchangedCards.fromPlayer.name}' gave you ${exchangedCards.cards.length}`;
-  if (exchangedCards.exchangeType === CardExchangeType.FREE) {
-    return `${text} freely chosen card(s)`;
+  switch (exchangedCards.exchangeType) {
+    case CardExchangeType.FREE:
+    case CardExchangeType.BEST:
+      return (<p>Player {exchangedCards.fromPlayer.name} <strong>gave you {exchangedCards.cards.length} </strong>
+        {getHelpTextCardPart(exchangedCards.exchangeType, exchangedCards.cards.length)}</p>);
+    case CardExchangeType.NONE:
+    default:
+      return <p />;
   }
-  else if (exchangedCards.exchangeType === CardExchangeType.BEST) {
-    return `${text} best card(s)`;
-  }
-  return '';
 };
 
 const gameReducer = handleActions({
