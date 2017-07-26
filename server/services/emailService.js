@@ -1,11 +1,12 @@
 const nodemailer = require('nodemailer');
 
+const Address = process.env.EMAIL_ADDRESS || '';
 const Host = process.env.EMAIL_HOST || '';
 const Port = process.env.EMAIL_PORT || '';
 const Username = process.env.EMAIL_USERNAME || '';
 const Password = process.env.EMAIL_PASSWORD || '';
+const From = process.env.EMAIL_FROM || '';
 const ServerAddress = process.env.SERVER_ADDRESS || '';
-const From = 'Slave info';
 
 const Transporter = nodemailer.createTransport({
   host: Host,
@@ -71,8 +72,8 @@ class EmailService {
   }
 
   static sendEmail(receiver, subject, text, html) {
-    let mailOptions = {
-      from: From,
+    const mailOptions = {
+      from: `"${From}" <${Address}>`,
       to: receiver,
       subject: subject,
       text: text,
