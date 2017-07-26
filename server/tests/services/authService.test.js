@@ -59,21 +59,30 @@ describe('AuthService', () => {
   });
 
   it('Successful registration', (done) => {
-    authService.register('user', 'password', 'user@slavegame.net', true).then(() => {
-      authService.findUserByCredentials('user', 'password').then((user) => {
+    authService.register('user', 'password', 'user@slavegame.net', true)
+      .then(() => authService.findUserByCredentials('user', 'password'))
+      .then((user) => {
         expect(user).to.not.be.null; // eslint-disable-line no-unused-expressions
         done();
       });
-    });
   });
 
-  it('Cannot login if user not activated', (done) => {
-    authService.register('user2', 'password', 'user2@slavegame.net').then(() => {
-      authService.findUserByCredentials('user2', 'password').then((user) => {
+  it('Cannot register many accounts with same email address', (done) => {
+    authService.register('userWithSame', 'password', 'user@slavegame.net', true)
+      .then(() => authService.findUserByCredentials('userWithSame', 'password'))
+      .then((user) => {
         expect(user).to.be.null; // eslint-disable-line no-unused-expressions
         done();
       });
-    });
+  });
+
+  it('Cannot login if user not activated', (done) => {
+    authService.register('user2', 'password', 'user2@slavegame.net')
+      .then(() => authService.findUserByCredentials('user2', 'password'))
+      .then((user) => {
+        expect(user).to.be.null; // eslint-disable-line no-unused-expressions
+        done();
+      });
   });
 
   it('Activate: invalid user', (done) => {
@@ -86,6 +95,14 @@ describe('AuthService', () => {
 
   it('Activate: invalid token', (done) => {
     authService.activate('invalid_token').then(() => {
+    }).catch(() => {
+      done();
+    });
+  });
+
+  it('Activate: user with same email address already activated', (done) => {
+    const token = authService.generateAccountActivationToken('user').token;
+    authService.activate(token).then(() => {
     }).catch(() => {
       done();
     });

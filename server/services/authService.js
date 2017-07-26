@@ -80,33 +80,49 @@ class AuthService {
   // Registers the user
   // Note: doesn't validate the input parameters so it must be validated before calling the method
   static register(username, password, email, activate = false) {
-    const user = new User({
-      username: username,
-      password: AuthService.getPwdHash(password),
-      email: email,
-      active: activate
-    });
-    const userStatistics = new UserStatistics({
-      username: username
-    });
-
-    return userStatistics.save()
-      .then(() => user.save())
-      .then(() => {
-        if (!activate) {
-          const token = AuthService.generateAccountActivationToken(user.username).token;
-          EmailService.sendAccountActivationEmail(user.email, user.username, token);
-        }
+    // The email address must be unique
+    // If an active account exists with the same email, user is notified by email
+    return User.find({ email: email, active: true }).then((users) => {
+      if (users && users.length > 0) {
+        EmailService.sendEmailAddressReservedEmail(users[0].email);
         return Promise.resolve();
+      }
+
+      const user = new User({
+        username: username,
+        password: AuthService.getPwdHash(password),
+        email: email,
+        active: activate
       });
+      const userStatistics = new UserStatistics({
+        username: username
+      });
+
+      return userStatistics.save()
+        .then(() => user.save())
+        .then(() => {
+          if (!activate) {
+            const token = AuthService.generateAccountActivationToken(user.username).token;
+            EmailService.sendAccountActivationEmail(user.email, user.username, token);
+          }
+          return Promise.resolve();
+        });
+    });
   }
 
   // Activates the account of a user specified by the token
   static activate(token) {
     return AuthService.findUserByToken(token, false)
-      .then((user) => {
-        user.active = true;
-        return user.save();
+      .then((user) => { // eslint-disable-line arrow-body-style
+        // Make sure that there isn't already an active account with the email
+        return User.find({ email: user.email, active: true }).then((users) => {
+          if (users && users.length > 0) {
+            return Promise.reject();
+          }
+
+          user.active = true;
+          return user.save();
+        });
       });
   }
 

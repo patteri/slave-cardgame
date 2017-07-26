@@ -52,6 +52,24 @@ class EmailService {
     EmailService.sendEmail(receiver, subject, text, html);
   }
 
+  static sendEmailAddressReservedEmail(receiver) {
+    const forgotAddress = `${ServerAddress}/forgot`;
+    const profileAddress = `${ServerAddress}/profile`;
+    const subject = 'Slave account activation';
+    const text = 'Hi,\n\nYou already have a Slave account registered with this email address.\n\n' +
+      `If you have forgot your password, please, navigate to ${forgotAddress}\n\n` +
+      'If you are logged in and want to change your player name or password, you can do it in your account\'s ' +
+      `profile page ${profileAddress}\n\n` +
+      'Thanks!';
+    const html = '<h2>Hi</h2><p>You already have a Slave account registered with this email address.</p>' +
+      `<p>If you have forgot your password, please, navigate to <a href="${forgotAddress}">forgot page</a>.</p>` +
+      '<p>If you are logged in and want to change your player name or password, you can do it in your account\'s ' +
+      `<a href="${profileAddress}">profile page</a>.</p>` +
+      '<p>Thanks!</p>';
+
+    EmailService.sendEmail(receiver, subject, text, html);
+  }
+
   static sendEmail(receiver, subject, text, html) {
     let mailOptions = {
       from: From,
