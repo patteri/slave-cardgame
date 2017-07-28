@@ -4,9 +4,11 @@ const authService = require('../services/authService');
 
 const router = express.Router();
 
+const parseAndTrim = (req, property) => (req.body[property] || '').trim();
+
 router.post('/login', (req, res) => {
-  const username = req.body.username || '';
-  const password = req.body.password || '';
+  const username = parseAndTrim(req, 'username');
+  const password = parseAndTrim(req, 'password');
   authService.findUserByCredentials(username, password).then((user) => {
     if (user) {
       res.json(authService.generateAuthToken(user));
@@ -18,9 +20,9 @@ router.post('/login', (req, res) => {
 });
 
 router.post('/register', (req, res) => {
-  const username = req.body.username || '';
-  const password = req.body.password || '';
-  const email = req.body.email || '';
+  const username = parseAndTrim(req, 'username');
+  const password = parseAndTrim(req, 'password');
+  const email = parseAndTrim(req, 'email');
 
   if (authService.validateUsername(username) && authService.validatePassword(password) && validator.isEmail(email)) {
     authService.findUserByUsername(username).then((user) => {
@@ -58,7 +60,7 @@ router.post('/remove', (req, res) => {
 });
 
 router.post('/forgot', (req, res) => {
-  const email = req.body.email || '';
+  const email = parseAndTrim(req, 'email');
   authService.orderPasswordRenewal(email).then(() => {
     res.sendStatus(200);
   }).catch(() => {
@@ -68,7 +70,7 @@ router.post('/forgot', (req, res) => {
 
 router.post('/renew', (req, res) => {
   const token = authService.parseTokenFromReq(req) || '';
-  const password = req.body.password || '';
+  const password = parseAndTrim(req, 'password');
 
   if (authService.validatePassword(password)) {
     authService.changePassword(token, password).then(() => {
@@ -84,7 +86,7 @@ router.post('/renew', (req, res) => {
 
 router.post('/username', (req, res) => {
   const token = authService.parseTokenFromReq(req) || '';
-  const username = req.body.username || '';
+  const username = parseAndTrim(req, 'username');
 
   if (authService.validateUsername(username)) {
     authService.findUserByUsername(username).then((existing) => {
