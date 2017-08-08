@@ -1,5 +1,12 @@
 # General
+.git/
 node_modules
+npm-debug.log
+package-lock.json
+/client/node_modules
+/client/npm-debug.log
+/client/package.json
+/client/package-lock.json
 
 # Logs
 *.log
@@ -19,8 +26,3 @@ node_modules
 
 # Netbeans files
 */catalog.xml
-
-# Elastic Beanstalk Files
-.elasticbeanstalk/*
-!.elasticbeanstalk/*.cfg.yml
-!.elasticbeanstalk/*.global.yml
