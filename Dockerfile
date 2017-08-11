@@ -6,16 +6,18 @@ RUN mkdir -p /usr/src/app/client
 COPY . /usr/src/app
 
 # Install app dependencies
-WORKDIR /usr/src/app/client
-RUN npm install
-RUN npm run build
 WORKDIR /usr/src/app
-RUN npm install --production
+RUN cd client && \
+    npm install && \
+    npm run build && \
+    cd .. && \
+    npm install --production
 
-EXPOSE 3001
-
+ENV PORT 3001
 ENV NODE_ENV production
 ENV DB_LOCATION db_location
 ENV JWT_SECRET override_this
+
+EXPOSE $PORT
 
 CMD [ "npm", "run", "server" ]
