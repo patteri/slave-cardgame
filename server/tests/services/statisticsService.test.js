@@ -79,7 +79,7 @@ describe('StatisticsService', () => {
 
   it('List by property', (done) => {
     statisticsService.listByProperty('totalGames').then((stats) => {
-      expect(stats.length).to.equal(4);
+      expect(stats.length).to.equal(3);
       expect(stats[0]).to.have.property('username');
       expect(stats[0]).to.have.property('totalGames');
       expect(stats[0].username).to.equal('player 3');

@@ -34,6 +34,8 @@ const StatProperties = [
   'longestLooseStreak'
 ];
 
+const StatMinimumTournamentsCount = 5;
+
 const MaxChatMessageLength = 200;
 
 exports.GameState = GameState;
@@ -45,3 +47,4 @@ exports.GameValidation = GameValidation;
 exports.TimerValues = TimerValues;
 exports.MaxChatMessageLength = MaxChatMessageLength;
 exports.StatProperties = StatProperties;
+exports.StatMinimumTournamentsCount = StatMinimumTournamentsCount;

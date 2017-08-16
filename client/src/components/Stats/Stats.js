@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react';
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, Button } from 'react-bootstrap';
 import StatList from './StatList';
 import PlayerStatsModal from './PlayerStatsModal';
+import { StatMinimumTournamentsCount } from '../../shared/constants';
 
 const statProperties = [
   { prop: 'averageGamePoints', header: 'Most successful in total games', isPercent: true },
@@ -43,7 +44,7 @@ class Stats extends Component {
   }
 
   render() {
-    const { stats, userStats } = this.props;
+    const { stats, userStats, loggedInPlayer } = this.props;
 
     return (
       <div className="Stats">
@@ -55,7 +56,19 @@ class Stats extends Component {
         <h2 className="Slave-header">Game statistics</h2>
         <Row>
           <Col xs={12}>
-            <p>Register an account and make it to the top!</p>
+            {loggedInPlayer &&
+              <div>
+                <p>Play at least {StatMinimumTournamentsCount} tournaments and make it to the list!</p>
+                <Button className="No-button" bsStyle="link" onClick={() => this.showPlayerStatsModal(loggedInPlayer)}>
+                  Show my statistics
+                </Button>
+              </div>
+            }
+            {loggedInPlayer == null &&
+              <p>
+                Register an account, play at least {StatMinimumTournamentsCount} tournaments and make it to the list!
+              </p>
+            }
           </Col>
         </Row>
         <Row>
@@ -79,7 +92,8 @@ class Stats extends Component {
 
 Stats.propTypes = {
   stats: PropTypes.object.isRequired,
-  userStats: PropTypes.object.isRequired
+  userStats: PropTypes.object.isRequired,
+  loggedInPlayer: PropTypes.string
 };
 
 export default Stats;

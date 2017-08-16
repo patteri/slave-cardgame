@@ -45,6 +45,15 @@ exports.initDevData = () =>
           averageTournamentPoints: 0.695,
           longestWinningStreak: 6,
           longestLooseStreak: 7
+        }),
+        new UserStatistics({
+          username: 'player 4',
+          totalGames: 40,
+          totalTournaments: 4,
+          averageGamePoints: 0.65,
+          averageTournamentPoints: 0.55,
+          longestWinningStreak: 3,
+          longestLooseStreak: 4
         })
       ];
       return UserStatistics.insertMany(userStats);

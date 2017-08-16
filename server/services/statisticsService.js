@@ -1,4 +1,5 @@
 const UserStatistics = require('../datamodels/userStatistics');
+const { StatMinimumTournamentsCount } = require('../../client/src/shared/constants');
 
 const StatsRecordMaxLimit = 10;
 
@@ -56,8 +57,12 @@ class StatisticsService {
   }
 
   static listByProperty(property, limit = StatsRecordMaxLimit) {
-    return UserStatistics.find({ totalGames: { $gt: 0 } }, [ 'username', property ]).sort({ [property]: -1 })
-      .limit(limit).exec();
+    const recordLimit = limit > StatsRecordMaxLimit ? StatsRecordMaxLimit : limit;
+    return UserStatistics.find(
+      { totalTournaments: { $gte: StatMinimumTournamentsCount } },
+      [ 'username', property ])
+      .sort({ [property]: -1 })
+      .limit(recordLimit).exec();
   }
 
   static getByUsername(username) {
