@@ -1,4 +1,3 @@
-import React from 'react';
 import { handleActions } from 'redux-actions';
 import playerReducer from './playerReducer';
 import {
@@ -29,7 +28,7 @@ const initialState = {
   isRevolution: false,
   showResultsModal: false,
   results: null,
-  helpText: null
+  cardExchange: null
 };
 
 const getGameParameters = game => ({
@@ -47,34 +46,16 @@ const getOtherPlayers = (players, playerIndex) => {
   return results;
 };
 
-// Use this only with CardExchangeTypes FREE and BEST
-const getHelpTextCardPart = (exchangeType, cardCount) => {
-  const cards = cardCount === 1 ? 'card' : 'cards';
-  return exchangeType === CardExchangeType.FREE ? `freely chosen ${cards}` : `best ${cards}`;
-};
-
-const getHelpTextForExchange = (exchangeRule) => {
-  switch (exchangeRule.exchangeType) {
-    case CardExchangeType.FREE:
-    case CardExchangeType.BEST:
-      return (<p><strong>Give {exchangeRule.exchangeCount} </strong>{getHelpTextCardPart(exchangeRule.exchangeType,
-        exchangeRule.exchangeCount)} to player {exchangeRule.toPlayer.name}</p>);
-    case CardExchangeType.NONE:
-    default:
-      return <p>You don&apos;t change cards in this round</p>;
+const getCardExhangeData = (exchangeRule, exchangedCards) => {
+  const data = {
+    give: exchangeRule != null,
+    type: exchangeRule ? exchangeRule.exchangeType : exchangedCards.exchangeType
+  };
+  if (data.type === CardExchangeType.FREE || data.type === CardExchangeType.BEST) {
+    data.player = exchangeRule ? exchangeRule.toPlayer.name : exchangedCards.fromPlayer.name;
+    data.count = exchangeRule ? exchangeRule.exchangeCount : exchangedCards.cards.length;
   }
-};
-
-const getHelpTextAfterExchange = (exchangedCards) => {
-  switch (exchangedCards.exchangeType) {
-    case CardExchangeType.FREE:
-    case CardExchangeType.BEST:
-      return (<p>Player {exchangedCards.fromPlayer.name} <strong>gave you {exchangedCards.cards.length} </strong>
-        {getHelpTextCardPart(exchangedCards.exchangeType, exchangedCards.cards.length)}</p>);
-    case CardExchangeType.NONE:
-    default:
-      return <p />;
-  }
+  return data;
 };
 
 const gameReducer = handleActions({
@@ -124,7 +105,7 @@ const gameReducer = handleActions({
     return Object.assign({}, state, {
       player: playerReducer(state, action),
       otherPlayers: getOtherPlayers(action.payload.game.players, state.playerIndex),
-      helpText: getHelpTextForExchange(action.payload.exchangeRule),
+      cardExchange: getCardExhangeData(action.payload.exchangeRule),
       ...gameParameters
     });
   },
@@ -133,14 +114,14 @@ const gameReducer = handleActions({
   }),
   [cardsExchanged]: (state, action) => Object.assign({}, state, {
     player: playerReducer(state, action),
-    helpText: getHelpTextAfterExchange(action.payload.exchangedCards)
+    cardExchange: getCardExhangeData(null, action.payload.exchangedCards)
   }),
   [newRoundStarted]: (state, action) => {
     let gameParameters = getGameParameters(action.payload.game);
     return Object.assign({}, state, {
       player: playerReducer(state, action),
       otherPlayers: getOtherPlayers(action.payload.game.players, state.playerIndex),
-      helpText: null,
+      cardExchange: null,
       ...gameParameters
     });
   },

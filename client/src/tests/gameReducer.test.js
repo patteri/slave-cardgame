@@ -94,8 +94,8 @@ describe('Game reducer', () => {
     const data = getGameData();
 
     let reducer = gameReducer(initialState, gameStarted(data));
-    reducer.helpText = 'Help text';
+    reducer.cardExchange = {};
     reducer = gameReducer(reducer, newRoundStarted(data));
-    expect(reducer.helpText).to.be.null; // eslint-disable-line no-unused-expressions
+    expect(reducer.cardExchange).to.be.null; // eslint-disable-line no-unused-expressions
   });
 });

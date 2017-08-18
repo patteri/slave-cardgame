@@ -5,6 +5,7 @@ import io from 'socket.io-client';
 import ErrorModal from '../Errors/ErrorModal';
 import OtherPlayers from './OtherPlayers';
 import Table from './Table';
+import CardExchangeStatus from './CardExchangeStatus';
 import Player from './Player';
 import Chat from '../Chat';
 import ResultsModal from './modals/ResultsModal';
@@ -146,13 +147,13 @@ class Game extends Component {
 
   render() {
     const { gameId, playerCount, gameState, otherPlayers, table, isRevolution, player, showResultsModal, results,
-      helpText } = this.props;
+      cardExchange } = this.props;
 
     return (
       <Grid className="Game" fluid>
         <ErrorModal />
         <Chat socket={this.state.socket} gameId={gameId} />
-        {results &&
+        {showResultsModal &&
           <ResultsModal results={results} show={showResultsModal} onHide={this.hideResultsModal} />
         }
         <DisconnectedModal show={this.state.showConnectionError} />
@@ -185,7 +186,7 @@ class Game extends Component {
             </div>
           }
         </div>
-        {helpText}
+        {cardExchange && <CardExchangeStatus cardExchange={cardExchange} />}
         {player.player &&
           <Player {...player} onHit={this.props.onCardsHit} onCardsChange={this.props.onCardSelectionChange} />
         }
@@ -201,7 +202,7 @@ Game.propTypes = {
   isRevolution: PropTypes.bool,
   player: PropTypes.object,
   results: PropTypes.object,
-  helpText: PropTypes.object
+  cardExchange: PropTypes.object
 };
 
 export default Game;
