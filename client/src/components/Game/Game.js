@@ -74,7 +74,7 @@ class Game extends Component {
       });
     }
     else {
-      browserHistory.push('/home');
+      browserHistory.push('/');
     }
   }
 
@@ -104,7 +104,7 @@ class Game extends Component {
       socketConnected: false
     });
     this.state.socket.close();
-    browserHistory.push('/home');
+    browserHistory.push('/');
   }
 
   gameEnded(data) {

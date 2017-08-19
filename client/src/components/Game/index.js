@@ -73,7 +73,7 @@ const mapDispatchToProps = dispatch => ({
           setCardsForExchange(state, dispatch, cards);
           break;
         case GameState.ENDED:
-          browserHistory.push('/home');
+          browserHistory.push('/');
           break;
         default:
           break;

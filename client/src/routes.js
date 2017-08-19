@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Router, Route, Redirect, browserHistory } from 'react-router';
+import { Router, Route, IndexRoute, Redirect, browserHistory } from 'react-router';
 import { Provider } from 'react-redux';
 import { connectedRouterRedirect } from 'redux-auth-wrapper/history3/redirect';
 
@@ -17,7 +17,7 @@ import Stats from './components/Stats';
 import Rules from './components/Rules';
 
 const checkAuth = connectedRouterRedirect({
-  redirectPath: '/home',
+  redirectPath: '/',
   authenticatedSelector: state => state.auth.username != null,
   allowRedirectBack: false,
   wrapperDisplayName: 'CheckAuth'
@@ -26,9 +26,8 @@ const checkAuth = connectedRouterRedirect({
 const Routes = props => (
   <Provider store={props.store}>
     <Router history={browserHistory}>
-      <Redirect from="/" to="home" />
       <Route path="/" component={Root}>
-        <Route path="home" component={Home} />
+        <IndexRoute component={Home} />
         <Route path="register" component={Register} />
         <Route path="activate/:token" component={Activate} />
         <Route path="login" component={Login} />
@@ -40,7 +39,7 @@ const Routes = props => (
         <Route path="rules" component={Rules} />
       </Route>
       <Route path="game" component={Game} />
-      <Redirect from="/*" to="home" />
+      <Redirect from="/*" to="/" />
     </Router>
   </Provider>
 );

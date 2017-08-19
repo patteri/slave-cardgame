@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
 import { browserHistory } from 'react-router';
 import { Grid, Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
+import { IndexLinkContainer, LinkContainer } from 'react-router-bootstrap';
 import ErrorModal from '../Errors/ErrorModal';
 
 const navigateHome = () => {
-  browserHistory.push('/home');
+  browserHistory.push('/');
 };
 
 const Root = props => (
@@ -19,9 +19,9 @@ const Root = props => (
       </Navbar.Header>
       <Navbar.Collapse>
         <Nav>
-          <LinkContainer to="/home">
+          <IndexLinkContainer to="/">
             <NavItem eventKey="1">Play</NavItem>
-          </LinkContainer>
+          </IndexLinkContainer>
           <LinkContainer to="/stats">
             <NavItem eventKey="2">Stats</NavItem>
           </LinkContainer>

@@ -42,7 +42,7 @@ const mapDispatchToProps = dispatch => ({
     });
   },
   onClose() {
-    browserHistory.push('/home');
+    browserHistory.push('/');
   }
 });
 

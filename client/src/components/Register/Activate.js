@@ -40,7 +40,7 @@ class Activate extends Component {
                 header="Activating the account failed."
                 text="The link has expired? Go to the "
                 linkText="front page"
-                link="/home"
+                link="/"
               />
             }
             {this.state.activationSuccess === true &&

@@ -41,7 +41,7 @@ class Register extends Component {
                 header="The registration was successful!"
                 text="An activation link was sent to your email. Go to the "
                 linkText="front page"
-                link="/home"
+                link="/"
               />
             }
           </Col>
