@@ -1,3 +1,7 @@
+.Root {
+  margin-bottom: 52px;
+}
+
 .menu-glyphicon {
   margin-right: 7px;
 }
@@ -12,4 +16,23 @@
 
 .Content-grid {
   text-align: center;
+  padding-bottom: 10px;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 52px;
+  background-color: #f8f8f8;
+  color: #777;
+}
+
+.footer > .container {
+  margin-top: 5px;
+  text-align: center;
+}
+
+.footer a {
+  color: #337ab7;
 }

@@ -67,6 +67,12 @@ const Root = props => (
       <ErrorModal />
       {props.children}
     </Grid>
+    <footer className="footer">
+      <Grid className="fill">
+        <span>Improvement ideas? Bugs?</span><br />
+        <span>Contact <a href="mailto:petteri.roponen@gmail.com" target="_top">petteri.roponen@gmail.com</a></span>
+      </Grid>
+    </footer>
   </div>
 );
 
