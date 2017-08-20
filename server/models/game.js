@@ -261,6 +261,13 @@ class Game {
   startCpuGame() {
     // Don't play CPU turns automatically when testing
     if (process.env.NODE_ENV !== 'test' && this._turn instanceof CpuPlayer) {
+      // Decrease AIInterval if ace is played
+      let timeout = AIInterval;
+      if (this._previousHit.cards.length > 0 && this._previousHit.cards[0].value === 1 &&
+        this._previousHit.player !== this._turn) {
+        timeout = Math.round(timeout * 0.667);
+      }
+
       setTimeout(() => {
         const cardsToPlay = this._turn.getNextCardsToPlay(
           this.previousHit.cards,
@@ -268,7 +275,7 @@ class Game {
           this.table,
           this.getPlayersInGame().length === this.playerCount);
         this.playTurn(cardsToPlay);
-      }, AIInterval);
+      }, timeout);
     }
   }
 
