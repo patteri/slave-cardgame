@@ -42,3 +42,7 @@ npm start
 ```
 
 A Webpack development server is started and runs on `localhost:3000`.
+
+## License
+
+[MIT](LICENSE)

@@ -1,7 +1,13 @@
 {
-  "name": "slave-cardgame-server",
-  "version": "0.0.1",
-  "private": true,
+  "name": "slave-cardgame",
+  "version": "1.0.0",
+  "description": "Server and web client implementation of Slave card game",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/patteri/slave-cardgame"
+  },
+  "author": "Petteri Roponen",
+  "license": "MIT",
   "dependencies": {
     "babel-cli": "^6.23.0",
     "babel-core": "^6.23.1",

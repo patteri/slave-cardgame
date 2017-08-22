@@ -1,7 +1,7 @@
 {
   "name": "slave-cardgame-client",
-  "version": "0.0.1",
-  "private": true,
+  "version": "1.0.0",
+  "description": "Web client implementation of Slave card game",
   "proxy": "http://localhost:3001/",
   "devDependencies": {
     "chai": "^3.5.0",
