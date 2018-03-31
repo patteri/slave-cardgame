@@ -14,11 +14,13 @@ const initialState = {
 const isValid = (gameId, isUsernameValid) => gameId != null && gameId.length > 0 && isUsernameValid;
 
 const joinReducer = handleActions({
-  [gameIdChanged]: (state, action) => Object.assign({}, state, {
+  [gameIdChanged]: (state, action) => ({
+    ...state,
     gameId: action.payload,
     isButtonDisabled: !isValid(action.payload, state.isUsernameValid)
   }),
-  [usernameChanged]: (state, action) => Object.assign({}, state, {
+  [usernameChanged]: (state, action) => ({
+    ...state,
     username: action.payload.username,
     isUsernameValid: action.payload.isValid,
     isButtonDisabled: !isValid(state.gameId, action.payload.isValid)

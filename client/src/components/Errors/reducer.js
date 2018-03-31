@@ -10,11 +10,13 @@ const initialState = {
 };
 
 const errorReducer = handleActions({
-  [openErrorModal]: (state, action) => Object.assign({}, state, {
+  [openErrorModal]: (state, action) => ({
+    ...state,
     show: true,
     message: action.payload
   }),
-  [closeErrorModal]: state => Object.assign({}, state, {
+  [closeErrorModal]: state => ({
+    ...state,
     show: false
   })
 }, initialState);

@@ -10,10 +10,12 @@ const initialState = {
 };
 
 const statsReducer = handleActions({
-  [statsLoaded]: (state, action) => Object.assign({}, state, {
+  [statsLoaded]: (state, action) => ({
+    ...state,
     stats: action.payload
   }),
-  [userStatsLoaded]: (state, action) => Object.assign({}, state, {
+  [userStatsLoaded]: (state, action) => ({
+    ...state,
     userStats: action.payload
   })
 }, initialState);

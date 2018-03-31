@@ -68,7 +68,7 @@ describe('Game reducer', () => {
   it('gameUpdated', () => {
     const initialState = gameReducer(undefined, { type: '' });
     const data = getGameData();
-    let turnData = Object.assign({}, data);
+    let turnData = { ...data };
     turnData.game.isRevolution = true;
 
     let reducer = gameReducer(initialState, gameStarted(data));

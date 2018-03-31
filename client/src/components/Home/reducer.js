@@ -20,7 +20,8 @@ const initialState = {
 };
 
 const homeReducer = handleActions({
-  [openGamesChanged]: (state, action) => Object.assign({}, state, {
+  [openGamesChanged]: (state, action) => ({
+    ...state,
     openGames: action.payload.games
   }),
   [playerCountChanged]: (state, action) => {
@@ -28,32 +29,37 @@ const homeReducer = handleActions({
     let count = (number >= gv.minPlayerCount && number <= gv.maxPlayerCount) ?
       number : state.playerCount;
     let cpuCount = (state.cpuPlayerCount >= count) ? count - 1 : state.cpuPlayerCount;
-    return Object.assign({}, state, {
+    return {
+      ...state,
       playerCount: count,
       cpuPlayerCount: cpuCount
-    });
+    };
   },
   [cpuPlayerCountChanged]: (state, action) => {
     let number = Number.parseInt(action.payload, 10);
     let cpuCount = (number >= 0 && number <= gv.maxPlayerCount - 1 &&
       number < state.playerCount) ? number : state.cpuPlayerCount;
-    return Object.assign({}, state, {
+    return {
+      ...state,
       cpuPlayerCount: cpuCount
-    });
+    };
   },
   [gameCountChanged]: (state, action) => {
     let number = Number.parseInt(action.payload, 10);
     let count = (number >= gv.minGameCount && number <= gv.maxGameCount) ?
       number : state.gameCount;
-    return Object.assign({}, state, {
+    return {
+      ...state,
       gameCount: count
-    });
+    };
   },
-  [usernameChanged]: (state, action) => Object.assign({}, state, {
+  [usernameChanged]: (state, action) => ({
+    ...state,
     username: action.payload.username,
     isValid: action.payload.isValid
   }),
-  [statsLoaded]: (state, action) => Object.assign({}, state, {
+  [statsLoaded]: (state, action) => ({
+    ...state,
     stats: action.payload
   })
 }, initialState);

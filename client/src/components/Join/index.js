@@ -9,10 +9,10 @@ import { gameStarted } from '../Game/actions';
 import { openErrorModal } from '../Errors/actions';
 import api from '../../api/api';
 
-const mapStateToProps = state => Object.assign({},
-  state.join,
-  { isAuthenticated: state.auth.username != null }
-);
+const mapStateToProps = state => ({
+  ...state.join,
+  isAuthenticated: state.auth.username != null
+});
 
 const joinGame = (dispatch, gameId, playerName) => {
   api.game.joinGame(gameId, {

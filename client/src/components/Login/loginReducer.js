@@ -20,22 +20,27 @@ const isButtonDisabled = (username, password) => (username == null || username.l
 
 const loginReducer = handleActions({
   [initialize]: () => initialState,
-  [usernameChanged]: (state, action) => Object.assign({}, state, {
+  [usernameChanged]: (state, action) => ({
+    ...state,
     username: action.payload,
     isButtonDisabled: isButtonDisabled(action.payload, state.password)
   }),
-  [passwordChanged]: (state, action) => Object.assign({}, state, {
+  [passwordChanged]: (state, action) => ({
+    ...state,
     password: action.payload,
     isButtonDisabled: isButtonDisabled(state.username, action.payload)
   }),
-  [loginSuccess]: state => Object.assign({}, state, {
+  [loginSuccess]: state => ({
+    ...state,
     username: '',
     password: ''
   }),
-  [loginError]: state => Object.assign({}, state, {
+  [loginError]: state => ({
+    ...state,
     showError: true
   }),
-  [hideLoginError]: state => Object.assign({}, state, {
+  [hideLoginError]: state => ({
+    ...state,
     showError: false
   })
 }, initialState);

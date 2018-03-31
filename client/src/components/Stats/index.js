@@ -9,10 +9,10 @@ import api from '../../api/api';
 import { StatProperties } from '../../shared/constants';
 import './style.css';
 
-const mapStateToProps = state => Object.assign({},
-  state.stats,
-  { loggedInPlayer: state.auth.username }
-);
+const mapStateToProps = state => ({
+  ...state.stats,
+  loggedInPlayer: state.auth.username
+});
 
 const mapDispatchToProps = dispatch => ({
   onLoad() {

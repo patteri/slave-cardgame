@@ -61,15 +61,17 @@ const getCardExhangeData = (exchangeRule, exchangedCards) => {
 const gameReducer = handleActions({
   [joinedPlayersChanged]: (state, action) => {
     let playerIndex = action.payload.playerIndex !== undefined ? action.payload.playerIndex : state.playerIndex;
-    return Object.assign({}, state, {
+    return {
+      ...state,
       playerIndex: playerIndex,
       otherPlayers: getOtherPlayers(action.payload.game.players, playerIndex)
-    });
+    };
   },
   [gameStarted]: (state, action) => {
     let gameParameters = getGameParameters(action.payload.game);
     let playerIndex = action.payload.playerIndex !== undefined ? action.payload.playerIndex : state.playerIndex;
-    return Object.assign({}, initialState, {
+    return {
+      ...initialState,
       gameId: action.payload.game.id,
       playerCount: action.payload.game.playerCount,
       playerId: action.payload.player.id,
@@ -77,55 +79,65 @@ const gameReducer = handleActions({
       player: playerReducer(state, action),
       otherPlayers: getOtherPlayers(action.payload.game.players, playerIndex),
       ...gameParameters
-    });
+    };
   },
   [gameUpdated]: (state, action) => {
     let gameParameters = getGameParameters(action.payload.game);
-    return Object.assign({}, state, {
+    return {
+      ...state,
       player: playerReducer(state, action),
       otherPlayers: getOtherPlayers(action.payload.game.players, state.playerIndex),
       ...gameParameters
-    });
+    };
   },
-  [gameEnded]: (state, action) => Object.assign({}, state, {
+  [gameEnded]: (state, action) => ({
+    ...state,
     player: playerReducer(state, action),
     results: action.payload.results
   }),
-  [selectedCardsChanged]: (state, action) => Object.assign({}, state, {
+  [selectedCardsChanged]: (state, action) => ({
+    ...state,
     player: playerReducer(state, action)
   }),
-  [cardsHit]: (state, action) => Object.assign({}, state, {
+  [cardsHit]: (state, action) => ({
+    ...state,
     player: playerReducer(state, action)
   }),
-  [toggleResultsModal]: (state, action) => Object.assign({}, state, {
+  [toggleResultsModal]: (state, action) => ({
+    ...state,
     showResultsModal: action.payload
   }),
   [cardExchangeRequested]: (state, action) => {
     let gameParameters = getGameParameters(action.payload.game);
-    return Object.assign({}, state, {
+    return {
+      ...state,
       player: playerReducer(state, action),
       otherPlayers: getOtherPlayers(action.payload.game.players, state.playerIndex),
       cardExchange: getCardExhangeData(action.payload.exchangeRule),
       ...gameParameters
-    });
+    };
   },
-  [cardsGiven]: (state, action) => Object.assign({}, state, {
+  [cardsGiven]: (state, action) => ({
+    ...state,
     player: playerReducer(state, action)
   }),
-  [cardsExchanged]: (state, action) => Object.assign({}, state, {
+  [cardsExchanged]: (state, action) => ({
+    ...state,
     player: playerReducer(state, action),
     cardExchange: getCardExhangeData(null, action.payload.exchangedCards)
   }),
   [newRoundStarted]: (state, action) => {
     let gameParameters = getGameParameters(action.payload.game);
-    return Object.assign({}, state, {
+    return {
+      ...state,
       player: playerReducer(state, action),
       otherPlayers: getOtherPlayers(action.payload.game.players, state.playerIndex),
       cardExchange: null,
       ...gameParameters
-    });
+    };
   },
-  [gameFinished]: (state, action) => Object.assign({}, state, {
+  [gameFinished]: (state, action) => ({
+    ...state,
     player: playerReducer(state, action)
   })
 }, initialState);

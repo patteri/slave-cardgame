@@ -19,21 +19,26 @@ const initialState = {
 
 
 const profileReducer = handleActions({
-  [usernameChanged]: (state, action) => Object.assign({}, state, {
+  [usernameChanged]: (state, action) => ({
+    ...state,
     username: action.payload.username,
     isUsernameValid: action.payload.isValid
   }),
-  [passwordChanged]: (state, action) => Object.assign({}, state, {
+  [passwordChanged]: (state, action) => ({
+    ...state,
     password: action.payload.password,
     isPasswordValid: action.payload.isValid
   }),
-  [showUsernameSuccess]: (state, action) => Object.assign({}, state, {
+  [showUsernameSuccess]: (state, action) => ({
+    ...state,
     showUsernameSuccess: action.payload
   }),
-  [showPasswordSuccess]: (state, action) => Object.assign({}, state, {
+  [showPasswordSuccess]: (state, action) => ({
+    ...state,
     showPasswordSuccess: action.payload
   }),
-  [statsLoaded]: (state, action) => Object.assign({}, state, {
+  [statsLoaded]: (state, action) => ({
+    ...state,
     stats: action.payload
   })
 }, initialState);

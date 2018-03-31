@@ -22,22 +22,26 @@ const isButtonDisabled = (validUsername, validPassword, validEmail) => !validUse
 
 const registerReducer = handleActions({
   [initialize]: () => initialState,
-  [usernameChanged]: (state, action) => Object.assign({}, state, {
+  [usernameChanged]: (state, action) => ({
+    ...state,
     username: action.payload.username,
     isUsernameValid: action.payload.isValid,
     isButtonDisabled: isButtonDisabled(action.payload.isValid, state.isPasswordValid, state.isEmailValid)
   }),
-  [passwordChanged]: (state, action) => Object.assign({}, state, {
+  [passwordChanged]: (state, action) => ({
+    ...state,
     password: action.payload.password,
     isPasswordValid: action.payload.isValid,
     isButtonDisabled: isButtonDisabled(state.isUsernameValid, action.payload.isValid, state.isEmailValid)
   }),
-  [emailChanged]: (state, action) => Object.assign({}, state, {
+  [emailChanged]: (state, action) => ({
+    ...state,
     email: action.payload.email,
     isEmailValid: action.payload.isValid,
     isButtonDisabled: isButtonDisabled(state.isUsernameValid, state.isPasswordValid, action.payload.isValid)
   }),
-  [registrationSuccessful]: state => Object.assign({}, state, {
+  [registrationSuccessful]: state => ({
+    ...state,
     registrationSuccessful: true
   })
 }, initialState);

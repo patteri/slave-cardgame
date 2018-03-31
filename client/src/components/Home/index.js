@@ -15,10 +15,10 @@ import { openErrorModal } from '../Errors/actions';
 import api from '../../api/api';
 import './style.css';
 
-const mapStateToProps = state => Object.assign({},
-  state.home,
-  { isAuthenticated: state.auth.username != null }
-);
+const mapStateToProps = state => ({
+  ...state.home,
+  isAuthenticated: state.auth.username != null
+});
 
 const mapDispatchToProps = dispatch => ({
   onLoad() {
