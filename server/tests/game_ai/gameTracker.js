@@ -11,6 +11,7 @@ class GameTracker extends Game {
     this._playerPoints = new Map();
 
     this._configuration = {
+      aiInterval: 0,
       startCpuGameInterval: 0,
       startNewRoundInterval: 0
     };

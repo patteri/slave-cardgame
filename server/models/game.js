@@ -39,6 +39,7 @@ class Game {
     this._players = [];
     this._dealStartIndex = 0;
     this._configuration = {
+      aiInterval: AIInterval,
       startCpuGameInterval: StartCpuGameInterval,
       startNewRoundInterval: StartNewRoundInterval
     };
@@ -262,7 +263,7 @@ class Game {
     // Don't play CPU turns automatically when testing
     if (process.env.NODE_ENV !== 'test' && this._turn instanceof CpuPlayer) {
       // Decrease AIInterval if ace is played
-      let timeout = AIInterval;
+      let timeout = this._configuration.aiInterval;
       if (this._previousHit.cards.length > 0 && this._previousHit.cards[0].value === 1 &&
         this._previousHit.player !== this._turn) {
         timeout = Math.round(timeout * 0.667);
