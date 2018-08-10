@@ -63,9 +63,9 @@ class Player extends Component {
           {buttonText}
         </Button>
         <div className="Game-player-cards">
-          {cards.map((item, index) => (
+          {cards.map((item) => (
             <Card
-              key={index} card={item} selected={this.getIndexOfSelected(item) !== -1}
+              key={`${item.suit}-${item.value}`} card={item} selected={this.getIndexOfSelected(item) !== -1}
               onClick={() => this.selectCard(item)}
             />
           ))}

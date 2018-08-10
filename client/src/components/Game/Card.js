@@ -1,14 +1,13 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import deck from '../../utils/deck';
 import './style.css';
-
-const getImageSrc = card => `/images/cards/${card.suit.toLowerCase()}-${card.value}-150.png`;
 
 const Card = ({ card, selected, onClick }) => (
   <input
     type="image"
     className={classNames('Game-card', { selected: selected })}
-    src={getImageSrc(card)}
+    src={deck.getCard(card).src}
     onClick={onClick}
   />
 );
