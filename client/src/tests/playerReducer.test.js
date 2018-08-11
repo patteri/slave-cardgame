@@ -8,7 +8,9 @@ import {
   cardExchangeRequested,
   cardsGiven,
   cardsExchanged,
-  newRoundStarted } from '../components/Game/actions';
+  newRoundStarted,
+  requestStarted,
+  requestEnded } from '../components/Game/actions';
 import Card from '../shared/card';
 import { GameState, CardExchangeType } from '../shared/constants';
 
@@ -204,5 +206,21 @@ describe('Player reducer', () => {
     expect(reducer.player.canHit).to.equal(false);
     expect(reducer.player.exchangeRule).to.be.null; // eslint-disable-line no-unused-expressions
     expect(reducer.player.cardsGiven).to.equal(false);
+  });
+
+  it('requestStarted and requestEnded', () => {
+    let reducer = getReducerAfterGameRequested();
+
+    const selectedCards = [
+      { suit: Card.Suits.CLUBS, value: 2 }
+    ];
+    reducer = gameReducer(reducer, selectedCardsChanged(selectedCards));
+
+    reducer = gameReducer(reducer, requestStarted());
+    expect(reducer.player.isRequesting).to.equal(true);
+    expect(reducer.player.canHit).to.equal(false);
+    reducer = gameReducer(reducer, requestEnded());
+    expect(reducer.player.isRequesting).to.equal(false);
+    expect(reducer.player.canHit).to.equal(true);
   });
 });

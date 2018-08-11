@@ -13,7 +13,9 @@ import {
   cardsGiven,
   cardsExchanged,
   newRoundStarted,
-  gameFinished } from './actions';
+  gameFinished,
+  requestStarted,
+  requestEnded } from './actions';
 import { openErrorModal } from '../Errors/actions';
 import api from '../../api/api';
 import { GameState, CardExchangeType } from '../../shared/constants';
@@ -23,6 +25,7 @@ import './playerColumns.css';
 const mapStateToProps = state => state.game;
 
 const onError = (dispatch) => {
+  dispatch(requestEnded());
   dispatch(openErrorModal('An unknown error occurred.'));
 };
 
@@ -56,6 +59,8 @@ const mapDispatchToProps = dispatch => ({
   },
   onCardsHit(cards) {
     dispatch((dispatch, getState) => {
+      dispatch(requestStarted());
+
       let state = getState().game;
       let gameState = state.gameState;
       switch (gameState) {

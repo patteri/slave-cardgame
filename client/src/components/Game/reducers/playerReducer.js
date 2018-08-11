@@ -10,7 +10,9 @@ import {
   cardsGiven,
   cardsExchanged,
   newRoundStarted,
-  gameFinished } from '../actions';
+  gameFinished,
+  requestStarted,
+  requestEnded } from '../actions';
 import CardHelper from '../../../shared/cardHelper';
 import Card from '../../../shared/card';
 import { GameState, CardExchangeType } from '../../../shared/constants';
@@ -22,7 +24,8 @@ const initialState = {
   buttonText: null,
   canHit: false,
   exchangeRule: null,
-  cardsGiven: false
+  cardsGiven: false,
+  isRequesting: false
 };
 
 const getButtonText = (gameState, selectedCards, exchangeRule) => {
@@ -40,12 +43,12 @@ const getButtonText = (gameState, selectedCards, exchangeRule) => {
   }
 };
 
-const canHit = (gameState, turn, selectedCards, table, isFirstTurn, isRevolution, exchangeRule) => {
+const canHit = (gameState, turn, selectedCards, table, isFirstTurn, isRevolution, exchangeRule, isRequesting) => {
   switch (gameState) {
     case GameState.PLAYING:
-      return turn && CardHelper.validateHit(selectedCards, table, isFirstTurn, isRevolution);
+      return turn && !isRequesting && CardHelper.validateHit(selectedCards, table, isFirstTurn, isRevolution);
     case GameState.CARD_EXCHANGE:
-      if (exchangeRule && exchangeRule.exchangeType !== CardExchangeType.NONE) {
+      if (!isRequesting && exchangeRule && exchangeRule.exchangeType !== CardExchangeType.NONE) {
         return selectedCards.length === exchangeRule.exchangeCount;
       }
       return false;
@@ -78,7 +81,7 @@ const playerReducer = handleActions({
     buttonText: getButtonText(action.payload.game.state, state.player.selectedCards, state.player.exchangeRule),
     canHit: canHit(action.payload.game.state, action.payload.game.players[state.playerIndex].turn,
       state.player.selectedCards, action.payload.game.previousHit, action.payload.game.isFirstTurn,
-      action.payload.game.isRevolution, state.player.exchangeRule)
+      action.payload.game.isRevolution, state.player.exchangeRule, state.player.isRequesting)
   }),
   [gameEnded]: state => ({
     ...state.player,
@@ -93,7 +96,7 @@ const playerReducer = handleActions({
         selectedCards: action.payload,
         buttonText: getButtonText(state.gameState, action.payload, state.player.exchangeRule),
         canHit: canHit(state.gameState, state.player.player.turn, action.payload, state.table, state.isFirstTurn,
-          state.isRevolution, state.player.exchangeRule)
+          state.isRevolution, state.player.exchangeRule, state.player.isRequesting)
       };
     }
     return state.player;
@@ -103,7 +106,8 @@ const playerReducer = handleActions({
     cards: action.payload.cards.sort(CardHelper.compareCards),
     selectedCards: [],
     buttonText: getButtonText(state.gameState, [], state.player.exchangeRule),
-    canHit: false
+    canHit: false,
+    isRequesting: false
   }),
   [cardExchangeRequested]: (state, action) => {
     let cards = action.payload.cards.sort(CardHelper.compareCards);
@@ -116,7 +120,7 @@ const playerReducer = handleActions({
       selectedCards: selectedCards,
       buttonText: getButtonText(action.payload.game.state, selectedCards, action.payload.exchangeRule),
       canHit: canHit(action.payload.game.state, state.player.player.turn, selectedCards, state.table,
-        state.isFirstTurn, state.isRevolution, action.payload.exchangeRule),
+        state.isFirstTurn, state.isRevolution, action.payload.exchangeRule, state.player.isRequesting),
       exchangeRule: action.payload.exchangeRule,
       cardsGiven: cardsGiven
     };
@@ -125,7 +129,8 @@ const playerReducer = handleActions({
     ...state.player,
     buttonText: 'Waiting...',
     canHit: false,
-    cardsGiven: true
+    cardsGiven: true,
+    isRequesting: false
   }),
   [cardsExchanged]: (state, action) => {
     let cards = action.payload.cards.sort(CardHelper.compareCards);
@@ -145,7 +150,8 @@ const playerReducer = handleActions({
     selectedCards: [],
     buttonText: getButtonText(action.payload.game.state, [], state.player.exchangeRule),
     canHit: canHit(action.payload.game.state, action.payload.game.players[state.playerIndex].turn, [],
-      action.payload.game.previousHit, action.payload.game.isFirstTurn, action.payload.game.isRevolution, null),
+      action.payload.game.previousHit, action.payload.game.isFirstTurn, action.payload.game.isRevolution, null,
+      state.player.isRequesting),
     exchangeRule: null,
     cardsGiven: false
   }),
@@ -153,6 +159,17 @@ const playerReducer = handleActions({
     ...state.player,
     buttonText: getButtonText(state.gameState, [], null),
     canHit: true
+  }),
+  [requestStarted]: state => ({
+    ...state.player,
+    canHit: false,
+    isRequesting: true
+  }),
+  [requestEnded]: state => ({
+    ...state.player,
+    canHit: canHit(state.gameState, state.player.player.turn, state.player.selectedCards, state.table,
+      state.isFirstTurn, state.isRevolution, state.player.exchangeRule, false),
+    isRequesting: false
   })
 }, initialState);
 

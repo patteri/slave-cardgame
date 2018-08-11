@@ -12,7 +12,9 @@ import {
   cardsGiven,
   cardsExchanged,
   newRoundStarted,
-  gameFinished } from '../actions';
+  gameFinished,
+  requestStarted,
+  requestEnded } from '../actions';
 import { CardExchangeType } from '../../../shared/constants';
 
 const initialState = {
@@ -137,6 +139,14 @@ const gameReducer = handleActions({
     };
   },
   [gameFinished]: (state, action) => ({
+    ...state,
+    player: playerReducer(state, action)
+  }),
+  [requestStarted]: (state, action) => ({
+    ...state,
+    player: playerReducer(state, action)
+  }),
+  [requestEnded]: (state, action) => ({
     ...state,
     player: playerReducer(state, action)
   })

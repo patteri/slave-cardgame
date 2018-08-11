@@ -12,3 +12,5 @@ export const cardsGiven = createAction('CARDS_GIVEN');
 export const cardsExchanged = createAction('CARDS_EXCHANGED');
 export const newRoundStarted = createAction('NEW_ROUND_STARTED');
 export const gameFinished = createAction('GAME_FINISHED');
+export const requestStarted = createAction('REQEUST_STARTED');
+export const requestEnded = createAction('REQEUST_ENDED');
