@@ -5,7 +5,7 @@ class Deck {
   constructor() {
     this.cards = new Map();
   }
-  
+
   loadCards = () => {
     Object.values(Card.Suits).forEach((suitKey) => {
       for (let i = 1; i < 14; ++i) {
@@ -17,7 +17,7 @@ class Deck {
     });
   }
 
-  getCard = (card) => this.cards.get(`${card.suit}${card.value}`);
+  getCard = card => this.cards.get(`${card.suit}${card.value}`);
 }
 
 const deck = new Deck();
