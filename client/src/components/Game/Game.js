@@ -77,7 +77,7 @@ class Game extends Component {
     if (this.state.socketConnected) {
       this.state.socket.close();
 
-      if (this.props.gameId) {
+      if (this.props.gameId && this.props.gameState !== GameState.ENDED) {
         this.props.onQuitGame();
       }
     }
