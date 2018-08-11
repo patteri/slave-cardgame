@@ -9,19 +9,9 @@ import './style.css';
 
 class Player extends Component {
 
-  constructor(props) {
-    super(props);
+  getIndexOfSelected = card => this.props.selectedCards.findIndex(item => DeckCard.isEqual(item, card));
 
-    this.getIndexOfSelected = this.getIndexOfSelected.bind(this);
-    this.selectCard = this.selectCard.bind(this);
-    this.hitCards = this.hitCards.bind(this);
-  }
-
-  getIndexOfSelected(card) {
-    return this.props.selectedCards.findIndex(item => DeckCard.isEqual(item, card));
-  }
-
-  selectCard(card) {
+  selectCard = (card) => {
     const props = this.props;
     // Cards can be selected only if game is running or cards are free to select for exchange
     if (props.exchangeRule == null || props.exchangeRule.exchangeType === CardExchangeType.FREE) {
@@ -43,7 +33,7 @@ class Player extends Component {
     }
   }
 
-  hitCards() {
+  hitCards = () => {
     this.props.onHit(this.props.selectedCards);
   }
 

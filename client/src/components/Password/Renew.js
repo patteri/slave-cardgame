@@ -16,23 +16,20 @@ class Renew extends Component {
       isValid: false,
       renewSuccess: null
     };
-
-    this.onPasswordChanged = this.onPasswordChanged.bind(this);
-    this.onHideSuccessError = this.onHideSuccessError.bind(this);
   }
 
-  onPasswordChanged(value) {
+  onPasswordChanged = (value) => {
     this.setState({
       password: value.password,
       isValid: value.isValid
     });
   }
 
-  onHideSuccessError() {
+  onHideSuccessError = () => {
     this.setState({ renewSuccess: null });
   }
 
-  submit(e) {
+  submit = (e) => {
     e.preventDefault();
     api.auth.renew({ access_token: this.props.params.token, password: this.state.password }).then(() => {
       this.setState({ renewSuccess: true });

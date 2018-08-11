@@ -16,52 +16,45 @@ class Profile extends Component {
       editPassword: false,
       showConfirmModal: false
     };
-
-    this.toggleEditUsername = this.toggleEditUsername.bind(this);
-    this.toggleEditPassword = this.toggleEditPassword.bind(this);
-    this.submitUsername = this.submitUsername.bind(this);
-    this.submitPassword = this.submitPassword.bind(this);
-    this.removeAccount = this.removeAccount.bind(this);
-    this.closeRemoveConfirm = this.closeRemoveConfirm.bind(this);
   }
 
   componentWillMount() {
     this.props.initialize();
   }
 
-  toggleEditUsername() {
+  toggleEditUsername = () => {
     this.setState({
       editUsername: !this.state.editUsername,
       editPassword: false
     });
   }
 
-  toggleEditPassword() {
+  toggleEditPassword = () => {
     this.setState({
       editUsername: false,
       editPassword: !this.state.editPassword
     });
   }
 
-  submitUsername() {
+  submitUsername = () => {
     if (this.props.isUsernameValid) {
       this.props.onSubmitUsername();
       this.toggleEditUsername();
     }
   }
 
-  submitPassword() {
+  submitPassword = () => {
     if (this.props.isPasswordValid) {
       this.props.onSubmitPassword();
       this.toggleEditPassword();
     }
   }
 
-  removeAccount() {
+  removeAccount = () => {
     this.setState({ showConfirmModal: true });
   }
 
-  closeRemoveConfirm(remove) {
+  closeRemoveConfirm = (remove) => {
     this.setState({ showConfirmModal: false });
     if (remove) {
       this.props.onRemoveAccount();
@@ -199,7 +192,7 @@ class Profile extends Component {
 
 }
 
-Profile.Proptypes = {
+Profile.propTypes = {
   username: PropTypes.string.isRequired,
   isUsernameValid: PropTypes.bool.isRequired,
   isPasswordValid: PropTypes.bool.isRequired,

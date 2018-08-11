@@ -21,23 +21,20 @@ class Stats extends Component {
     this.state = {
       showPlayerStats: false
     };
-
-    this.showPlayerStatsModal = this.showPlayerStatsModal.bind(this);
-    this.hidePlayerStatsModal = this.hidePlayerStatsModal.bind(this);
   }
 
   componentWillMount() {
     this.props.onLoad();
   }
 
-  showPlayerStatsModal(playerName) {
+  showPlayerStatsModal = (playerName) => {
     this.props.loadUserStats(playerName);
     this.setState({
       showPlayerStats: true
     });
   }
 
-  hidePlayerStatsModal() {
+  hidePlayerStatsModal = () => {
     this.setState({
       showPlayerStats: false
     });

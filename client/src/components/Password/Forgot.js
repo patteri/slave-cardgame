@@ -16,23 +16,20 @@ class Forgot extends Component {
       isValid: false,
       resetSuccess: null
     };
-
-    this.onEmailChanged = this.onEmailChanged.bind(this);
-    this.onHideSuccessError = this.onHideSuccessError.bind(this);
   }
 
-  onEmailChanged(value) {
+  onEmailChanged = (value) => {
     this.setState({
       email: value.email,
       isValid: value.isValid
     });
   }
 
-  onHideSuccessError() {
+  onHideSuccessError = () => {
     this.setState({ resetSuccess: null });
   }
 
-  submit(e) {
+  submit = (e) => {
     e.preventDefault();
     api.auth.forgot({ email: this.state.email }).then(() => {
       this.setState({ resetSuccess: true });

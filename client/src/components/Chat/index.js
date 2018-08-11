@@ -25,12 +25,6 @@ class Chat extends Component {
     };
     this.textArea = null;
     this.textInput = null;
-
-    this.chatMessageReceived = this.chatMessageReceived.bind(this);
-    this.borderClicked = this.borderClicked.bind(this);
-    this.inputTextChanged = this.inputTextChanged.bind(this);
-    this.inputTextKeyPress = this.inputTextKeyPress.bind(this);
-    this.sendMessage = this.sendMessage.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -42,7 +36,7 @@ class Chat extends Component {
     }
   }
 
-  chatMessageReceived(data) {
+  chatMessageReceived = (data) => {
     const chatText = this.state.chatText.slice();
     chatText.push(data);
     this.setState({
@@ -55,7 +49,7 @@ class Chat extends Component {
     }, 0);
   }
 
-  borderClicked() {
+  borderClicked = () => {
     this.setState({
       open: !this.state.open,
       unread: false
@@ -66,20 +60,20 @@ class Chat extends Component {
     }
   }
 
-  inputTextChanged(e) {
+  inputTextChanged = (e) => {
     this.setState({
       inputText: e.target.value,
       sendButtonDisabled: !(e.target.value && e.target.value.trim().length > 0)
     });
   }
 
-  inputTextKeyPress(e) {
+  inputTextKeyPress = (e) => {
     if (e.key === 'Enter') {
       this.sendMessage();
     }
   }
 
-  sendMessage() {
+  sendMessage = () => {
     if (this.state.inputText && this.state.inputText.length > 0) {
       this.props.socket.emit('sendChatMessage', this.props.gameId, this.state.inputText.trim());
       this.setState({

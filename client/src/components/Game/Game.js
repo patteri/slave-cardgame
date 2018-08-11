@@ -31,11 +31,6 @@ class Game extends Component {
       resultsModalOpen: null,
       resultsModalClose: null
     };
-
-    this.gameEnded = this.gameEnded.bind(this);
-    this.onSocketException = this.onSocketException.bind(this);
-    this.hideResultsModal = this.hideResultsModal.bind(this);
-    this.handleJoinUrlFocus = this.handleJoinUrlFocus.bind(this);
   }
 
   componentWillMount() {
@@ -99,7 +94,7 @@ class Game extends Component {
   }
 
   // 'exception' socket event is a signal that server has removed the player from the game
-  onSocketException() {
+  onSocketException = () => {
     this.setState({
       socketConnected: false
     });
@@ -107,7 +102,7 @@ class Game extends Component {
     browserHistory.push('/');
   }
 
-  gameEnded(data) {
+  gameEnded = (data) => {
     this.props.onGameEnd(data);
 
     this.timers.resultsModalOpen = setTimeout(() => {
@@ -126,7 +121,7 @@ class Game extends Component {
     }, ModalOpenDelay);
   }
 
-  hideResultsModal() {
+  hideResultsModal = () => {
     this.props.toggleResultsModal(false);
 
     this.setState({
@@ -141,7 +136,7 @@ class Game extends Component {
     }
   }
 
-  handleJoinUrlFocus(e) {
+  handleJoinUrlFocus = (e) => {
     e.target.select();
   }
 
