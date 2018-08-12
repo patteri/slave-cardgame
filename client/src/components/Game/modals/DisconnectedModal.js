@@ -13,7 +13,7 @@ const DisconnectedModal = ({ show }) => (
   </Modal>
 );
 
-DisconnectedModal.PropTypes = {
+DisconnectedModal.propTypes = {
   show: PropTypes.bool.isRequired
 };
 

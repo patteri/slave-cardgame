@@ -5,7 +5,7 @@ const PlayerStatus = ({ status }) => (
   <p className={`Player-hit-status ${status}`}>{status}</p>
 );
 
-PlayerStatus.PropTypes = {
+PlayerStatus.propTypes = {
   status: PropTypes.string.isRequired
 };
 

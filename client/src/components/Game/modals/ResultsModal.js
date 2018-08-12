@@ -55,7 +55,7 @@ const ResultsModal = ({ show, onHide, results }) => (
   </Modal>
 );
 
-ResultsModal.PropTypes = {
+ResultsModal.propTypes = {
   show: PropTypes.bool.isRequired,
   onHide: PropTypes.func.isRequired,
   results: PropTypes.object

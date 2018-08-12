@@ -64,11 +64,16 @@ class Login extends Component {
 
 }
 
-Login.PropTypes = {
+Login.propTypes = {
   username: PropTypes.string.isRequired,
   password: PropTypes.string.isRequired,
   showError: PropTypes.bool.isRequired,
-  isButtonDisabled: PropTypes.bool.isRequired
+  isButtonDisabled: PropTypes.bool.isRequired,
+  initialize: PropTypes.func.isRequired,
+  onLogin: PropTypes.func.isRequired,
+  onHideLoginError: PropTypes.func.isRequired,
+  onUsernameChanged: PropTypes.func.isRequired,
+  onPasswordChanged: PropTypes.func.isRequired
 };
 
 export default Login;

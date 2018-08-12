@@ -54,7 +54,7 @@ EmailInput.defaultValues = {
   showVisibilityText: false
 };
 
-EmailInput.PropTypes = {
+EmailInput.propTypes = {
   showVisibilityText: PropTypes.bool,
   onEmailChanged: PropTypes.func.isRequired
 };

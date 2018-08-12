@@ -52,9 +52,14 @@ class Register extends Component {
 
 }
 
-Register.PropTypes = {
+Register.propTypes = {
   isButtonDisabled: PropTypes.bool.isRequired,
-  registrationSuccessful: PropTypes.bool.isRequired
+  registrationSuccessful: PropTypes.bool.isRequired,
+  initialize: PropTypes.func.isRequired,
+  onRegister: PropTypes.func.isRequired,
+  onUsernameChanged: PropTypes.func.isRequired,
+  onPasswordChanged: PropTypes.func.isRequired,
+  onEmailChanged: PropTypes.func.isRequired
 };
 
 export default Register;

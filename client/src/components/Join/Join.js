@@ -53,11 +53,15 @@ class Join extends Component {
 
 }
 
-Join.PropTypes = {
+Join.propTypes = {
+  params: PropTypes.object.isRequired,
   gameId: PropTypes.string.isRequired,
   username: PropTypes.string.isRequired,
   isButtonDisabled: PropTypes.bool.isRequired,
-  isAuthenticated: PropTypes.bool.isRequired
+  isAuthenticated: PropTypes.bool.isRequired,
+  onGameIdChanged: PropTypes.func.isRequired,
+  onJoinGame: PropTypes.func.isRequired,
+  onUsernameChanged: PropTypes.func.isRequired
 };
 
 export default Join;

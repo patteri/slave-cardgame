@@ -131,7 +131,7 @@ class Home extends Component {
 
 }
 
-Home.PropTypes = {
+Home.propTypes = {
   openGames: PropTypes.array.isRequired,
   playerCount: PropTypes.number.isRequired,
   cpuPlayerCount: PropTypes.number.isRequired,
@@ -139,7 +139,15 @@ Home.PropTypes = {
   username: PropTypes.string.isRequired,
   isValid: PropTypes.bool.isRequired,
   isAuthenticated: PropTypes.bool.isRequired,
-  stats: PropTypes.object.isRequired
+  stats: PropTypes.object.isRequired,
+  onOpenGamesChanged: PropTypes.func.isRequired,
+  onLoad: PropTypes.func.isRequired,
+  onCreateGame: PropTypes.func.isRequired,
+  onJoinGame: PropTypes.func.isRequired,
+  onPlayerCountChanged: PropTypes.func.isRequired,
+  onCpuPlayerCountChanged: PropTypes.func.isRequired,
+  onGameCountChanged: PropTypes.func.isRequired,
+  onUsernameChanged: PropTypes.func.isRequired
 };
 
 export default Home;

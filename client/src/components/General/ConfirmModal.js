@@ -17,7 +17,7 @@ const ConfirmModal = props => (
   </Modal>
 );
 
-ConfirmModal.PropTypes = {
+ConfirmModal.propTypes = {
   show: PropTypes.bool.isRequired,
   title: PropTypes.string.isRequired,
   message: PropTypes.string.isRequired,

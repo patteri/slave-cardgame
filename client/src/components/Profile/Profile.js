@@ -198,7 +198,15 @@ Profile.propTypes = {
   isPasswordValid: PropTypes.bool.isRequired,
   showUsernameSuccess: PropTypes.bool.isRequired,
   showPasswordSuccess: PropTypes.bool.isRequired,
-  stats: PropTypes.object.isRequired
+  stats: PropTypes.object.isRequired,
+  initialize: PropTypes.func.isRequired,
+  onSubmitUsername: PropTypes.func.isRequired,
+  onSubmitPassword: PropTypes.func.isRequired,
+  onRemoveAccount: PropTypes.func.isRequired,
+  onHideUsernameSuccess: PropTypes.func.isRequired,
+  onUsernameChanged: PropTypes.func.isRequired,
+  onHidePasswordSuccess: PropTypes.func.isRequired,
+  onPasswordChanged: PropTypes.func.isRequired
 };
 
 export default Profile;

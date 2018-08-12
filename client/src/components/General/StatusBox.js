@@ -26,7 +26,7 @@ const StatusBox = ({ status, header, text, linkText, link }) => (
   </Row>
 );
 
-StatusBox.PropTypes = {
+StatusBox.propTypes = {
   status: PropTypes.oneOf([ 'success', 'error' ]).isRequired,
   header: PropTypes.string.isRequired,
   text: PropTypes.string.isRequired,

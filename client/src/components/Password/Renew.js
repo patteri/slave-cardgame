@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Row, Col, Button, FormGroup, Alert } from 'react-bootstrap';
 import PasswordInput from '../General/PasswordlInput';
 import StatusBox from '../General/StatusBox';
@@ -85,5 +85,9 @@ class Renew extends Component {
   }
 
 }
+
+Renew.propTypes = {
+  params: PropTypes.object.isRequired
+};
 
 export default Renew;

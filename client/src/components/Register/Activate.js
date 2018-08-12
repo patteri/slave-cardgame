@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import StatusBox from '../General/StatusBox';
 import api from '../../api/api';
@@ -59,5 +59,9 @@ class Activate extends Component {
   }
 
 }
+
+Activate.propTypes = {
+  params: PropTypes.object.isRequired
+};
 
 export default Activate;

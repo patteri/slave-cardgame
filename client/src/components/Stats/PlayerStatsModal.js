@@ -17,7 +17,7 @@ const PlayerStatsModal = ({ show, onHide, stats }) => (
   </Modal>
 );
 
-PlayerStatsModal.PropTypes = {
+PlayerStatsModal.propTypes = {
   show: PropTypes.bool.isRequired,
   onHide: PropTypes.func.isRequired,
   stats: PropTypes.object.isRequired

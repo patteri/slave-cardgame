@@ -67,7 +67,7 @@ const PlayerStats = ({ stats }) => (
   </div>
 );
 
-PlayerStats.PropTypes = {
+PlayerStats.propTypes = {
   stats: PropTypes.object.isRequired
 };
 

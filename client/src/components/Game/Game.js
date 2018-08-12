@@ -191,13 +191,29 @@ class Game extends Component {
 }
 
 Game.propTypes = {
-  playerCount: PropTypes.number,
-  otherPlayers: PropTypes.array,
-  table: PropTypes.array,
-  isRevolution: PropTypes.bool,
-  player: PropTypes.object,
+  gameId: PropTypes.string.isRequired,
+  playerId: PropTypes.string.isRequired,
+  playerCount: PropTypes.number.isRequired,
+  gameState: PropTypes.string.isRequired,
+  otherPlayers: PropTypes.array.isRequired,
+  table: PropTypes.array.isRequired,
+  isRevolution: PropTypes.bool.isRequired,
+  player: PropTypes.object.isRequired,
   results: PropTypes.object,
-  cardExchange: PropTypes.object
+  cardExchange: PropTypes.object,
+  showResultsModal: PropTypes.bool.isRequired,
+  onCardSelectionChange: PropTypes.func.isRequired,
+  onCardsExchanged: PropTypes.func.isRequired,
+  onCardsHit: PropTypes.func.isRequired,
+  onGameEnd: PropTypes.func.isRequired,
+  onGameFinished: PropTypes.func.isRequired,
+  onGameStarted: PropTypes.func.isRequired,
+  onGameUpdated: PropTypes.func.isRequired,
+  onJoinedPlayersChanged: PropTypes.func.isRequired,
+  onNewRoundStarted: PropTypes.func.isRequired,
+  onQuitGame: PropTypes.func.isRequired,
+  toggleResultsModal: PropTypes.func.isRequired,
+  requestCardExchange: PropTypes.func.isRequired
 };
 
 export default Game;

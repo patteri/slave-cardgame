@@ -19,7 +19,7 @@ const NumericSelector = ({ value, min, max, onValueChanged }) => (
   </InputGroup>
 );
 
-NumericSelector.PropTypes = {
+NumericSelector.propTypes = {
   value: PropTypes.number.isRequired,
   min: PropTypes.number.isRequired,
   max: PropTypes.number.isRequired,

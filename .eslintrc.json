@@ -27,7 +27,7 @@
     "quote-props": [1, "consistent-as-needed"],
     "react/forbid-prop-types": 0,
     "react/no-multi-comp": 0,
-    "react/prop-types": 0,
+    "react/prop-types": 1,
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "react/no-array-index-key": 0,
     "react/require-default-props": 0,

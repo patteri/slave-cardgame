@@ -78,6 +78,7 @@ const Root = props => (
 
 Root.propTypes = {
   username: PropTypes.string,
+  onLogout: PropTypes.func.isRequired,
   children: PropTypes.node.isRequired
 };
 

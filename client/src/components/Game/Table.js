@@ -10,7 +10,7 @@ const Table = ({ table }) => (
   </div>
 );
 
-Table.PropTypes = {
+Table.propTypes = {
   table: PropTypes.array.isRequired
 };
 

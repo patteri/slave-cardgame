@@ -53,7 +53,7 @@ PasswordInput.defaultProps = {
   showHeader: true
 };
 
-PasswordInput.PropTypes = {
+PasswordInput.propTypes = {
   showHeader: PropTypes.bool,
   onPasswordChanged: PropTypes.func.isRequired
 };

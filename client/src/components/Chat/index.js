@@ -130,9 +130,10 @@ class Chat extends Component {
   }
 }
 
-Chat.PropTypes = {
+Chat.propTypes = {
   containerWidth: PropTypes.number.isRequired,
-  socket: PropTypes.object
+  socket: PropTypes.object.isRequired,
+  gameId: PropTypes.string.isRequired
 };
 
 export default Dimensions()(Chat);

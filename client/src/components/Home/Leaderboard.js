@@ -19,7 +19,7 @@ const Leaderboard = ({ stats, ...props }) => (
   </Row>
 );
 
-Leaderboard.PropTypes = {
+Leaderboard.propTypes = {
   stats: PropTypes.object.isRequired
 };
 

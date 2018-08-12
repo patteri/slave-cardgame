@@ -36,7 +36,7 @@ const CardExchangeStatus = ({ cardExchange }) => (
   </div>
 );
 
-CardExchangeStatus.PropTypes = {
+CardExchangeStatus.propTypes = {
   cardExchange: PropTypes.object.isRequired
 };
 

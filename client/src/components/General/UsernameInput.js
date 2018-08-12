@@ -89,7 +89,7 @@ UsernameInput.defaultProps = {
   showRegistrationText: false
 };
 
-UsernameInput.PropTypes = {
+UsernameInput.propTypes = {
   initialValue: PropTypes.string,
   controlId: PropTypes.string.isRequired,
   showHeader: PropTypes.bool,

@@ -65,11 +65,13 @@ class Player extends Component {
   }
 }
 
-Player.PropTypes = {
+Player.propTypes = {
   player: PropTypes.object.isRequired,
   cards: PropTypes.array.isRequired,
+  selectedCards: PropTypes.array.isRequired,
   buttonText: PropTypes.string.isRequired,
-  canHit: PropTypes.bool.isRequired
+  canHit: PropTypes.bool.isRequired,
+  onHit: PropTypes.func.isRequired
 };
 
 export default Player;

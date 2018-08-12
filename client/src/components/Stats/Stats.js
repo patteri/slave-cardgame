@@ -90,7 +90,9 @@ class Stats extends Component {
 Stats.propTypes = {
   stats: PropTypes.object.isRequired,
   userStats: PropTypes.object.isRequired,
-  loggedInPlayer: PropTypes.string
+  loggedInPlayer: PropTypes.string,
+  loadUserStats: PropTypes.func.isRequired,
+  onLoad: PropTypes.func.isRequired
 };
 
 export default Stats;

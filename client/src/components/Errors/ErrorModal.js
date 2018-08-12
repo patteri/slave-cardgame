@@ -26,9 +26,10 @@ const ErrorModal = props => (
   </Modal>
 );
 
-ErrorModal.PropTypes = {
+ErrorModal.propTypes = {
   show: PropTypes.bool.isRequired,
-  message: PropTypes.string.isRequired
+  message: PropTypes.string.isRequired,
+  onCloseErrorModal: PropTypes.func.isRequired
 };
 
 export default connect(
