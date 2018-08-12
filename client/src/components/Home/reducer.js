@@ -53,11 +53,16 @@ const homeReducer = handleActions({
       gameCount: count
     };
   },
-  [usernameChanged]: (state, action) => ({
-    ...state,
-    username: action.payload.username,
-    isValid: action.payload.isValid
-  }),
+  [usernameChanged]: (state, action) => {
+    let username = action.payload.username;
+    let isValid = action.payload.isValid && username.length >= gv.minUsernameLength &&
+      username.length <= gv.maxUsernameLength;
+    return {
+      ...state,
+      username,
+      isValid
+    };
+  },
   [statsLoaded]: (state, action) => ({
     ...state,
     stats: action.payload

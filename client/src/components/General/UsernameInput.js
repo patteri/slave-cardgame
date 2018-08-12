@@ -20,7 +20,10 @@ class UsernameInput extends Component {
       isReserved: false
     };
 
-    this.queryUsernameAvailable = _.debounce(this.queryUsernameAvailable, 750);
+    this.queryUsernameAvailable = _.debounce(this.queryUsernameAvailable, 500, {
+      leading: true,
+      trailing: true
+    });
   }
 
   onUsernameChanged(username) {
@@ -32,16 +35,18 @@ class UsernameInput extends Component {
     this.setState(state);
     this.props.onUsernameChanged(state);
 
-    if (username != null && username.length >= gv.minUsernameLength && username.length <= gv.maxUsernameLength) {
+    if (username != null) {
       this.queryUsernameAvailable(username);
     }
   }
 
   queryUsernameAvailable(username) {
     api.auth.usernameAvailable(username).then((response) => {
+      let isValid = response.data.available && username.length >= gv.minUsernameLength &&
+      username.length <= gv.maxUsernameLength;
       const state = {
         username: username,
-        isValid: response.data.available,
+        isValid,
         isReserved: !response.data.available
       };
       this.setState(state);
