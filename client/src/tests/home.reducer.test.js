@@ -4,7 +4,9 @@ import {
   playerCountChanged,
   cpuPlayerCountChanged,
   gameCountChanged,
-  usernameChanged
+  usernameChanged,
+  randomizeOrderChanged,
+  autoDisconnectChanged
 } from '../components/Home/actions';
 
 describe('Home reducer', () => {
@@ -59,5 +61,17 @@ describe('Home reducer', () => {
     const reducer = homeReducer(initialState, usernameChanged({ username: 'player', isValid: true }));
     expect(reducer.username).to.equal('player');
     expect(reducer.isValid).to.equal(true);
+  });
+
+  it('Successful randomizePlayerOrder changed', () => {
+    const initialState = homeReducer(undefined, { type: '' });
+    const reducer = homeReducer(initialState, randomizeOrderChanged(true));
+    expect(reducer.randomizeOrder).to.equal(true);
+  });
+
+  it('Successful autoDisconnect changed', () => {
+    const initialState = homeReducer(undefined, { type: '' });
+    const reducer = homeReducer(initialState, autoDisconnectChanged(true));
+    expect(reducer.autoDisconnect).to.equal(true);
   });
 });

@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Row, Col, Table, FormGroup, ControlLabel, Button } from 'react-bootstrap';
+import { Row, Col, Table, FormGroup, ControlLabel, Button, Checkbox } from 'react-bootstrap';
 import io from 'socket.io-client';
 import NumericSelector from './NumericSelector';
 import UsernameInput from '../General/UsernameInput';
@@ -41,7 +41,8 @@ class Home extends Component {
   }
 
   render() {
-    const { openGames, playerCount, cpuPlayerCount, gameCount, username, isValid, isAuthenticated, stats } = this.props;
+    const { openGames, playerCount, cpuPlayerCount, gameCount, username, randomizeOrder, autoDisconnect, isValid,
+      isAuthenticated, stats } = this.props;
 
     return (
       <div className="Home">
@@ -118,6 +119,12 @@ class Home extends Component {
                   onUsernameChanged={this.props.onUsernameChanged}
                 />
               }
+              <Checkbox checked={randomizeOrder} onChange={e => this.props.onRandomizeOrderChanged(e.target.checked)}>
+                Randomize player order when tournament starts
+              </Checkbox>
+              <Checkbox checked={autoDisconnect} onChange={e => this.props.onAutoDisconnectChanged(e.target.checked)}>
+                Auto disconnect inactive players
+              </Checkbox>
               <FormGroup className="Bottom-FormGroup">
                 <Button type="submit" disabled={!isAuthenticated && !isValid}>Create game</Button>
               </FormGroup>
@@ -137,6 +144,8 @@ Home.propTypes = {
   cpuPlayerCount: PropTypes.number.isRequired,
   gameCount: PropTypes.number.isRequired,
   username: PropTypes.string.isRequired,
+  randomizeOrder: PropTypes.bool.isRequired,
+  autoDisconnect: PropTypes.bool.isRequired,
   isValid: PropTypes.bool.isRequired,
   isAuthenticated: PropTypes.bool.isRequired,
   stats: PropTypes.object.isRequired,
@@ -147,7 +156,9 @@ Home.propTypes = {
   onPlayerCountChanged: PropTypes.func.isRequired,
   onCpuPlayerCountChanged: PropTypes.func.isRequired,
   onGameCountChanged: PropTypes.func.isRequired,
-  onUsernameChanged: PropTypes.func.isRequired
+  onUsernameChanged: PropTypes.func.isRequired,
+  onRandomizeOrderChanged: PropTypes.func.isRequired,
+  onAutoDisconnectChanged: PropTypes.func.isRequired
 };
 
 export default Home;

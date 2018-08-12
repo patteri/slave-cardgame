@@ -170,7 +170,8 @@ class GameService {
   // Creates a new game with one human player and specified CPU player count
   // Returns the game and the player
   // If player count is fulfilled, starts the game immediately
-  createGame(playerName, playerCount, cpuPlayerCount, gameCount, shuffleDeck = true) {
+  createGame(playerName, playerCount, cpuPlayerCount, gameCount, randomizePlayerOrder, autoDisconnect,
+    shuffleDeck = true) {
     if (!authService.validateUsername(playerName)) {
       return null;
     }
@@ -183,7 +184,7 @@ class GameService {
     }
 
     // Create game and players
-    let game = new Game(playerCount, gameCount, shuffleDeck);
+    let game = new Game(playerCount, gameCount, randomizePlayerOrder, autoDisconnect, shuffleDeck);
     game.eventEmitter.on('playerInactive', (game, player) => {
       if (player.socket) {
         socketService.emitToClient(player.socket, 'exception', { message: 'Too long inactivity' });

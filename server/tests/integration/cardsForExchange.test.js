@@ -19,7 +19,7 @@ describe('/api/game/:id/cardsForExchange', () => {
   });
 
   it('unknown user id', (done) => {
-    const game = gameService.createGame('Human', 4, 3, 1);
+    const game = gameService.createGame('Human', 4, 3, 1, false, false);
 
     chai.request(app)
       .post(`/api/game/${game.game.id}/cardsForExchange`)
@@ -32,7 +32,7 @@ describe('/api/game/:id/cardsForExchange', () => {
   });
 
   it('successful exchange', (done) => {
-    const game = gameService.createGame('Human', 4, 3, 2, false).game;
+    const game = gameService.createGame('Human', 4, 3, 2, false, false, false).game;
     game._players[0].position = 1;
     game._players[1].position = 2;
     game._players[2].position = 3;
@@ -50,7 +50,7 @@ describe('/api/game/:id/cardsForExchange', () => {
   });
 
   it('illegal game state', (done) => {
-    const game = gameService.createGame('Human', 4, 3, 1, false).game;
+    const game = gameService.createGame('Human', 4, 3, 1, false, false, false).game;
 
     chai.request(app)
       .post(`/api/game/${game.id}/cardsForExchange`)

@@ -103,7 +103,7 @@ describe('/api/game', () => {
   });
 
   it('Invalid game join (game already full)', (done) => {
-    let game = gameService.createGame('Human', 4, 3, 1).game;
+    let game = gameService.createGame('Human', 4, 3, 1, false, false).game;
 
     chai.request(app)
       .post(`/api/game/${game.id}/join`)
@@ -116,7 +116,7 @@ describe('/api/game', () => {
   });
 
   it('Invalid game join (no player name)', (done) => {
-    let game = gameService.createGame('Human', 4, 2, 1).game;
+    let game = gameService.createGame('Human', 4, 2, 1, false, false).game;
 
     chai.request(app)
       .post(`/api/game/${game.id}/join`)
@@ -129,7 +129,7 @@ describe('/api/game', () => {
   });
 
   it('Invalid game join (not authenticated)', (done) => {
-    let game = gameService.createGame('Human', 4, 2, 1).game;
+    let game = gameService.createGame('Human', 4, 2, 1, false, false).game;
 
     chai.request(app)
       .post(`/api/game/${game.id}/join`)
@@ -142,7 +142,7 @@ describe('/api/game', () => {
   });
 
   it('Successful game join', (done) => {
-    let game = gameService.createGame('Human', 4, 2, 1).game;
+    let game = gameService.createGame('Human', 4, 2, 1, false, false).game;
 
     chai.request(app)
       .post(`/api/game/${game.id}/join`)
@@ -161,7 +161,7 @@ describe('/api/game', () => {
   });
 
   it('Successful game join with auth', (done) => {
-    let game = gameService.createGame('Human', 4, 2, 1).game;
+    let game = gameService.createGame('Human', 4, 2, 1, false, false).game;
     let authToken = authService.generateAuthToken({ username: 'admin' }).token;
 
     chai.request(app)
@@ -175,7 +175,7 @@ describe('/api/game', () => {
   });
 
   it('Successful game quit', (done) => {
-    let game = gameService.createGame('Human', 4, 3, 1).game;
+    let game = gameService.createGame('Human', 4, 3, 1, false, false).game;
 
     chai.request(app)
       .post(`/api/game/${game.id}/quit`)

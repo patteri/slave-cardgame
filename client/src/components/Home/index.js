@@ -8,6 +8,8 @@ import {
   cpuPlayerCountChanged,
   gameCountChanged,
   usernameChanged,
+  randomizeOrderChanged,
+  autoDisconnectChanged,
   statsLoaded
 } from './actions';
 import { gameStarted } from '../Game/actions';
@@ -41,6 +43,12 @@ const mapDispatchToProps = dispatch => ({
   onUsernameChanged(value) {
     dispatch(usernameChanged(value));
   },
+  onRandomizeOrderChanged(value) {
+    dispatch(randomizeOrderChanged(value));
+  },
+  onAutoDisconnectChanged(value) {
+    dispatch(autoDisconnectChanged(value));
+  },
   onCreateGame() {
     dispatch((dispatch, getState) => {
       const state = getState();
@@ -49,7 +57,9 @@ const mapDispatchToProps = dispatch => ({
         playerName: playerName,
         playerCount: state.home.playerCount,
         cpuPlayerCount: state.home.cpuPlayerCount,
-        gameCount: state.home.gameCount
+        gameCount: state.home.gameCount,
+        randomizePlayerOrder: state.home.randomizeOrder,
+        autoDisconnect: state.home.autoDisconnect
       }).then((response) => {
         dispatch(gameStarted(response.data));
         browserHistory.push('/game');

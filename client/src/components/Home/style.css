@@ -22,6 +22,7 @@
 }
 
 .Bottom-FormGroup {
+  margin-top: 5px;
   margin-bottom: 0;
 }
 
@@ -31,6 +32,10 @@
 
 .Leaderboard .Stats-link {
   display: block;
+  text-align: left;
+}
+
+.Home-container .checkbox {
   text-align: left;
 }
 

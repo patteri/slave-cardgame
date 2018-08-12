@@ -6,6 +6,8 @@ import {
   cpuPlayerCountChanged,
   gameCountChanged,
   usernameChanged,
+  randomizeOrderChanged,
+  autoDisconnectChanged,
   statsLoaded
 } from './actions';
 
@@ -15,6 +17,8 @@ const initialState = {
   cpuPlayerCount: 0,
   gameCount: 10,
   username: '',
+  randomizeOrder: false,
+  autoDisconnect: false,
   isValid: false,
   stats: {}
 };
@@ -63,6 +67,14 @@ const homeReducer = handleActions({
       isValid
     };
   },
+  [randomizeOrderChanged]: (state, action) => ({
+    ...state,
+    randomizeOrder: action.payload
+  }),
+  [autoDisconnectChanged]: (state, action) => ({
+    ...state,
+    autoDisconnect: action.payload
+  }),
   [statsLoaded]: (state, action) => ({
     ...state,
     stats: action.payload

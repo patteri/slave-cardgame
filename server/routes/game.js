@@ -57,7 +57,7 @@ const handleGameQueryResult = (res, result) => {
 router.post('/', (req, res) => {
   authorize(req).then(() => {
     const result = gameService.createGame(req.body.playerName, req.body.playerCount, req.body.cpuPlayerCount,
-      req.body.gameCount);
+      req.body.gameCount, req.body.randomizePlayerOrder, req.body.autoDisconnect);
     handleGameQueryResult(res, result);
   }).catch(() => {
     res.status(401).json({ error: 'Unauthorized' });

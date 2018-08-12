@@ -11,7 +11,7 @@ const { CardExchangeType, GameState, PlayerHitState } = require('../../../client
 const expect = chai.expect;
 
 const createEndedGame = (playerCount = 4, gameCount = 2) => {
-  let game = gameService.createGame('Human', playerCount, playerCount - 1, gameCount).game;
+  let game = gameService.createGame('Human', playerCount, playerCount - 1, gameCount, false, false).game;
   game._players.forEach((player, index) => {
     player.position = index + 1;
   });
@@ -21,24 +21,24 @@ const createEndedGame = (playerCount = 4, gameCount = 2) => {
 
 describe('Game', () => {
   it('Invalid player count (number < 1)', () => {
-    expect(() => new Game(0, 1)).to.throw('Invalid player count');
+    expect(() => new Game(0, 1, false, false)).to.throw('Invalid player count');
   });
 
   it('Player count exceeds', () => {
-    let game = new Game(2, 1);
+    let game = new Game(2, 1, false, false);
     game.addPlayer(new CpuPlayer('cpu'));
     game.addPlayer(new CpuPlayer('cpu2'));
     expect(() => game.addPlayer(new CpuPlayer('cpu3'))).to.throw('The player number was exceeded');
   });
 
   it('Game state NotStarted before game is full', () => {
-    let game = new Game(2, 1);
+    let game = new Game(2, 1, false, false);
     game.addPlayer(new HumanPlayer('human'));
     expect(game.state).to.equal(GameState.NOT_STARTED);
   });
 
   it('Game state Playing after game is full and game started', () => {
-    let game = new Game(2, 1);
+    let game = new Game(2, 1, false, false);
     game.addPlayer(new HumanPlayer('human'));
     game.addPlayer(new CpuPlayer('cpu'));
     game.startNewGame();
@@ -46,7 +46,7 @@ describe('Game', () => {
   });
 
   it('Validation unsuccessful: hitting card that a player doesn\'t have', () => {
-    let game = gameService.createGame('Human', 4, 3, 1, false).game;
+    let game = gameService.createGame('Human', 4, 3, 1, false, false, false).game;
     // Remove two of clubs from the hand
     let card = game._players[1].hand[0];
     game._players[1].hand.splice(0, 1);
@@ -55,14 +55,14 @@ describe('Game', () => {
   });
 
   it('Validation unsuccessful: hitting the same card twice', () => {
-    let game = gameService.createGame('Human', 4, 3, 1, false).game;
+    let game = gameService.createGame('Human', 4, 3, 1, false, false, false).game;
     let card = game._players[1].hand[0];
     let valid = game.validateHit(game._players[1].id, [ card, card ]);
     expect(valid).to.equal(false);
   });
 
   it('Played card is moved from player\'s hand to the table', () => {
-    let game = gameService.createGame('Human', 4, 3, 1, false).game;
+    let game = gameService.createGame('Human', 4, 3, 1, false, false, false).game;
     let player = game._players[1];
     expect(player.hand.length).to.equal(13);
     let card = player.hand[0];
@@ -74,7 +74,7 @@ describe('Game', () => {
   });
 
   it('Player turns are changed successfully', () => {
-    let game = gameService.createGame('Human', 4, 3, 1, false).game;
+    let game = gameService.createGame('Human', 4, 3, 1, false, false, false).game;
     expect(game._turn).to.equal(game._players[1]);
     game.playTurn([ game._players[1].hand[0] ]);
     expect(game._turn).to.equal(game._players[2]);
@@ -85,7 +85,7 @@ describe('Game', () => {
   });
 
   it('Hitting four cards with same value leads to the revolution', () => {
-    let game = gameService.createGame('Human', 4, 3, 2, false).game;
+    let game = gameService.createGame('Human', 4, 3, 2, false, false, false).game;
     let player = game._players[1]; // Player at index 1 has the two of clubs and is in turn
     let card2 = new Card(Card.Suits.SPADES, 2);
     player.hand.push(card2);
@@ -119,7 +119,7 @@ describe('Game', () => {
   });
 
   it('Card exchange rule works correctly 2 (4 players)', () => {
-    let game = gameService.createGame('Human', 4, 3, 2).game;
+    let game = gameService.createGame('Human', 4, 3, 2, false, false).game;
     game._players[0].position = 2;
     game._players[1].position = 4;
     game._players[2].position = 1;
@@ -200,7 +200,7 @@ describe('Game', () => {
   });
 
   it('Set cards for exchange unsuccessful: best card not given', () => {
-    let game = gameService.createGame('Human', 4, 3, 1).game;
+    let game = gameService.createGame('Human', 4, 3, 1, false, false).game;
     game._players[0].position = 3;
     game._players[1].position = 4;
     game._players[2].position = 1;
@@ -220,7 +220,7 @@ describe('Game', () => {
   });
 
   it('Set cards for exchange (best cards) successful', () => {
-    let game = gameService.createGame('Human', 4, 3, 2).game;
+    let game = gameService.createGame('Human', 4, 3, 2, false, false).game;
     game._players[0].position = 4;
     game._players[1].position = 3;
     game._players[2].position = 2;
@@ -260,7 +260,7 @@ describe('Game', () => {
   });
 
   it('Players hit states are assigned correctly', () => {
-    let game = gameService.createGame('Human', 4, 3, 1, false).game;
+    let game = gameService.createGame('Human', 4, 3, 1, false, false, false).game;
     expect(game._players[0].hitState).to.equal(PlayerHitState.WAITING);
     expect(game._players[1].hitState).to.equal(PlayerHitState.WAITING);
     expect(game._players[2].hitState).to.equal(PlayerHitState.WAITING);
@@ -283,7 +283,7 @@ describe('Game', () => {
   });
 
   it('Player is removed correctly', () => {
-    let game = gameService.createGame('Human', 4, 3, 1, false).game;
+    let game = gameService.createGame('Human', 4, 3, 1, false, false, false).game;
     game.removePlayer(game.players[0]);
     expect(game.players.length).to.equal(3);
     expect(game.players[0]).to.be.an.instanceof(CpuPlayer);
@@ -292,7 +292,7 @@ describe('Game', () => {
   });
 
   it('Player is replaced by CPU correctly', () => {
-    let game = gameService.createGame('Human', 4, 3, 1, false).game;
+    let game = gameService.createGame('Human', 4, 3, 1, false, false, false).game;
     game.replacePlayerByCpu(game.players[0]);
     expect(game.players.length).to.equal(4);
     expect(game.players[0]).to.be.an.instanceof(CpuPlayer);

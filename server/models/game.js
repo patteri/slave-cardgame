@@ -26,8 +26,10 @@ class Game {
   // Parameters:
   // playerCount: the number of players in the game
   // gameCount: the number of games to be played
+  // randomizePlayerOrder: randomize order of players when the tournament starts
+  // autoDisconnect: disconnect inactive players after inactivity period
   // shuffleDeck: true, if the deck is shuffled
-  constructor(playerCount, gameCount, shuffleDeck = true) {
+  constructor(playerCount, gameCount, randomizePlayerOrder, autoDisconnect, shuffleDeck = true) {
     if (!Number.isInteger(playerCount) || playerCount < 1) {
       throw new Error('Invalid player count');
     }
@@ -35,6 +37,8 @@ class Game {
     this._id = authService.generateRandomToken(8);
     this._playerCount = playerCount;
     this._gameCount = gameCount;
+    this._randomizePlayerOrder = randomizePlayerOrder;
+    this._autoDisconnect = autoDisconnect;
     this._currentGameIndex = 0;
     this._players = [];
     this._dealStartIndex = 0;
@@ -83,7 +87,7 @@ class Game {
 
     this._turn = player;
 
-    if (trackInactivity && this.getHumanPlayers().length > 1 && player instanceof HumanPlayer) {
+    if (trackInactivity && this._autoDisconnect && this.getHumanPlayers().length > 1 && player instanceof HumanPlayer) {
       setTimeout((player) => {
         this.inactivityCheck(player, TimerValues.hitInactivityMaxPeriod);
       }, TimerValues.hitInactivityMaxPeriod - TimerValues.inactivityWarningTime, player);
@@ -228,7 +232,7 @@ class Game {
 
   startNewGame() {
     this.dealCards();
-    this.startNewRound();
+    this.startNewRound(this._randomizePlayerOrder);
 
     // If the first player in turn is CPU, start CPU game
     if (this._turn instanceof CpuPlayer) {
@@ -254,7 +258,11 @@ class Game {
     }, this._configuration.startNewRoundInterval);
   }
 
-  startNewRound() {
+  startNewRound(randomizePlayerOrder = false) {
+    if (randomizePlayerOrder) {
+      this._players = _.shuffle(this._players);
+    }
+
     this.setStartingTurn();
     this._state = GameState.PLAYING;
   }
@@ -407,7 +415,7 @@ class Game {
     if (this._currentGameIndex < this._gameCount) {
       this.calculateResultsAndNotify();
 
-      if (this.getHumanPlayers().length > 1) {
+      if (this._autoDisconnect && this.getHumanPlayers().length > 1) {
         // Start tracking inactivity
         setTimeout(() => {
           this._players.filter(player => player instanceof HumanPlayer).forEach((player) => {
