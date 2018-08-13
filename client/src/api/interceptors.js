@@ -5,7 +5,7 @@ import { logout } from '../components/Login/actions';
 
 const setHttpInterceptors = () => {
   axios.interceptors.request.use((config) => {
-    const state = loadState(localStorage);
+    const state = loadState(localStorage, 'autoSave');
 
     if (state && state.auth && state.auth.token) {
       config.headers['X-Access-Token'] = state.auth.token;

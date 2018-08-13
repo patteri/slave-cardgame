@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
+import _ from 'lodash';
 import Home from './Home';
 import { join } from '../Join';
 import {
@@ -15,7 +16,16 @@ import {
 import { gameStarted } from '../Game/actions';
 import { openErrorModal } from '../Errors/actions';
 import api from '../../api/api';
+import { loadState, saveState } from '../../utils/webStorage';
 import './style.css';
+
+const CONFIG_PROPS = {
+  playerCount: playerCountChanged,
+  cpuPlayerCount: cpuPlayerCountChanged,
+  gameCount: gameCountChanged,
+  randomizeOrder: randomizeOrderChanged,
+  autoDisconnect: autoDisconnectChanged
+};
 
 const mapStateToProps = state => ({
   ...state.home,
@@ -81,6 +91,19 @@ const mapDispatchToProps = dispatch => ({
       }
       else {
         browserHistory.push(`/join/${id}`);
+      }
+    });
+  },
+  saveConfig() {
+    dispatch((dispatch, getState) => {
+      saveState(localStorage, 'gameConfig', _.pick(getState().home, Object.keys(CONFIG_PROPS)));
+    });
+  },
+  loadConfig() {
+    let state = loadState(localStorage, 'gameConfig') || {};
+    Object.entries(CONFIG_PROPS).forEach(([key, value]) => {
+      if (key in state) {
+        dispatch(value(state[key]));
       }
     });
   }

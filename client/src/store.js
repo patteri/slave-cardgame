@@ -4,15 +4,23 @@ import _ from 'lodash';
 import rootReducer from './reducers';
 import { loadState, saveState } from './utils/webStorage';
 
-const getStateToPersistToLocalStorage = state => ({
-  auth: state.auth
+const LOCAL_STORAGE_AUTOLOAD_PROPS = ['auth'];
+const SESSION_STORAGE_AUTOLOAD_PROPS = ['game'];
+
+const getStateToAutoSaveToLocalStorage = state => ({
+  auth: state.auth,
 });
 
-const getStateToPersistToSessionStorage = state => ({
+const getStateToAutoSaveToSessionStorage = state => ({
   game: state.game
 });
 
-const persistedState = Object.assign(loadState(localStorage) || {}, loadState(sessionStorage) || {});
+const getStateToAutoLoad = (state, props) => state ? _.pick(state, props) : undefined;
+
+const persistedState = Object.assign(
+  getStateToAutoLoad(loadState(localStorage, 'autoSave'), LOCAL_STORAGE_AUTOLOAD_PROPS) || {},
+  getStateToAutoLoad(loadState(sessionStorage, 'autoSave'), SESSION_STORAGE_AUTOLOAD_PROPS) || {}
+);
 
 // Check token expiration
 if (persistedState.auth && persistedState.auth.expires && persistedState.auth.expires < Date.now()) {
@@ -26,8 +34,8 @@ const store = createStore(
 );
 
 store.subscribe(_.throttle(() => { // Save state at most every 500 milliseconds
-  saveState(localStorage, getStateToPersistToLocalStorage(store.getState()));
-  saveState(sessionStorage, getStateToPersistToSessionStorage(store.getState()));
+  saveState(localStorage, 'autoSave', getStateToAutoSaveToLocalStorage(store.getState()));
+  saveState(sessionStorage, 'autoSave', getStateToAutoSaveToSessionStorage(store.getState()));
 }, 500));
 
 export default store;

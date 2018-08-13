@@ -27,12 +27,17 @@ class Home extends Component {
     this._socket.on('openGamesChanged', this.props.onOpenGamesChanged);
 
     this.props.onLoad();
+    this.props.loadConfig();
   }
 
   componentWillUnmount() {
     if (this._socket) {
       this._socket.close();
     }
+  }
+
+  componentDidUpdate() {
+    this.props.saveConfig();
   }
 
   createGame(e) {
@@ -158,7 +163,9 @@ Home.propTypes = {
   onGameCountChanged: PropTypes.func.isRequired,
   onUsernameChanged: PropTypes.func.isRequired,
   onRandomizeOrderChanged: PropTypes.func.isRequired,
-  onAutoDisconnectChanged: PropTypes.func.isRequired
+  onAutoDisconnectChanged: PropTypes.func.isRequired,
+  saveConfig: PropTypes.func.isRequired,
+  loadConfig: PropTypes.func.isRequired
 };
 
 export default Home;
