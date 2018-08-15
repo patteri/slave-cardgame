@@ -237,7 +237,11 @@ class GameService {
 
       // Notify other players
       game.players.filter(player => player !== human).forEach((player) => {
-        socketService.emitToClient(player.socket, 'gameStarted', { game: game, player: player });
+        socketService.emitToClient(player.socket, 'gameStarted', {
+          game,
+          player,
+          playerIndex: game.players.indexOf(player)
+        });
       });
     }
     else {
