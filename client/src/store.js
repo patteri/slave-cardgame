@@ -4,18 +4,18 @@ import _ from 'lodash';
 import rootReducer from './reducers';
 import { loadState, saveState } from './utils/webStorage';
 
-const LOCAL_STORAGE_AUTOLOAD_PROPS = ['auth'];
-const SESSION_STORAGE_AUTOLOAD_PROPS = ['game'];
+const LOCAL_STORAGE_AUTOLOAD_PROPS = [ 'auth' ];
+const SESSION_STORAGE_AUTOLOAD_PROPS = [ 'game' ];
 
 const getStateToAutoSaveToLocalStorage = state => ({
-  auth: state.auth,
+  auth: state.auth
 });
 
 const getStateToAutoSaveToSessionStorage = state => ({
   game: state.game
 });
 
-const getStateToAutoLoad = (state, props) => state ? _.pick(state, props) : undefined;
+const getStateToAutoLoad = (state, props) => (state ? _.pick(state, props) : undefined);
 
 const persistedState = Object.assign(
   getStateToAutoLoad(loadState(localStorage, 'autoSave'), LOCAL_STORAGE_AUTOLOAD_PROPS) || {},

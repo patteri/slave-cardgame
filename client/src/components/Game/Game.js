@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { browserHistory } from 'react-router';
 import { Grid, Row, Col, ControlLabel, FormControl } from 'react-bootstrap';
 import io from 'socket.io-client';
@@ -116,7 +117,7 @@ class Game extends Component {
             this.hideResultsModal();
           }
         }, TimerValues.cardExchangeInactivityMaxPeriod - TimerValues.inactivityWarningTime - ModalOpenDelay,
-          this.props.results.gameNumber);
+        this.props.results.gameNumber);
       }
     }, ModalOpenDelay);
   }

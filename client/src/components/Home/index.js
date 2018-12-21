@@ -101,7 +101,7 @@ const mapDispatchToProps = dispatch => ({
   },
   loadConfig() {
     let state = loadState(localStorage, 'gameConfig') || {};
-    Object.entries(CONFIG_PROPS).forEach(([key, value]) => {
+    Object.entries(CONFIG_PROPS).forEach(([ key, value ]) => {
       if (key in state) {
         dispatch(value(state[key]));
       }

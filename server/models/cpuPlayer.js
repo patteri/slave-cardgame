@@ -246,40 +246,40 @@ class CpuPlayer extends Player {
 
     switch (this.cardExchangeRule.exchangeType) {
       case CardExchangeType.FREE:
-        {
-          let groups = this.groupCards(this.hand, false);
-          // Try to find single cards to give (other than two of clubs and smaller than 11)
-          for (let key of groups.keys) { // eslint-disable-line no-restricted-syntax
-            let currentCards = groups.groups[key];
-            if (currentCards[0].value >= 11 || currentCards[0].value === 1) {
+      {
+        let groups = this.groupCards(this.hand, false);
+        // Try to find single cards to give (other than two of clubs and smaller than 11)
+        for (let key of groups.keys) { // eslint-disable-line no-restricted-syntax
+          let currentCards = groups.groups[key];
+          if (currentCards[0].value >= 11 || currentCards[0].value === 1) {
+            break;
+          }
+          if (currentCards.length === 1 && CardHelper.findTwoOfClubs(currentCards) === undefined) {
+            cards.push(currentCards[0]);
+            if (cards.length === this.cardExchangeRule.exchangeCount) {
               break;
             }
-            if (currentCards.length === 1 && CardHelper.findTwoOfClubs(currentCards) === undefined) {
-              cards.push(currentCards[0]);
-              if (cards.length === this.cardExchangeRule.exchangeCount) {
-                break;
-              }
-            }
           }
-          if (cards.length < this.cardExchangeRule.exchangeCount) {
-            // Give smallest cards (other than two of clubs)
-            for (let key of groups.keys) { // eslint-disable-line no-restricted-syntax
-              let currentCards = groups.groups[key];
-              for (let card of currentCards) { // eslint-disable-line no-restricted-syntax
-                if (CardHelper.findTwoOfClubs([ card ]) === undefined && cards.indexOf(card) === -1) {
-                  cards.push(card);
-                  if (cards.length === this.cardExchangeRule.exchangeCount) {
-                    break;
-                  }
+        }
+        if (cards.length < this.cardExchangeRule.exchangeCount) {
+          // Give smallest cards (other than two of clubs)
+          for (let key of groups.keys) { // eslint-disable-line no-restricted-syntax
+            let currentCards = groups.groups[key];
+            for (let card of currentCards) { // eslint-disable-line no-restricted-syntax
+              if (CardHelper.findTwoOfClubs([ card ]) === undefined && cards.indexOf(card) === -1) {
+                cards.push(card);
+                if (cards.length === this.cardExchangeRule.exchangeCount) {
+                  break;
                 }
               }
-              if (cards.length === this.cardExchangeRule.exchangeCount) {
-                break;
-              }
+            }
+            if (cards.length === this.cardExchangeRule.exchangeCount) {
+              break;
             }
           }
-          break;
         }
+        break;
+      }
       case CardExchangeType.BEST:
         cards = _.takeRight(this.hand.sort(CardHelper.compareCards), this.cardExchangeRule.exchangeCount);
         break;

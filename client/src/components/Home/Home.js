@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Row, Col, Table, FormGroup, ControlLabel, Button, Checkbox } from 'react-bootstrap';
 import io from 'socket.io-client';
 import NumericSelector from './NumericSelector';
@@ -30,14 +31,14 @@ class Home extends Component {
     this.props.loadConfig();
   }
 
+  componentDidUpdate() {
+    this.props.saveConfig();
+  }
+
   componentWillUnmount() {
     if (this._socket) {
       this._socket.close();
     }
-  }
-
-  componentDidUpdate() {
-    this.props.saveConfig();
   }
 
   createGame(e) {

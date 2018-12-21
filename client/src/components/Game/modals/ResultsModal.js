@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { Modal, Button, ControlLabel, Table } from 'react-bootstrap';
 import './style.css';
 
@@ -20,13 +21,13 @@ const ResultsModal = ({ show, onHide, results }) => (
           </tr>
         </thead>
         <tbody>
-          {results.currentResults.map((item, index) =>
+          {results.currentResults.map((item, index) => (
             <tr key={index}>
               <td>{item.position}.</td>
               <td>{formatPlayerName(item)}</td>
               <td>{item.points}</td>
             </tr>
-          )}
+          ))}
         </tbody>
       </Table>
       <ControlLabel>Overall points after game {results.gameNumber}/{results.totalGameCount}:</ControlLabel>

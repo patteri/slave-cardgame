@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Row, Col, Button, FormGroup } from 'react-bootstrap';
 import UsernameInput from '../General/UsernameInput';
 import PasswordInput from '../General/PasswordlInput';

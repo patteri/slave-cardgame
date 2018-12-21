@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { Table, Button } from 'react-bootstrap';
 import formatStat from './statsHelper';
 import './style.css';
@@ -8,7 +9,7 @@ const StatList = ({ header, stats, isPercent, showDetails, onShowPlayerStats }) 
     <h4>{header}</h4>
     <Table className="Stats-table" bordered striped>
       <tbody>
-        {stats && stats.map((item, index) =>
+        {stats && stats.map((item, index) => (
           <tr key={index}>
             <td className="col-xs-1">
               {index + 1}.
@@ -25,7 +26,7 @@ const StatList = ({ header, stats, isPercent, showDetails, onShowPlayerStats }) 
               {formatStat(item.value, isPercent)}
             </td>
           </tr>
-        )}
+        ))}
         {(!stats || stats.length === 0) &&
           <tr>
             <td colSpan="3">No records to show.</td>
