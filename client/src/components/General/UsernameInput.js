@@ -43,15 +43,18 @@ class UsernameInput extends Component {
 
   queryUsernameAvailable(username) {
     api.auth.usernameAvailable(username).then((response) => {
-      let isValid = response.data.available && username.length >= gv.minUsernameLength &&
-      username.length <= gv.maxUsernameLength;
-      const state = {
-        username: username,
-        isValid,
-        isReserved: !response.data.available
-      };
-      this.setState(state);
-      this.props.onUsernameChanged(state);
+      // Query may be outdated. Validate only if not.
+      if (username === this.state.username) {
+        let isValid = response.data.available && username.length >= gv.minUsernameLength &&
+        username.length <= gv.maxUsernameLength;
+        const state = {
+          username: username,
+          isValid,
+          isReserved: !response.data.available
+        };
+        this.setState(state);
+        this.props.onUsernameChanged(state);
+      }
     }).catch(() => {
       store.dispatch(openErrorModal('An unknown error occurred.'));
     });
