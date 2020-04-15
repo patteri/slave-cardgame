@@ -49,7 +49,7 @@ describe('/api/auth', () => {
   it('Unsuccessful register: invalid username', (done) => {
     chai.request(app)
       .post('/api/auth/register')
-      .send({ username: '', password: 'password', email: 'email@slavegame.net' })
+      .send({ username: '', password: 'password', email: 'email@slavegame.xyz' })
       .end((err, res) => {
         expect(res).to.have.status(400);
         expect(res).to.be.json; // eslint-disable-line no-unused-expressions
@@ -60,7 +60,7 @@ describe('/api/auth', () => {
   it('Unsuccessful register: invalid password', (done) => {
     chai.request(app)
       .post('/api/auth/register')
-      .send({ username: 'username', password: '', email: 'email@slavegame.net' })
+      .send({ username: 'username', password: '', email: 'email@slavegame.xyz' })
       .end((err, res) => {
         expect(res).to.have.status(400);
         expect(res).to.be.json; // eslint-disable-line no-unused-expressions
@@ -82,7 +82,7 @@ describe('/api/auth', () => {
   it('Unsuccessful register: username reserved', (done) => {
     chai.request(app)
       .post('/api/auth/register')
-      .send({ username: 'admin', password: 'admin', email: 'admin@slavegame.net' })
+      .send({ username: 'admin', password: 'admin', email: 'admin@slavegame.xyz' })
       .end((err, res) => {
         expect(res).to.have.status(400);
         expect(res).to.be.json; // eslint-disable-line no-unused-expressions
@@ -93,7 +93,7 @@ describe('/api/auth', () => {
   it('Successful register', (done) => {
     chai.request(app)
       .post('/api/auth/register')
-      .send({ username: 'username', password: 'password', email: 'email@slavegame.net' })
+      .send({ username: 'username', password: 'password', email: 'email@slavegame.xyz' })
       .end((err, res) => {
         expect(res).to.have.status(200);
         done();
@@ -124,7 +124,7 @@ describe('/api/auth', () => {
   });
 
   it('Successful activation', (done) => {
-    authService.register('user', 'password', 'user@slavegame.net').then(() => {
+    authService.register('user', 'password', 'user@slavegame.xyz').then(() => {
       const token = authService.generateAccountActivationToken('user').token;
       chai.request(app)
         .post('/api/auth/activate')
@@ -148,7 +148,7 @@ describe('/api/auth', () => {
   });
 
   it('Successful remove', (done) => {
-    authService.register('user2', 'password', 'user2@slavegame.net').then(() => {
+    authService.register('user2', 'password', 'user2@slavegame.xyz').then(() => {
       const token = authService.generateAuthToken({ username: 'user2' }).token;
       authService.activate(token).then(() => {
         chai.request(app)
@@ -176,7 +176,7 @@ describe('/api/auth', () => {
   it('Successful forgot', (done) => {
     chai.request(app)
       .post('/api/auth/forgot')
-      .send({ email: 'admin@slavegame.net' })
+      .send({ email: 'admin@slavegame.xyz' })
       .end((err, res) => {
         expect(res).to.have.status(200);
         done();

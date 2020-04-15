@@ -16,7 +16,7 @@ exports.initData = () => {
 };
 
 exports.initDevData = () =>
-  authService.register('admin', 'admin', 'admin@slavegame.net', true)
+  authService.register('admin', 'admin', 'admin@slavegame.xyz', true)
     .then(() => {
       const userStats = [
         new UserStatistics({

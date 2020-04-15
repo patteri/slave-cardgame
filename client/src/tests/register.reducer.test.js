@@ -25,10 +25,10 @@ describe('Register reducer', () => {
     expect(reducer.isPasswordValid).to.equal(true);
     expect(reducer.isButtonDisabled).to.equal(true);
     reducer = registerReducer(reducer, emailChanged({
-      email: 'user@slavegame.net',
+      email: 'user@slavegame.xyz',
       isValid: true
     }));
-    expect(reducer.email).to.equal('user@slavegame.net');
+    expect(reducer.email).to.equal('user@slavegame.xyz');
     expect(reducer.isEmailValid).to.equal(true);
     expect(reducer.isButtonDisabled).to.equal(false);
   });

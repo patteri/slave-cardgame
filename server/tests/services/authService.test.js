@@ -59,7 +59,7 @@ describe('AuthService', () => {
   });
 
   it('Successful registration', (done) => {
-    authService.register('user', 'password', 'user@slavegame.net', true)
+    authService.register('user', 'password', 'user@slavegame.xyz', true)
       .then(() => authService.findUserByCredentials('user', 'password'))
       .then((user) => {
         expect(user).to.not.be.null; // eslint-disable-line no-unused-expressions
@@ -68,7 +68,7 @@ describe('AuthService', () => {
   });
 
   it('Cannot register many accounts with same email address', (done) => {
-    authService.register('userWithSame', 'password', 'user@slavegame.net', true)
+    authService.register('userWithSame', 'password', 'user@slavegame.xyz', true)
       .then(() => authService.findUserByCredentials('userWithSame', 'password'))
       .then((user) => {
         expect(user).to.be.null; // eslint-disable-line no-unused-expressions
@@ -77,7 +77,7 @@ describe('AuthService', () => {
   });
 
   it('Cannot login if user not activated', (done) => {
-    authService.register('user2', 'password', 'user2@slavegame.net')
+    authService.register('user2', 'password', 'user2@slavegame.xyz')
       .then(() => authService.findUserByCredentials('user2', 'password'))
       .then((user) => {
         expect(user).to.be.null; // eslint-disable-line no-unused-expressions
@@ -109,7 +109,7 @@ describe('AuthService', () => {
   });
 
   it('Activate: successful', (done) => {
-    authService.register('user3', 'password', 'user3@slavegame.net')
+    authService.register('user3', 'password', 'user3@slavegame.xyz')
       .then(() => {
         const token = authService.generateAccountActivationToken('user3').token;
         return authService.activate(token);
@@ -129,7 +129,7 @@ describe('AuthService', () => {
   });
 
   it('Remove: successful', (done) => {
-    authService.register('user4', 'password', 'user4@slavegame.net', true).then(() => {
+    authService.register('user4', 'password', 'user4@slavegame.xyz', true).then(() => {
       const token = authService.generateAuthToken({ username: 'user4' }).token;
       authService.remove(token)
         .then(() => authService.findUserByCredentials('user4', 'password'))
@@ -148,7 +148,7 @@ describe('AuthService', () => {
   });
 
   it('Order password renewal: successful', (done) => {
-    authService.orderPasswordRenewal('admin@slavegame.net').then(() => {
+    authService.orderPasswordRenewal('admin@slavegame.xyz').then(() => {
       done();
     });
   });
