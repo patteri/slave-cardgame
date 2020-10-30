@@ -15,7 +15,8 @@ class DatabaseService {
       const location = process.env.DB_LOCATION || 'mongodb://localhost/slave-dev';
       connection = mongoose.connect(location, {
         config: { autoIndex: false },
-        server: { reconnectTries: Number.MAX_VALUE, reconnectInterval: 10000 }
+        useNewUrlParser: true,
+        useUnifiedTopology: true
       });
 
       mongoose.connection.on('error', (err) => {
